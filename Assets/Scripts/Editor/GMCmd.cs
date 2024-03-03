@@ -52,4 +52,10 @@ public class GMCmd
     {
         UIManager.Instance.OpenPanel(UIConst.PackagePanel);
     }
+
+    [MenuItem("GMCmd/选中物品的SelectingID")]
+    public static void PrintInfo()
+    {
+        Debug.Log($"当前选中物品的SelectingID: {PlayerManager.Instance.SelectingID}");
+    }
 }

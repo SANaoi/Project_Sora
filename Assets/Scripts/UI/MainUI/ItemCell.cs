@@ -10,6 +10,7 @@ public class ItemCell : MonoBehaviour
     public int id;
     public string itemName;
     public int num;
+    public string imagePath;
 
     void Start()
     {
@@ -17,6 +18,7 @@ public class ItemCell : MonoBehaviour
         this.id = itemInfo.id;
         this.itemName = itemInfo.itemName;
         this.num = itemInfo.num;
+        this.imagePath = GameManager.Instance.GetPackageTableItemById(id).imagePath;
     }
 
     public void Destroy()

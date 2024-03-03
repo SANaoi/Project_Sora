@@ -63,6 +63,7 @@ public class UIManager
             {UIConst.Item, "MainUI/Item"},
             {UIConst.ItemsInfo, "MainUI/ItemsInfo"},
             {UIConst.GunInfo, "MainUI/GunInfo"},
+            {UIConst.ItemDetail, "MainUI/ItemDetail"},
         };
     }
 
@@ -133,7 +134,7 @@ public class UIConst
     // 配置名称
     public const string PackagePanel = "PackagePanel";
     public const string Item = "Item";
+    public const string ItemDetail = "ItemDetail";
     public const string ItemsInfo = "ItemsInfo";
     public const string GunInfo = "GunInfo";
-
 }

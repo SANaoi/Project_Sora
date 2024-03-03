@@ -68,7 +68,7 @@ public class PlayerManager : MonoBehaviour
             _gameObjectList = value;
         }
     }
-    private string NowSelectingID;
+    public string SelectingID = "";
     private float searchRadius = 2.0f;
     #region 玩家姿态及相关动画参数阈值
     public enum PlayerPostureState
@@ -148,7 +148,7 @@ public class PlayerManager : MonoBehaviour
         playerPosture = PlayerPostureState.Stand;
         AimingIdleConstraint.data.sourceObject = aimingIdleTarget.transform;
 
-        InvokeRepeating("SearchForGameObjectWithTag", 1.0f, 1.0f);
+        InvokeRepeating("SearchForGameObjectWithTag", 0.25f, 0.25f);
         // 确保 gunAudio 组件存在
         if (shootAudio == null)
         {
@@ -220,6 +220,7 @@ public class PlayerManager : MonoBehaviour
         inputActions.Player.Aiming.performed += GetAimingInput;
         inputActions.Player.Crouch.performed += GetPostureStateInput;
         inputActions.Player.Jump.performed += GetJumpInput;
+        inputActions.Player.SelectItem.performed += GetSelectItemInput;
     }
 
     private void UpdateConstraintWeight()
@@ -571,6 +572,24 @@ public class PlayerManager : MonoBehaviour
     {
         isJumping = context.ReadValueAsButton();
     }
+
+    private void GetSelectItemInput(InputAction.CallbackContext context)
+    {
+        if (SelectingID == "" || gameObjectList.Count == 0)
+        {
+            return;
+        }
+        if (context.ReadValueAsButton())
+        {
+            // 上移
+            UIManager.Instance.ItemsInfo.UpSelectID();
+        }
+        else
+        {
+            // 下移
+            UIManager.Instance.ItemsInfo.DownSelectID();
+        }
+    }
     #endregion
 
     #region 玩家运动状态
@@ -657,7 +676,7 @@ public class PlayerManager : MonoBehaviour
                 if (!gameObjectList.Any(gameObject => gameObject.GetComponent<ItemCell>().uid == NowUid))
                 {
                     gameObjectList.Add(foundObject.gameObject);
-                    UIManager.Instance.ItemsInfo.RefreshScroll();
+                    UIManager.Instance.ItemsInfo.GetScrollContent(foundObject.gameObject);
                 }
             }
         }
@@ -672,8 +691,34 @@ public class PlayerManager : MonoBehaviour
         foreach (GameObject obj in ToBeDeleted)
         {
             gameObjectList.Remove(obj);
-            UIManager.Instance.ItemsInfo.RefreshScroll();
+            UIManager.Instance.ItemsInfo.DelScrollContent(obj);
         }
+
+        // 刷新选中的物品
+        if (gameObjectList.Count == 0)
+        {
+            SelectingID = "";
+            return;
+        }
+        if (SelectingID != "")
+        {
+            for (int i = 0; i < UIManager.Instance.ItemsInfo.scrollContent.childCount; i++)
+            {
+                ItemDetail temp = UIManager.Instance.ItemsInfo.scrollContent.GetChild(i).GetComponent<ItemDetail>();
+                if (temp.UISelecting.gameObject.activeSelf == true)
+                {
+                    return;
+                }
+            }
+            SelectingID = SelectingID = UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().uid;
+            UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
+        }
+        else
+        {
+            SelectingID = UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().uid;
+            UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
+        }
+
     }
     #endregion
     // public Animator animator;

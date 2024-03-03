@@ -40,27 +40,9 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
             ""id"": ""2909290d-3788-4de2-8224-5fb7b4d09e78"",
             ""actions"": [
                 {
-                    ""name"": ""Move"",
-                    ""type"": ""Value"",
-                    ""id"": ""efb7440f-be75-4db6-b5ec-a0489f618b91"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Zoom"",
-                    ""type"": ""Value"",
-                    ""id"": ""d440fedb-d4ed-4ebd-95b2-8c8012b91548"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": ""Clamp(min=-0.1,max=0.1),Invert"",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Walk Toggle"",
+                    ""name"": ""Fire"",
                     ""type"": ""Button"",
-                    ""id"": ""55747bcf-332b-4f42-b98d-58cd183bcd98"",
+                    ""id"": ""29123240-c98c-4e9a-96c4-1157c2bc4f1e"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -74,6 +56,33 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Zoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""d440fedb-d4ed-4ebd-95b2-8c8012b91548"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": ""Clamp(min=-0.1,max=0.1),Invert"",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""80eac327-3365-43c2-9ed3-ed447c51d9bd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""efb7440f-be75-4db6-b5ec-a0489f618b91"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Aiming"",
@@ -94,18 +103,18 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Fire"",
-                    ""type"": ""Button"",
-                    ""id"": ""29123240-c98c-4e9a-96c4-1157c2bc4f1e"",
-                    ""expectedControlType"": ""Button"",
+                    ""name"": ""SelectItem"",
+                    ""type"": ""Value"",
+                    ""id"": ""2c5283bc-1057-413b-b283-1375afeceac6"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Jump"",
+                    ""name"": ""Walk Toggle"",
                     ""type"": ""Button"",
-                    ""id"": ""80eac327-3365-43c2-9ed3-ed447c51d9bd"",
+                    ""id"": ""55747bcf-332b-4f42-b98d-58cd183bcd98"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -122,6 +131,72 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
                 }
             ],
             ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""0acef9ce-de5d-4bbb-9e13-af9a2d88ce11"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1ba25502-be02-42db-98ae-fc9f28d015d2"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""37e8805b-bda1-49a0-a2f1-180c697706ab"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b8d3b444-055b-4b80-a524-8bdb2a2e8c6e"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aiming"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8a558f8e-3f19-445d-9499-e034affc9b5d"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rifle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""41a62ce6-3143-440e-b3c9-ae48aba2f5f4"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
                 {
                     ""name"": ""WASD"",
                     ""id"": ""362560af-ae6b-4482-b43a-38a7cc573cab"",
@@ -179,78 +254,12 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""41a62ce6-3143-440e-b3c9-ae48aba2f5f4"",
+                    ""id"": ""01b5b2ed-87fd-4b4e-8546-e7c3fe579463"",
                     ""path"": ""<Mouse>/scroll/y"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Zoom"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""930c796f-400c-41c9-af70-fbadf5418d4d"",
-                    ""path"": ""<Keyboard>/leftCtrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Walk Toggle"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""8a558f8e-3f19-445d-9499-e034affc9b5d"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Rifle"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""b8d3b444-055b-4b80-a524-8bdb2a2e8c6e"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Aiming"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0acef9ce-de5d-4bbb-9e13-af9a2d88ce11"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Fire"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""37e8805b-bda1-49a0-a2f1-180c697706ab"",
-                    ""path"": ""<Keyboard>/leftShift"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Crouch"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1ba25502-be02-42db-98ae-fc9f28d015d2"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Jump"",
+                    ""action"": ""SelectItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -264,6 +273,17 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
                     ""action"": ""OpenPackage"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""930c796f-400c-41c9-af70-fbadf5418d4d"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk Toggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -272,14 +292,15 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
-        m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
-        m_Player_WalkToggle = m_Player.FindAction("Walk Toggle", throwIfNotFound: true);
+        m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Rifle = m_Player.FindAction("Rifle", throwIfNotFound: true);
+        m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
+        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Aiming = m_Player.FindAction("Aiming", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
-        m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
-        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_SelectItem = m_Player.FindAction("SelectItem", throwIfNotFound: true);
+        m_Player_WalkToggle = m_Player.FindAction("Walk Toggle", throwIfNotFound: true);
         m_Player_OpenPackage = m_Player.FindAction("OpenPackage", throwIfNotFound: true);
     }
 
@@ -342,27 +363,29 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
     // Player
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-    private readonly InputAction m_Player_Move;
-    private readonly InputAction m_Player_Zoom;
-    private readonly InputAction m_Player_WalkToggle;
+    private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Rifle;
+    private readonly InputAction m_Player_Zoom;
+    private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Aiming;
     private readonly InputAction m_Player_Crouch;
-    private readonly InputAction m_Player_Fire;
-    private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_SelectItem;
+    private readonly InputAction m_Player_WalkToggle;
     private readonly InputAction m_Player_OpenPackage;
     public struct PlayerActions
     {
         private @PlayerMoveControls m_Wrapper;
         public PlayerActions(@PlayerMoveControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_Player_Move;
-        public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
-        public InputAction @WalkToggle => m_Wrapper.m_Player_WalkToggle;
+        public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Rifle => m_Wrapper.m_Player_Rifle;
+        public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
+        public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Aiming => m_Wrapper.m_Player_Aiming;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
-        public InputAction @Fire => m_Wrapper.m_Player_Fire;
-        public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @SelectItem => m_Wrapper.m_Player_SelectItem;
+        public InputAction @WalkToggle => m_Wrapper.m_Player_WalkToggle;
         public InputAction @OpenPackage => m_Wrapper.m_Player_OpenPackage;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
@@ -373,30 +396,33 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
-            @Zoom.started += instance.OnZoom;
-            @Zoom.performed += instance.OnZoom;
-            @Zoom.canceled += instance.OnZoom;
-            @WalkToggle.started += instance.OnWalkToggle;
-            @WalkToggle.performed += instance.OnWalkToggle;
-            @WalkToggle.canceled += instance.OnWalkToggle;
+            @Fire.started += instance.OnFire;
+            @Fire.performed += instance.OnFire;
+            @Fire.canceled += instance.OnFire;
             @Rifle.started += instance.OnRifle;
             @Rifle.performed += instance.OnRifle;
             @Rifle.canceled += instance.OnRifle;
+            @Zoom.started += instance.OnZoom;
+            @Zoom.performed += instance.OnZoom;
+            @Zoom.canceled += instance.OnZoom;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
+            @Move.started += instance.OnMove;
+            @Move.performed += instance.OnMove;
+            @Move.canceled += instance.OnMove;
             @Aiming.started += instance.OnAiming;
             @Aiming.performed += instance.OnAiming;
             @Aiming.canceled += instance.OnAiming;
             @Crouch.started += instance.OnCrouch;
             @Crouch.performed += instance.OnCrouch;
             @Crouch.canceled += instance.OnCrouch;
-            @Fire.started += instance.OnFire;
-            @Fire.performed += instance.OnFire;
-            @Fire.canceled += instance.OnFire;
-            @Jump.started += instance.OnJump;
-            @Jump.performed += instance.OnJump;
-            @Jump.canceled += instance.OnJump;
+            @SelectItem.started += instance.OnSelectItem;
+            @SelectItem.performed += instance.OnSelectItem;
+            @SelectItem.canceled += instance.OnSelectItem;
+            @WalkToggle.started += instance.OnWalkToggle;
+            @WalkToggle.performed += instance.OnWalkToggle;
+            @WalkToggle.canceled += instance.OnWalkToggle;
             @OpenPackage.started += instance.OnOpenPackage;
             @OpenPackage.performed += instance.OnOpenPackage;
             @OpenPackage.canceled += instance.OnOpenPackage;
@@ -404,30 +430,33 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
 
         private void UnregisterCallbacks(IPlayerActions instance)
         {
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
-            @Zoom.started -= instance.OnZoom;
-            @Zoom.performed -= instance.OnZoom;
-            @Zoom.canceled -= instance.OnZoom;
-            @WalkToggle.started -= instance.OnWalkToggle;
-            @WalkToggle.performed -= instance.OnWalkToggle;
-            @WalkToggle.canceled -= instance.OnWalkToggle;
+            @Fire.started -= instance.OnFire;
+            @Fire.performed -= instance.OnFire;
+            @Fire.canceled -= instance.OnFire;
             @Rifle.started -= instance.OnRifle;
             @Rifle.performed -= instance.OnRifle;
             @Rifle.canceled -= instance.OnRifle;
+            @Zoom.started -= instance.OnZoom;
+            @Zoom.performed -= instance.OnZoom;
+            @Zoom.canceled -= instance.OnZoom;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
+            @Move.started -= instance.OnMove;
+            @Move.performed -= instance.OnMove;
+            @Move.canceled -= instance.OnMove;
             @Aiming.started -= instance.OnAiming;
             @Aiming.performed -= instance.OnAiming;
             @Aiming.canceled -= instance.OnAiming;
             @Crouch.started -= instance.OnCrouch;
             @Crouch.performed -= instance.OnCrouch;
             @Crouch.canceled -= instance.OnCrouch;
-            @Fire.started -= instance.OnFire;
-            @Fire.performed -= instance.OnFire;
-            @Fire.canceled -= instance.OnFire;
-            @Jump.started -= instance.OnJump;
-            @Jump.performed -= instance.OnJump;
-            @Jump.canceled -= instance.OnJump;
+            @SelectItem.started -= instance.OnSelectItem;
+            @SelectItem.performed -= instance.OnSelectItem;
+            @SelectItem.canceled -= instance.OnSelectItem;
+            @WalkToggle.started -= instance.OnWalkToggle;
+            @WalkToggle.performed -= instance.OnWalkToggle;
+            @WalkToggle.canceled -= instance.OnWalkToggle;
             @OpenPackage.started -= instance.OnOpenPackage;
             @OpenPackage.performed -= instance.OnOpenPackage;
             @OpenPackage.canceled -= instance.OnOpenPackage;
@@ -450,14 +479,15 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
     public PlayerActions @Player => new PlayerActions(this);
     public interface IPlayerActions
     {
-        void OnMove(InputAction.CallbackContext context);
-        void OnZoom(InputAction.CallbackContext context);
-        void OnWalkToggle(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
         void OnRifle(InputAction.CallbackContext context);
+        void OnZoom(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
+        void OnMove(InputAction.CallbackContext context);
         void OnAiming(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
-        void OnFire(InputAction.CallbackContext context);
-        void OnJump(InputAction.CallbackContext context);
+        void OnSelectItem(InputAction.CallbackContext context);
+        void OnWalkToggle(InputAction.CallbackContext context);
         void OnOpenPackage(InputAction.CallbackContext context);
     }
 }
