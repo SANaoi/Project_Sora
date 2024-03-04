@@ -94,9 +94,27 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""40003f62-9b64-469f-8c5f-1c270b07e506"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Crouch"",
                     ""type"": ""Button"",
                     ""id"": ""317412d9-540e-435f-bf5f-f8da75b8d54e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PickUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""7f89127e-5af7-4024-a652-e925af586b67"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -284,6 +302,28 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
                     ""action"": ""Walk Toggle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""40ca8973-78f2-481b-aa28-cb290f5f9ec1"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f4ea7ee5-eaf3-49ab-a6c6-cc05a1feda97"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -298,7 +338,9 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Aiming = m_Player.FindAction("Aiming", throwIfNotFound: true);
+        m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
+        m_Player_PickUp = m_Player.FindAction("PickUp", throwIfNotFound: true);
         m_Player_SelectItem = m_Player.FindAction("SelectItem", throwIfNotFound: true);
         m_Player_WalkToggle = m_Player.FindAction("Walk Toggle", throwIfNotFound: true);
         m_Player_OpenPackage = m_Player.FindAction("OpenPackage", throwIfNotFound: true);
@@ -369,7 +411,9 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Aiming;
+    private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_Crouch;
+    private readonly InputAction m_Player_PickUp;
     private readonly InputAction m_Player_SelectItem;
     private readonly InputAction m_Player_WalkToggle;
     private readonly InputAction m_Player_OpenPackage;
@@ -383,7 +427,9 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Aiming => m_Wrapper.m_Player_Aiming;
+        public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
+        public InputAction @PickUp => m_Wrapper.m_Player_PickUp;
         public InputAction @SelectItem => m_Wrapper.m_Player_SelectItem;
         public InputAction @WalkToggle => m_Wrapper.m_Player_WalkToggle;
         public InputAction @OpenPackage => m_Wrapper.m_Player_OpenPackage;
@@ -414,9 +460,15 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
             @Aiming.started += instance.OnAiming;
             @Aiming.performed += instance.OnAiming;
             @Aiming.canceled += instance.OnAiming;
+            @Reload.started += instance.OnReload;
+            @Reload.performed += instance.OnReload;
+            @Reload.canceled += instance.OnReload;
             @Crouch.started += instance.OnCrouch;
             @Crouch.performed += instance.OnCrouch;
             @Crouch.canceled += instance.OnCrouch;
+            @PickUp.started += instance.OnPickUp;
+            @PickUp.performed += instance.OnPickUp;
+            @PickUp.canceled += instance.OnPickUp;
             @SelectItem.started += instance.OnSelectItem;
             @SelectItem.performed += instance.OnSelectItem;
             @SelectItem.canceled += instance.OnSelectItem;
@@ -448,9 +500,15 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
             @Aiming.started -= instance.OnAiming;
             @Aiming.performed -= instance.OnAiming;
             @Aiming.canceled -= instance.OnAiming;
+            @Reload.started -= instance.OnReload;
+            @Reload.performed -= instance.OnReload;
+            @Reload.canceled -= instance.OnReload;
             @Crouch.started -= instance.OnCrouch;
             @Crouch.performed -= instance.OnCrouch;
             @Crouch.canceled -= instance.OnCrouch;
+            @PickUp.started -= instance.OnPickUp;
+            @PickUp.performed -= instance.OnPickUp;
+            @PickUp.canceled -= instance.OnPickUp;
             @SelectItem.started -= instance.OnSelectItem;
             @SelectItem.performed -= instance.OnSelectItem;
             @SelectItem.canceled -= instance.OnSelectItem;
@@ -485,7 +543,9 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnMove(InputAction.CallbackContext context);
         void OnAiming(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
+        void OnPickUp(InputAction.CallbackContext context);
         void OnSelectItem(InputAction.CallbackContext context);
         void OnWalkToggle(InputAction.CallbackContext context);
         void OnOpenPackage(InputAction.CallbackContext context);

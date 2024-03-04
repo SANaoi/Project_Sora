@@ -79,7 +79,20 @@ public class GameManager : MonoBehaviour
             UIManager.Instance.OpenPanel(UIConst.PackagePanel);
         }
     }
-        
+    
+    public int GetPackageLocalItemsNumById(int id)
+    {
+        List<PackageLocalItem> items = PackageLocalData.Instance.LoadPackage();
+        int res = 0;
+        foreach (PackageLocalItem item in items)
+        {
+            if (item.id == id)
+            {
+                res += item.num;
+            }
+        }
+        return res;
+    }
     #endregion
 
     #region 界面UI基础功能

@@ -89,6 +89,17 @@ public class ItemsInfo : MonoBehaviour
                 }
             }
         }
+    }
 
+    public int GetItemNumByUID(string uid)
+    {
+        for (int i = 0; i < scrollContent.childCount; i++)
+        {
+            if (scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().uid == uid)
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 }

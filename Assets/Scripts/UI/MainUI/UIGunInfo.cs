@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIGunInfo : MonoBehaviour
+public class UIGunInfo : BasePanel
 {
     public Transform UICapacity;
 

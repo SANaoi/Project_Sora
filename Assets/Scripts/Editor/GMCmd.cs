@@ -37,6 +37,13 @@ public class GMCmd
         PackageLocalData.Instance.SavePackage();
     }
 
+    [MenuItem("GMCmd/清除背包数据")]
+    public static void DeleteLocalPackageData()
+    {
+        PackageLocalData.Instance.items.Clear();
+        PackageLocalData.Instance.SavePackage();
+    }
+
     [MenuItem("GMCmd/读取背包测试数据")]
     public static void ReadLoadPackData()
     {

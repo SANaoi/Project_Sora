@@ -37,6 +37,7 @@ public class PlayerManager : MonoBehaviour
     [HideInInspector]
     public PlayerArmState playerArmState = PlayerArmState.Normal;
     public Animator animator;
+    private ShootController shootController;
 
     private Transform[] AllChildrenList;
     private GameObject HandleOnHand;
@@ -127,6 +128,7 @@ public class PlayerManager : MonoBehaviour
         rig = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
         animator.SetFloat("ScaleFactor", 1 / animator.humanScale);
+        shootController = GetComponent<ShootController>();
     }
 
     void OnEnable()
@@ -215,12 +217,14 @@ public class PlayerManager : MonoBehaviour
 
     private void InitInputSystem()
     {
-        inputActions.Player.WalkToggle.performed += GetWalkToggleInput;
-        inputActions.Player.Rifle.performed += GetArmRifleInput;
-        inputActions.Player.Aiming.performed += GetAimingInput;
-        inputActions.Player.Crouch.performed += GetPostureStateInput;
         inputActions.Player.Jump.performed += GetJumpInput;
+        inputActions.Player.PickUp.canceled += GetPickUpInput;
+        inputActions.Player.Aiming.performed += GetAimingInput;
+        inputActions.Player.Reload.performed += GetReloadInput;
+        inputActions.Player.Rifle.performed += GetArmRifleInput;
+        inputActions.Player.Crouch.performed += GetPostureStateInput;
         inputActions.Player.SelectItem.performed += GetSelectItemInput;
+        inputActions.Player.WalkToggle.performed += GetWalkToggleInput;
     }
 
     private void UpdateConstraintWeight()
@@ -237,6 +241,13 @@ public class PlayerManager : MonoBehaviour
         SwitchPlayerMoveStates();
         SwitchPlayerArmStates();
         SwitchPlayerPostureStates();
+    }
+
+    public void UpdatePackageLocalData()
+    {
+        // 用于及时更新与界面UI有关的数据
+        shootController.TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2);
+        UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(shootController.MagazineAmmo,shootController.TotalAmmo);
     }
 
     private void HorizontalVelocityCalculate()
@@ -590,6 +601,54 @@ public class PlayerManager : MonoBehaviour
             UIManager.Instance.ItemsInfo.DownSelectID();
         }
     }
+
+    private void GetPickUpInput(InputAction.CallbackContext context)
+    {
+        if (SelectingID != "" && gameObjectList.Count != 0)
+        {
+            foreach (GameObject Item in gameObjectList)
+            {
+                ItemCell ItemInfo = Item.GetComponent<ItemCell>();
+                if (ItemInfo.uid == SelectingID)
+                {
+                    int ItemNum = UIManager.Instance.ItemsInfo.GetItemNumByUID(SelectingID);
+                    if (ItemNum == UIManager.Instance.ItemsInfo.scrollContent.childCount - 1)
+                    {
+
+                        UIManager.Instance.ItemsInfo.UpSelectID();
+                        PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
+                        UpdatePackageLocalData();
+                        ItemInfo.Destroy();
+                        return;
+                    }
+                    else
+                    {
+                        UIManager.Instance.ItemsInfo.DownSelectID();
+                        PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
+                        UpdatePackageLocalData();
+                        ItemInfo.Destroy();
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private void GetReloadInput(InputAction.CallbackContext context)
+    {
+        // TODO 数据同步到背包数据
+        if (shootController.MagazineAmmo + shootController.TotalAmmo < shootController.ShootConfig.Capacity)
+        {
+            shootController.MagazineAmmo += shootController.TotalAmmo;
+            shootController.TotalAmmo = 0;
+        }
+        else
+        {
+            shootController.TotalAmmo -= shootController.ShootConfig.Capacity - shootController.MagazineAmmo;
+            shootController.MagazineAmmo = shootController.ShootConfig.Capacity;
+        }
+        UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(shootController.MagazineAmmo,shootController.TotalAmmo);
+    }
     #endregion
 
     #region 玩家运动状态
@@ -710,14 +769,9 @@ public class PlayerManager : MonoBehaviour
                     return;
                 }
             }
-            SelectingID = SelectingID = UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().uid;
-            UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
         }
-        else
-        {
-            SelectingID = UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().uid;
-            UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
-        }
+        SelectingID = UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().uid;
+        UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
 
     }
     #endregion

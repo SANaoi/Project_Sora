@@ -72,7 +72,7 @@ public class UIManager
         BasePanel panel = null;
         if(panelDict.TryGetValue(name, out panel))
         {
-            return null;
+            return panel;
         }
 
         string path = "";

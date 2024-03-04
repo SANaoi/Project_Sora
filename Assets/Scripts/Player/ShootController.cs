@@ -8,8 +8,8 @@ public class ShootController : MonoBehaviour
 {
     bool isShooting;
     float LastShootTime;
-    int MagazineAmmo;
-    int TotalAmmo;
+    public int MagazineAmmo;
+    public int TotalAmmo;
     Camera mainCamera;
     Animator animator;
     public GameObject FireHole;
@@ -34,7 +34,9 @@ public class ShootController : MonoBehaviour
         LastShootTime = 0f;
         MagazineAmmo = ShootConfig.Capacity;
 
-        GunInfo = UIManager.Instance.GetUIGameObject("GunInfo").GetComponent<UIGunInfo>();
+        GunInfo = UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>();
+        // 2: 步枪子弹
+        TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2);
     }
 
     private void Update()
@@ -90,9 +92,9 @@ public class ShootController : MonoBehaviour
         {
         
             MagazineAmmo -= 1;
-            // TODO 实现从背包中获取所有子弹数
-            GunInfo.Refresh(MagazineAmmo, 120);
+            GunInfo.Refresh(MagazineAmmo, TotalAmmo);
             VFX_Flash.Play();
+            
             Vector3 shootDirection = mainCamera.transform.forward
                 + new Vector3(
                     Random.Range(

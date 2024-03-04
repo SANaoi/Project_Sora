@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public class PackageLocalData
 {
     public static PackageLocalData _instance;
+    public List<PackageLocalItem> items;
 
     public static PackageLocalData Instance
     {
@@ -17,8 +19,6 @@ public class PackageLocalData
             return _instance;
         }
     }
-    public List<PackageLocalItem> items;
-
     public void SavePackage()
     {
         string inventoryJson = JsonUtility.ToJson(this);
@@ -45,6 +45,19 @@ public class PackageLocalData
             items = new List<PackageLocalItem>();
             return items;
         } 
+    }
+
+    public void AddPackageLocalItem(ItemCell itemInfo)
+    {
+        items = LoadPackage();
+        PackageLocalItem packageLocalItem = new()
+        {
+            uid = Guid.NewGuid().ToString(),
+            id = itemInfo.id,
+            num = itemInfo.num,
+        };
+        items.Add(packageLocalItem);
+        SavePackage();
     }
 }
 
