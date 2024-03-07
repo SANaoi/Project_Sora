@@ -40,5 +40,8 @@ public class PackageDetail : MonoBehaviour
         Texture2D t = (Texture2D)Resources.Load(this.packageTableItem.imagePath);
         Sprite temp = Sprite.Create(t, new Rect(0, 0, t.width, t.height), new Vector2(0, 0));
         UIIcon.GetComponent<Image>().sprite = temp;
+
+        UIName.GetComponent<Text>().text = this.packageTableItem.name;
+        UIDescription.GetComponent<Text>().text = this.packageTableItem.description;
     }
 }

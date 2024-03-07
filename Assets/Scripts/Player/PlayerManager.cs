@@ -20,7 +20,7 @@ public class PlayerManager : MonoBehaviour
     float backwardSpeed = -1.3f;
     float currentSpeed = 0f;
     float WalkSpeed = 1.5f;
-    float RunSpeed = 3.3f;
+    float RunSpeed = 6f;
     float baseSpeed;
 
     Vector3 currentTargetRotation;
@@ -56,6 +56,7 @@ public class PlayerManager : MonoBehaviour
     private Vector3 moveDirection = Vector3.zero;
     public float gravity = -9.8f;
     public float jumpVelocity = 5f;
+    private Vector3 moveVelocity; // 平滑速度向量
     // 场景可获取物品功能参数
     private List<GameObject> _gameObjectList;
     public List<GameObject> gameObjectList
@@ -146,6 +147,7 @@ public class PlayerManager : MonoBehaviour
         InitDicts();
         InitGameObjects();
         InitInputSystem();
+        UpdatePackageLocalData();
         playerMoveState = PlayerMoveState.Run;
         playerPosture = PlayerPostureState.Stand;
         AimingIdleConstraint.data.sourceObject = aimingIdleTarget.transform;
@@ -273,12 +275,15 @@ public class PlayerManager : MonoBehaviour
         if (!isAiming)
         {
             Vector3 tep = targetRotationDirection * movementSpeed - currentPlayerHorizontalVelocity;
-            moveDirection = new Vector3(tep.x, 0f, tep.z);
+            Vector3 targetMoveDirection = new Vector3(tep.x, 0f, tep.z);
+            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.03f);
         }
         else
         {
             Vector3 tep = AimingmovementDirection * Mathf.Abs(movementSpeed) - currentPlayerHorizontalVelocity;
-            moveDirection = new Vector3(tep.x, 0f, tep.z);
+            Vector3 targetMoveDirection = new Vector3(tep.x, 0f, tep.z);
+            
+            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.03f);
         }
     }
     private void Move()
@@ -415,7 +420,7 @@ public class PlayerManager : MonoBehaviour
         return angle;
     }
 
-    private float GetDirectionAngle(Vector3 direction)
+    private float  GetDirectionAngle(Vector3 direction)
     {
         // Mathf.Atan2: 算出夹角弧度
         // Mathf.Rad2Deg：弧度转度（范围[-pi，pi])
@@ -444,7 +449,7 @@ public class PlayerManager : MonoBehaviour
     }
     private float GetMovementSpeed()
     {
-        currentSpeed = Mathf.Lerp(baseSpeed, currentSpeed, 0.8f);
+        currentSpeed = Mathf.Lerp(baseSpeed, currentSpeed, 0.8f * Time.deltaTime);
         // 返回移动速度，考虑到基础速度和速度修正。
         return currentSpeed;
     }

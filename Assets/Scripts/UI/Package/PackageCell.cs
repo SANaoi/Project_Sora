@@ -10,6 +10,7 @@ public class PackageCell : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
     private Transform UIIcon;
     private Transform UISelect;
     private Transform UIDeleteSelect;
+    private Transform UIName;
     private Animator UIMouseOverAni;
     private Animator UIMouseSelectedAni;
 
@@ -25,6 +26,7 @@ public class PackageCell : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
     private void InitUIName()
     {
         UIIcon = transform.Find("Top/Icon");
+        UIName = transform.Find("Bottom/Name");
         UISelect = transform.Find("Select");
         UIDeleteSelect = transform.Find("DeleteSelect");
         UIMouseOverAni = transform.Find("MouseOverAni").GetComponent<Animator>();
@@ -40,6 +42,8 @@ public class PackageCell : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
         Texture2D t = (Texture2D)Resources.Load(this.packageTableItem.imagePath);
         Sprite temp = Sprite.Create(t, new Rect(0, 0, t.width, t.height), new Vector2(0, 0));
         UIIcon.GetComponent<Image>().sprite = temp;
+
+        UIName.GetComponent<Text>().text = packageTableItem.name;
      }
 
     public void OnPointerEnter(PointerEventData eventData)
