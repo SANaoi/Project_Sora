@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -23,6 +24,7 @@ public class EnemyController : MonoBehaviour
 
     private bool isGetGuardPosition = false;
     private GameObject attackTarget;
+    private GameObject bunker;
 
     [Header("Basic Settings")]
     public float signtRadius;
@@ -94,12 +96,14 @@ public class EnemyController : MonoBehaviour
             case EnemyStates.GUARD:
             if (transform.position != guardPos)
             {
-                isWalk = true;
                 agent.destination = guardPos;
                 if (Vector3.SqrMagnitude(guardPos - transform.position) <= agent.stoppingDistance)
                 {
                     guardPos = transform.position;
-                    Turn(guardRotation);
+                    if (!isTurn)
+                    {
+                        Turn(guardRotation);
+                    }
                     
                 }
             }
@@ -111,16 +115,12 @@ public class EnemyController : MonoBehaviour
             break;
 
             case EnemyStates.PATROL:
-            isChase = false;
-            isWalk = true;
             Speed = walk;
             agent.speed = walk;
 
             break;
 
             case EnemyStates.CHASE:
-            isWalk = false;
-            isChase = true;
             agent.speed = chase;
             Speed = chase;
             if (!FoundPlayer())
@@ -131,15 +131,17 @@ public class EnemyController : MonoBehaviour
                     
                     rotationToGuardPosition = Quaternion.LookRotation(guardPos - transform.position);
                 }
-                Turn(rotationToGuardPosition);
-                if (isTurn)
+                if (!isTurn)
+                {
+                    Turn(rotationToGuardPosition);
+                }
+                else
                 { 
                     return;
                 }
                 
                 if (isGuard)
                 {
-                    // transform.rotation = Quaternion.Slerp(transform.rotation, guardRotation, 5f * Time.deltaTime); 
                     Speed = walk;
                     agent.speed = walk;
                     enemyStates = EnemyStates.GUARD;
@@ -151,9 +153,33 @@ public class EnemyController : MonoBehaviour
             }
             else
             {
+                if (FoundBunker())
+                {
+                    float destination = 0f;
+                    Vector3 targetPoint = attackTarget.transform.position;
+                    Vector3[] points = bunker.GetComponent<CalBoundary>().points;
+                    for (int i = 0; i < points.Length; i++)
+                    {
+                        if (Vector3.Distance(points[i], attackTarget.transform.position) > destination)
+                        {
+                            destination = Vector3.Distance(points[i], attackTarget.transform.position);
+                            targetPoint = points[i];
+                        }
+                    }
+                    agent.destination = targetPoint;
+                    if (Vector3.SqrMagnitude(targetPoint - transform.position) <= agent.stoppingDistance)
+                    {
+                        Speed = Idle;
+                        agent.speed = Idle;
+                        Quaternion rotationToAttacker = Quaternion.LookRotation(attackTarget.transform.position - transform.position);
+                        transform.rotation = Quaternion.Slerp(transform.rotation, rotationToAttacker, 5f * Time.deltaTime);
+                    }
+                    return;
+                }
                 agent.destination = attackTarget.transform.position;
                 Quaternion rotationToTarget = Quaternion.LookRotation(attackTarget.transform.position - transform.position);
                 transform.rotation = Quaternion.Slerp(transform.rotation, rotationToTarget, 5f * Time.deltaTime); 
+
             }
             
             break;
@@ -168,11 +194,27 @@ public class EnemyController : MonoBehaviour
             if (collider.CompareTag("Player"))
             {
                 attackTarget = collider.gameObject;
-                
+                isTurn = false;
                 return true;
             }
         }
         attackTarget = null;
+        return false;
+    }
+
+    bool FoundBunker()
+    {
+        var colliders = Physics.OverlapSphere(transform.position, signtRadius);
+        foreach (var collider in colliders)
+            {
+                if (collider.CompareTag("Bunker"))
+                {
+                    bunker = collider.gameObject;
+
+                    return true;
+                }
+            }
+        bunker = null;
         return false;
     }
 
@@ -183,7 +225,7 @@ public class EnemyController : MonoBehaviour
             Speed = Idle;
             agent.speed = Idle;
         }
-
+        
         if (!isTurn)
         {
             currentRotation = transform.rotation;
@@ -196,7 +238,6 @@ public class EnemyController : MonoBehaviour
                 isLeftTurn = false;
             }
         }
-
         if (Quaternion.Angle(transform.rotation, targetRotation) >= stoppingAngle)
         {
             isTurn = true;
@@ -204,7 +245,6 @@ public class EnemyController : MonoBehaviour
         else
         {
             isTurn = false;
-            isLeftTurn = false;
             isGetGuardPosition = false;
         }
     }

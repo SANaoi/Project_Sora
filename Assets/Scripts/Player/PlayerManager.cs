@@ -11,7 +11,7 @@ public class PlayerManager : MonoBehaviour
 {
     Rigidbody rig;
     Camera mainCamera;
-
+    private Vector3 currentDirection;
     bool isWalk = false;
     bool isArmRifle;
     public bool isJumping;
@@ -151,6 +151,7 @@ public class PlayerManager : MonoBehaviour
         playerMoveState = PlayerMoveState.Run;
         playerPosture = PlayerPostureState.Stand;
         AimingIdleConstraint.data.sourceObject = aimingIdleTarget.transform;
+        currentDirection = transform.forward;
 
         InvokeRepeating("SearchForGameObjectWithTag", 0.25f, 0.25f);
         // 确保 gunAudio 组件存在
@@ -164,7 +165,6 @@ public class PlayerManager : MonoBehaviour
     {
         SwitchStates();
         UpdateConstraintWeight();
-
         Move();
     }
     #endregion
@@ -276,14 +276,14 @@ public class PlayerManager : MonoBehaviour
         {
             Vector3 tep = targetRotationDirection * movementSpeed - currentPlayerHorizontalVelocity;
             Vector3 targetMoveDirection = new Vector3(tep.x, 0f, tep.z);
-            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.03f);
+            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.1f);
         }
         else
         {
             Vector3 tep = AimingmovementDirection * Mathf.Abs(movementSpeed) - currentPlayerHorizontalVelocity;
             Vector3 targetMoveDirection = new Vector3(tep.x, 0f, tep.z);
             
-            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.03f);
+            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.1f);
         }
     }
     private void Move()
@@ -395,6 +395,11 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region 一般状态下的移动及相机调整
+    private Vector3 GetMovementInputDirection()
+    {
+        // 返回表示移动输入方向的Vector3。
+        return new Vector3(playerMoveContext.x, 0f, playerMoveContext.y);
+    }
 
     private float Rotate(Vector3 direction)
     {
@@ -441,11 +446,6 @@ public class PlayerManager : MonoBehaviour
         currentTargetRotation.y = targetAngle;
 
         dampedTargetRotationPassedTime.y = 0f;
-    }
-    private Vector3 GetMovementInputDirection()
-    {
-        // 返回表示移动输入方向的Vector3。
-        return new Vector3(playerMoveContext.x, 0f, playerMoveContext.y);
     }
     private float GetMovementSpeed()
     {
@@ -790,11 +790,11 @@ public class PlayerManager : MonoBehaviour
     private void OnAnimatorIK(int layerIndex)
     {
       
-        //  animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, LeftWeight);
-        //  animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, LeftWeight);
+        // animator.SetIKPositionWeight(AvatarIKGoal.LeftHand, LeftWeight);
+        // animator.SetIKRotationWeight(AvatarIKGoal.LeftHand, LeftWeight);
 
-        //  animator.SetIKPositionWeight(AvatarIKGoal.RightHand, RightWeight);
-        //  animator.SetIKRotationWeight(AvatarIKGoal.RightHand, RightWeight);
+        // animator.SetIKPositionWeight(AvatarIKGoal.RightHand, RightWeight);
+        // animator.SetIKRotationWeight(AvatarIKGoal.RightHand, RightWeight);
 
         animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, LeftWeight);
         animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, LeftWeight);

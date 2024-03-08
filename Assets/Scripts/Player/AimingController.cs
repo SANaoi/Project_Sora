@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Cinemachine;
 using UnityEngine;
@@ -50,8 +51,12 @@ public class AimingController : MonoBehaviour
 
     void Update()
     {
-        // Shoot();
         UpdateLookPoint();
+        // Shoot();
+    }
+
+    void LateUpdate()
+    {
     }
     void UpdateLookPoint()
     {
