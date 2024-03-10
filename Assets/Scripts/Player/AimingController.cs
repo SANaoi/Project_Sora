@@ -51,11 +51,14 @@ public class AimingController : MonoBehaviour
 
     void Update()
     {
-        UpdateLookPoint();
         // Shoot();
+        UpdateLookPoint();
     }
 
     void LateUpdate()
+    {
+    }
+    void FixedUpdate()
     {
     }
     void UpdateLookPoint()

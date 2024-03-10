@@ -167,6 +167,12 @@ public class PlayerManager : MonoBehaviour
         UpdateConstraintWeight();
         Move();
     }
+    void FixedUpdate()
+    {
+    }
+    void LateUpdate() 
+    {
+    }
     #endregion
 
     #region Main Methods

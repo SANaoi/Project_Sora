@@ -24,11 +24,6 @@ public class UIManager
             return _instance;
         }
     }
-
-    // private void Awake()
-    // {
-    //     _instance = (UIManager)this;
-    // }
     public Transform UIRoot
     {
         get

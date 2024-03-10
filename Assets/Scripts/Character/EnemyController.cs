@@ -23,12 +23,13 @@ public class EnemyController : MonoBehaviour
     protected CharacterStats characterStats;
 
     private bool isGetGuardPosition = false;
-    private GameObject attackTarget;
+    public GameObject attackTarget = null;
     private GameObject bunker;
 
     [Header("Basic Settings")]
     public float signtRadius;
     public bool isGuard;
+    public bool isGunToting;
     private float lastAttackTime;
     [Header("Patrol State")]
     public float PatrolRange;
@@ -44,6 +45,8 @@ public class EnemyController : MonoBehaviour
     float Idle = 0;
     float walk = 2;
     float chase = 4;
+    private bool isPatrol;
+
 
     void Awake()
     {
@@ -75,6 +78,7 @@ public class EnemyController : MonoBehaviour
 
     void SwitchAnimation()
     {
+        animator.SetBool("Rifle", isGunToting);
         animator.SetBool("LeftTurn",isLeftTurn);
         animator.SetBool("Turn", isTurn);
         animator.SetFloat("Speed", Speed);
@@ -82,6 +86,7 @@ public class EnemyController : MonoBehaviour
 
     void SwitchStates()
     {
+        // print(enemyStates);
         if (isDead)
         {
             enemyStates = EnemyStates.DEAD;
@@ -100,10 +105,7 @@ public class EnemyController : MonoBehaviour
                 if (Vector3.SqrMagnitude(guardPos - transform.position) <= agent.stoppingDistance)
                 {
                     guardPos = transform.position;
-                    if (!isTurn)
-                    {
-                        Turn(guardRotation);
-                    }
+                    Turn(guardRotation);
                     
                 }
             }
@@ -131,22 +133,19 @@ public class EnemyController : MonoBehaviour
                     
                     rotationToGuardPosition = Quaternion.LookRotation(guardPos - transform.position);
                 }
-                if (!isTurn)
+                Turn(rotationToGuardPosition);
+                if (isTurn)
                 {
-                    Turn(rotationToGuardPosition);
-                }
-                else
-                { 
                     return;
                 }
                 
-                if (isGuard)
+                if (isGuard && !isTurn)
                 {
                     Speed = walk;
                     agent.speed = walk;
                     enemyStates = EnemyStates.GUARD;
                 }
-                else
+                else if (isPatrol && !isTurn)
                 {
                     enemyStates = EnemyStates.PATROL;
                 }
@@ -224,20 +223,20 @@ public class EnemyController : MonoBehaviour
         { 
             Speed = Idle;
             agent.speed = Idle;
+            if (!isTurn)
+            {
+                currentRotation = transform.rotation;
+                if (Quaternion.Dot(targetRotation, currentRotation) < 0f)
+                {
+                    isLeftTurn = false;
+                }
+                else
+                {   
+                    isLeftTurn = true;
+                }
+            }
         }
         
-        if (!isTurn)
-        {
-            currentRotation = transform.rotation;
-            if (Quaternion.Dot(targetRotation, currentRotation) < 0f)
-            {
-                isLeftTurn = true;
-            }
-            else
-            {   
-                isLeftTurn = false;
-            }
-        }
         if (Quaternion.Angle(transform.rotation, targetRotation) >= stoppingAngle)
         {
             isTurn = true;
@@ -251,5 +250,15 @@ public class EnemyController : MonoBehaviour
     private void OnFootstep(AnimationEvent animationEvent)
     {
         
+    }
+
+    void PutGrabRifle()
+    {
+        
+    }
+
+    void SetTowHandsWeight()
+    {
+
     }
 }

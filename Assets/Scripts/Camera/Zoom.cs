@@ -20,7 +20,7 @@ public class Zoom : MonoBehaviour
         cinemachineFramingTransposer.m_CameraDistance = DefaultDistance;
 
     }
-    private void Update()
+    private void LateUpdate()
     {
         CameraZoom();
     }

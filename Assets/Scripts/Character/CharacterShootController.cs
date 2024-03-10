@@ -1,50 +1,43 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Pool;
 using UnityEngine.VFX;
-
-public class ShootController : MonoBehaviour
+public class CharacterShootController : MonoBehaviour
 {
+    
     bool isShooting;
     float LastShootTime;
-    public int MagazineAmmo;
-    public int TotalAmmo;
-    Camera mainCamera;
     Animator animator;
-    public GameObject FireHole;
+    GameObject attackTarget;
     private Ray FireRay;
+    public GameObject FireHole;
     public ShootConfigurationScriptableObject ShootConfig;
     public TrailConfigScriptableObject TrailConfig;
     private ObjectPool<TrailRenderer> TrailPool;
     private ObjectPool<VisualEffect> ImpactPool;
     public PlayerMoveControls InputActions;
-    //private Vector3 EndRayPoint = new Vector3(Screen.width / 2, Screen.height / 2, 0f);
-    private UIGunInfo GunInfo;
     public VisualEffect VFX_Flash;
     public VisualEffectAsset ImpactParticle;
+
+    private void Awake()
+    {
+        // attackTarget = GetComponent<EnemyController>().attackTarget;
+    }
     private void Start()
     {
-        InputActions = PlayerMoveControls.Instance;
-        mainCamera = FindObjectOfType<Camera>();
         TrailPool = new ObjectPool<TrailRenderer>(CreateTrail);
         ImpactPool = new ObjectPool<VisualEffect>(CreateImpactParticle);
-        InputActions.Player.Fire.started += OnFireStarte;
-        InputActions.Player.Fire.canceled += OnFireCancel;
         animator = GetComponent<Animator>();
         LastShootTime = 0f;
-        MagazineAmmo = ShootConfig.Capacity;
-
-        GunInfo = UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>();
-        // 2: 步枪子弹
-        TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2);
-        
+        isShooting = true;
+       
     }
 
-
-    private void Update()
-    {
-        if (isShooting && animator.GetBool("Aiming") && MagazineAmmo > 0)
+    void Update()
+    { 
+        if (isShooting && animator.GetBool("Aim"))
         {
             VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(true);
             Shoot();
@@ -78,62 +71,39 @@ public class ShootController : MonoBehaviour
         return impact;
     }
 
-    private void OnFireStarte(InputAction.CallbackContext context)
-    {
-        animator.SetBool("isShoot", true);
-        isShooting = true;
-    }
-    private void OnFireCancel(InputAction.CallbackContext context)
-    {
-        animator.SetBool("isShoot", false);
-        isShooting = false;
-    }
 
-    public void Shoot()
+    void Shoot()
     {
-        if (Time.time > ShootConfig.FireRate + LastShootTime)
+        if (Time.time > ShootConfig.FireRate + LastShootTime && GetComponent<EnemyController>().attackTarget)
         {
-        
-            MagazineAmmo -= 1;
-            GunInfo.Refresh(MagazineAmmo, TotalAmmo);
-            VFX_Flash.Play();
-            
-            Vector3 shootDirection = mainCamera.transform.forward;
-            // Vector3 shootDirection = FireHole.transform.forward;
-            FireRay = new Ray(mainCamera.transform.position, shootDirection);
+            Vector3 shootDirection = -FireHole.transform.forward;
+            FireRay = new Ray(FireHole.transform.position, shootDirection);
             shootDirection.Normalize();
 
-            
             if (Physics.Raycast(
-                    // mainCamera.ScreenPointToRay(EndRayPoint),
                     FireRay,
                     out RaycastHit hit,
                     float.MaxValue,
                     ShootConfig.HitMask))
-                {
-                    StartCoroutine(
-                        PlayTrail(
-                            FireHole.transform.position,
-                            hit.point,
-                            hit
-                        )
-                    );
-                }
+            {
+                StartCoroutine(
+                PlayTrail(
+                FireHole.transform.position,
+                hit.point,
+                hit));
+            }
             else
-                {
-                    StartCoroutine(
-                        PlayTrail(
-                            FireHole.transform.position,
-                            FireHole.transform.forward + (shootDirection * TrailConfig.MissDistance),
-                            new RaycastHit()
-                        )
-                    );
-                }
+            {
+                StartCoroutine(
+                PlayTrail(
+                FireHole.transform.position, 
+                FireHole.transform.forward + (shootDirection * TrailConfig.MissDistance), 
+                new RaycastHit()));
+            }
             LastShootTime = Time.time;
-            
         }
     }
-    
+
     protected virtual IEnumerator PlayTrail(Vector3 StartPoint, Vector3 EndPoint, RaycastHit Hit)
     {
         TrailRenderer trailInstance = TrailPool.Get();
@@ -176,6 +146,4 @@ public class ShootController : MonoBehaviour
         trailInstance.gameObject.SetActive(false);
         TrailPool.Release(trailInstance);
     }
-
-    
 }

@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
     private PackageTable_SO packageTable;
 
+    public ShootController shootController;
+
     public static GameManager Instance
     {
         get
@@ -22,6 +24,8 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         PlayerMoveControls.Instance.Player.OpenPackage.performed += GetOpenPackageInput;
+
+        // shootController = new ShootController();
     }
     
     #region 背包的基础功能
