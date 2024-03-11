@@ -10,7 +10,7 @@ public class CharacterShootController : MonoBehaviour
     bool isShooting;
     float LastShootTime;
     Animator animator;
-    GameObject attackTarget;
+    float FireRate;
     private Ray FireRay;
     public GameObject FireHole;
     public ShootConfigurationScriptableObject ShootConfig;
@@ -32,6 +32,8 @@ public class CharacterShootController : MonoBehaviour
         animator = GetComponent<Animator>();
         LastShootTime = 0f;
         isShooting = true;
+
+        FireRate = 1f;
        
     }
 
@@ -74,9 +76,10 @@ public class CharacterShootController : MonoBehaviour
 
     void Shoot()
     {
-        if (Time.time > ShootConfig.FireRate + LastShootTime && GetComponent<EnemyController>().attackTarget)
+        if (Time.time > FireRate + LastShootTime && GetComponent<EnemyController>().attackTarget)
         {
             Vector3 shootDirection = -FireHole.transform.forward;
+            VFX_Flash.Play();
             FireRay = new Ray(FireHole.transform.position, shootDirection);
             shootDirection.Normalize();
 

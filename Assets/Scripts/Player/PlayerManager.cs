@@ -11,7 +11,7 @@ public class PlayerManager : MonoBehaviour
 {
     Rigidbody rig;
     Camera mainCamera;
-    private Vector3 currentDirection;
+    public Transform LookPoint;
     bool isWalk = false;
     bool isArmRifle;
     public bool isJumping;
@@ -42,8 +42,6 @@ public class PlayerManager : MonoBehaviour
     private Transform[] AllChildrenList;
     private GameObject HandleOnHand;
     private GameObject HandleOnBack;
-    private GameObject RightHandTarget;
-    private GameObject LeftHandTarget;
     public PlayerMoveControls inputActions;
     private TwoBoneIKConstraint rightHandConstraint;
     private TwoBoneIKConstraint leftHandConstraint;
@@ -71,7 +69,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
     public string SelectingID = "";
-    private float searchRadius = 2.0f;
+    private float searchRadius;
     #region 玩家姿态及相关动画参数阈值
     public enum PlayerPostureState
     {
@@ -151,7 +149,7 @@ public class PlayerManager : MonoBehaviour
         playerMoveState = PlayerMoveState.Run;
         playerPosture = PlayerPostureState.Stand;
         AimingIdleConstraint.data.sourceObject = aimingIdleTarget.transform;
-        currentDirection = transform.forward;
+        searchRadius = 2.0f;
 
         InvokeRepeating("SearchForGameObjectWithTag", 0.25f, 0.25f);
         // 确保 gunAudio 组件存在
@@ -194,14 +192,6 @@ public class PlayerManager : MonoBehaviour
             {
                 HandleOnHand = ChildObj.GameObject();
                 HandleOnHand.SetActive(false);
-            }
-            if (ChildObj.name == "Right Hand Target")
-            {
-                RightHandTarget = ChildObj.GameObject();
-            }
-            if (ChildObj.name == "Left Hand Target")
-            {
-                LeftHandTarget = ChildObj.GameObject();
             }
             if (ChildObj.name == "Two Hand Rig")
             {

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Animations.Rigging;
 
-public enum EnemyStates { GUARD, PATROL, CHASE, DEAD }
+public enum EnemyStates { GUARD, PATROL, CHASE,BATTLE, DEAD }
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(CharacterStats))]
@@ -28,17 +29,18 @@ public class EnemyController : MonoBehaviour
 
     [Header("Basic Settings")]
     public float signtRadius;
+    public float battleRadius;
     public bool isGuard;
     public bool isGunToting;
     private float lastAttackTime;
     [Header("Patrol State")]
     public float PatrolRange;
     public float stoppingAngle;
+    // Rigging
+    public Transform LookAt;
     // 动画相关参数
     float Speed;
-    bool isWalk;
-    bool isChase;
-    bool isJumping;
+    bool isAiming;
     bool isDead;
     bool isTurn;
     bool isLeftTurn;
@@ -46,6 +48,10 @@ public class EnemyController : MonoBehaviour
     float walk = 2;
     float chase = 4;
     private bool isPatrol;
+    // 运动停止相关参数
+    public float BunkerStoppingDistance;
+    public float guardStoppingDistance;
+    public float ChaseStoppingDistance;
 
 
     void Awake()
@@ -53,12 +59,16 @@ public class EnemyController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
 
-        guardPos = transform.position;
-        guardRotation = transform.rotation;
+        InitGameObjects();
     }
 
     void Start()
     {
+
+        guardPos = transform.position;
+        guardRotation = transform.rotation;
+
+
         if (isGuard)
         {
             enemyStates = EnemyStates.GUARD;
@@ -74,24 +84,37 @@ public class EnemyController : MonoBehaviour
     {
         SwitchStates();
         SwitchAnimation();
+        LookAt.position = PlayerManager.Instance.LookPoint.transform.position;
+        LookAt.rotation = PlayerManager.Instance.LookPoint.transform.rotation;
     }
 
     void SwitchAnimation()
     {
+        animator.SetBool("Aim", isAiming);
         animator.SetBool("Rifle", isGunToting);
         animator.SetBool("LeftTurn",isLeftTurn);
         animator.SetBool("Turn", isTurn);
         animator.SetFloat("Speed", Speed);
     }
 
+    private void InitGameObjects()
+    {
+        foreach (Transform ChildObj in GetComponentsInChildren<Transform>())
+        {
+            if (ChildObj.name == "AimToPlayer Rig")
+            {
+                // multiAim = ChildObj.Find("Chest Constraint").GetComponent<MultiAimConstraint>();
+            }
+        }
+    }
+
     void SwitchStates()
     {
-        // print(enemyStates);
         if (isDead)
         {
             enemyStates = EnemyStates.DEAD;
         }
-        else if (FoundPlayer())
+        else if (FoundPlayer(signtRadius) && enemyStates != EnemyStates.BATTLE)
         {
             enemyStates = EnemyStates.CHASE;
         }
@@ -102,7 +125,7 @@ public class EnemyController : MonoBehaviour
             if (transform.position != guardPos)
             {
                 agent.destination = guardPos;
-                if (Vector3.SqrMagnitude(guardPos - transform.position) <= agent.stoppingDistance)
+                if (Vector3.SqrMagnitude(guardPos - transform.position) <= guardStoppingDistance)
                 {
                     guardPos = transform.position;
                     Turn(guardRotation);
@@ -125,7 +148,7 @@ public class EnemyController : MonoBehaviour
             case EnemyStates.CHASE:
             agent.speed = chase;
             Speed = chase;
-            if (!FoundPlayer())
+            if (!FoundPlayer(signtRadius))
             {
                 if (!isGetGuardPosition)
                 {
@@ -152,42 +175,68 @@ public class EnemyController : MonoBehaviour
             }
             else
             {
-                if (FoundBunker())
+                
+                Vector3 direction = attackTarget.transform.position - transform.position;
+                agent.destination = attackTarget.transform.position - direction.normalized * (ChaseStoppingDistance - 1);
+                Rotate(attackTarget);
+
+                if (Vector3.Magnitude(transform.position - attackTarget.transform.position) <= ChaseStoppingDistance)
                 {
-                    float destination = 0f;
-                    Vector3 targetPoint = attackTarget.transform.position;
-                    Vector3[] points = bunker.GetComponent<CalBoundary>().points;
-                    for (int i = 0; i < points.Length; i++)
-                    {
-                        if (Vector3.Distance(points[i], attackTarget.transform.position) > destination)
-                        {
-                            destination = Vector3.Distance(points[i], attackTarget.transform.position);
-                            targetPoint = points[i];
-                        }
-                    }
-                    agent.destination = targetPoint;
-                    if (Vector3.SqrMagnitude(targetPoint - transform.position) <= agent.stoppingDistance)
-                    {
-                        Speed = Idle;
-                        agent.speed = Idle;
-                        Quaternion rotationToAttacker = Quaternion.LookRotation(attackTarget.transform.position - transform.position);
-                        transform.rotation = Quaternion.Slerp(transform.rotation, rotationToAttacker, 5f * Time.deltaTime);
-                    }
-                    return;
+                    enemyStates = EnemyStates.BATTLE;
                 }
-                agent.destination = attackTarget.transform.position;
-                Quaternion rotationToTarget = Quaternion.LookRotation(attackTarget.transform.position - transform.position);
-                transform.rotation = Quaternion.Slerp(transform.rotation, rotationToTarget, 5f * Time.deltaTime); 
 
             }
-            
+
+            break;
+
+            case EnemyStates.BATTLE:
+                // 超出一定范围退出
+                if (FoundPlayer(battleRadius))
+                {
+                    if (isGunToting)
+                    {
+                        isAiming = true;
+                    }
+                    agent.speed = Idle;
+                    Speed = Idle;
+                    agent.destination = transform.position;
+                    Rotate(attackTarget);
+                    if (FoundBunker())
+                    {
+                        float destination = 0f;
+                        Vector3 targetPoint = attackTarget.transform.position;
+                        Vector3[] points = bunker.GetComponent<CalBoundary>().points;
+                        for (int i = 0; i < points.Length; i++)
+                        {
+                            if (Vector3.Distance(points[i], attackTarget.transform.position) > destination)
+                            {
+                                destination = Vector3.Distance(points[i], attackTarget.transform.position);
+                                targetPoint = points[i];
+                            }
+                        }
+                        agent.destination = targetPoint;
+                        if (Vector3.SqrMagnitude(targetPoint - transform.position) <= BunkerStoppingDistance)
+                        {
+                            Speed = Idle;
+                            agent.speed = Idle;
+                            Quaternion rotationToAttacker = Quaternion.LookRotation(attackTarget.transform.position - transform.position);
+                            transform.rotation = Quaternion.Slerp(transform.rotation, rotationToAttacker, 5f * Time.deltaTime);
+                        }
+                    }
+                }
+                else
+                {
+                    isAiming = false;
+                    enemyStates = EnemyStates.CHASE;
+                }
+
             break;
         }
     }
 
-    bool FoundPlayer()
+    bool FoundPlayer(float Radius)
     {
-        var colliders = Physics.OverlapSphere(transform.position, signtRadius);
+        var colliders = Physics.OverlapSphere(transform.position, Radius);
         foreach (var collider in colliders)
         {
             if (collider.CompareTag("Player"))
@@ -203,7 +252,7 @@ public class EnemyController : MonoBehaviour
 
     bool FoundBunker()
     {
-        var colliders = Physics.OverlapSphere(transform.position, signtRadius);
+        var colliders = Physics.OverlapSphere(transform.position, battleRadius);
         foreach (var collider in colliders)
             {
                 if (collider.CompareTag("Bunker"))
@@ -259,6 +308,19 @@ public class EnemyController : MonoBehaviour
 
     void SetTowHandsWeight()
     {
+
+    }
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, signtRadius);
+    }
+
+    void Rotate(GameObject attackTarget)
+    {
+        Vector3 direction = attackTarget.transform.position - transform.position;
+        Quaternion rotationToTarget = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotationToTarget, 5f * Time.deltaTime);
 
     }
 }

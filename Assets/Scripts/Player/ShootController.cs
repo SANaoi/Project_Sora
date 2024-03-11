@@ -124,7 +124,7 @@ public class ShootController : MonoBehaviour
                     StartCoroutine(
                         PlayTrail(
                             FireHole.transform.position,
-                            FireHole.transform.forward + (shootDirection * TrailConfig.MissDistance),
+                            mainCamera.transform.forward + (shootDirection * TrailConfig.MissDistance),
                             new RaycastHit()
                         )
                     );

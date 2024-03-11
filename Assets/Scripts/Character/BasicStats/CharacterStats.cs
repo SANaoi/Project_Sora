@@ -22,4 +22,9 @@ public class CharacterStats : MonoBehaviour
         get { if (characterData != null) return characterData.baseDefence; else return 0; }
         set { characterData.baseDefence = value; }
     }
+
+    public void TakeDamage(CharacterStats attacker, CharacterStats defender)
+    {
+        
+    }
 }
