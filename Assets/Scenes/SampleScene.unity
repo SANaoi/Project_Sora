@@ -60674,6 +60674,12 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!2083052967 &1640245884 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 4272044972191310320, guid: 7ea2be811d23bf041adc4215cc8da3c8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1722997504}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1669555803
 GameObject:
   m_ObjectHideFlags: 0
@@ -60855,6 +60861,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Armature
       objectReference: {fileID: 0}
+    - target: {fileID: 6445173292612016899, guid: 7ea2be811d23bf041adc4215cc8da3c8,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -60870,6 +60881,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1744730024}
   - component: {fileID: 1744730023}
+  - component: {fileID: 1744730025}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -60889,7 +60901,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc5b5b838367aa14d998dbbd17b5ca7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootController: {fileID: 0}
 --- !u!4 &1744730024
 Transform:
   m_ObjectHideFlags: 0
@@ -60905,6 +60916,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1744730025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744730022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 356111f9049bf4844a01c49b6bc10668, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VFX_Flash: {fileID: 1640245884}
+  ShootConfig: {fileID: 11400000, guid: 5dee06a96956d00409bd30ea9a243ad3, type: 2}
+  TrailConfig: {fileID: 11400000, guid: d2fd919aeb15abc4c925be6bb8e7d182, type: 2}
+  ImpactParticle: {fileID: 8926484042661614526, guid: d9bb07259519c714982cd6b20510ac9d,
+    type: 3}
 --- !u!1001 &1880355675
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -61140,6 +61168,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Armature (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1769845929177847457, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
         type: 3}
@@ -61703,9 +61736,19 @@ PrefabInstance:
       objectReference: {fileID: 839309693}
     - target: {fileID: 6234927860068957313, guid: 3bae36f8f571cce42b0b6a3583f5b5c2,
         type: 3}
+      propertyPath: isJumping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234927860068957313, guid: 3bae36f8f571cce42b0b6a3583f5b5c2,
+        type: 3}
       propertyPath: shootAudio
       value: 
       objectReference: {fileID: 1322391865}
+    - target: {fileID: 6234927860068957313, guid: 3bae36f8f571cce42b0b6a3583f5b5c2,
+        type: 3}
+      propertyPath: RightWeight
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7079838754666671507, guid: 3bae36f8f571cce42b0b6a3583f5b5c2,
         type: 3}
       propertyPath: m_Data.m_Source

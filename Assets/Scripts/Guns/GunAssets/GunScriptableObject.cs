@@ -1,5 +1,6 @@
 using System.Collections;
 using LlamAcademy.ImpactSystem;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -40,12 +41,16 @@ public class GunScriptableObject : ScriptableObject
     private TrailRenderer CreateTrail()
     {
         GameObject instance = new GameObject("Bullet Trail");
+        
 
         TrailRenderer trail = instance.AddComponent<TrailRenderer>();
+        trail.transform.AddComponent<GunHit>();
+        
         trail.colorGradient = TrailConfig.Color;
         trail.widthCurve = TrailConfig.WidthCurve;
         trail.time = TrailConfig.Duration;
         trail.minVertexDistance = TrailConfig.MinVertexDistance;
+
 
         trail.emitting = false;
         trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;

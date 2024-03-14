@@ -38,6 +38,7 @@ public class EnemyController : MonoBehaviour
     public float stoppingAngle;
     // Rigging
     public Transform LookAt;
+    private MultiAimConstraint multiAim;
     // 动画相关参数
     float Speed;
     bool isAiming;
@@ -103,7 +104,7 @@ public class EnemyController : MonoBehaviour
         {
             if (ChildObj.name == "AimToPlayer Rig")
             {
-                // multiAim = ChildObj.Find("Chest Constraint").GetComponent<MultiAimConstraint>();
+                multiAim = ChildObj.Find("Chest Constraint").GetComponent<MultiAimConstraint>();
             }
         }
     }
@@ -243,9 +244,11 @@ public class EnemyController : MonoBehaviour
             {
                 attackTarget = collider.gameObject;
                 isTurn = false;
+                multiAim.weight = 1f;
                 return true;
             }
         }
+        multiAim.weight = 0f;
         attackTarget = null;
         return false;
     }

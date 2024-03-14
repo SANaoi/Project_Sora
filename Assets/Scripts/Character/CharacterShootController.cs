@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Pool;
 using UnityEngine.VFX;
-public class CharacterShootController : MonoBehaviour
+public class CharacterShootController : BaseShoot
 {
     
     bool isShooting;
@@ -13,13 +13,13 @@ public class CharacterShootController : MonoBehaviour
     float FireRate;
     private Ray FireRay;
     public GameObject FireHole;
-    public ShootConfigurationScriptableObject ShootConfig;
-    public TrailConfigScriptableObject TrailConfig;
-    private ObjectPool<TrailRenderer> TrailPool;
-    private ObjectPool<VisualEffect> ImpactPool;
     public PlayerMoveControls InputActions;
-    public VisualEffect VFX_Flash;
-    public VisualEffectAsset ImpactParticle;
+    // public ShootConfigurationScriptableObject ShootConfig;
+    // public TrailConfigScriptableObject TrailConfig;
+    // private ObjectPool<TrailRenderer> TrailPool;
+    // private ObjectPool<VisualEffect> ImpactPool;
+    // public VisualEffect VFX_Flash;
+    // public VisualEffectAsset ImpactParticle;
 
     private void Awake()
     {
@@ -27,8 +27,8 @@ public class CharacterShootController : MonoBehaviour
     }
     private void Start()
     {
-        TrailPool = new ObjectPool<TrailRenderer>(CreateTrail);
-        ImpactPool = new ObjectPool<VisualEffect>(CreateImpactParticle);
+        // TrailPool = new ObjectPool<TrailRenderer>(CreateTrail);
+        // ImpactPool = new ObjectPool<VisualEffect>(CreateImpactParticle);
         animator = GetComponent<Animator>();
         LastShootTime = 0f;
         isShooting = true;
@@ -36,6 +36,7 @@ public class CharacterShootController : MonoBehaviour
         FireRate = 1f;
        
     }
+    
 
     void Update()
     { 
@@ -49,32 +50,8 @@ public class CharacterShootController : MonoBehaviour
             VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(false);
         }
     }
-    private TrailRenderer CreateTrail()
-    {
-        GameObject instance = new GameObject("Bullet Trail");
 
-        TrailRenderer trail = instance.AddComponent<TrailRenderer>();
-        trail.material = TrailConfig.Material;
-        trail.colorGradient = TrailConfig.Color;
-        trail.widthCurve = TrailConfig.WidthCurve;
-        trail.time = TrailConfig.Duration;
-        trail.minVertexDistance = TrailConfig.MinVertexDistance;
-
-        trail.emitting = false;
-        trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        return trail;
-    }
-
-    private VisualEffect CreateImpactParticle()
-    {
-        GameObject instance = new GameObject("Impact Particle");
-        VisualEffect impact = instance.AddComponent<VisualEffect>();
-        impact.visualEffectAsset = ImpactParticle;
-        return impact;
-    }
-
-
-    void Shoot()
+        void Shoot()
     {
         if (Time.time > FireRate + LastShootTime && GetComponent<EnemyController>().attackTarget)
         {
@@ -107,46 +84,73 @@ public class CharacterShootController : MonoBehaviour
         }
     }
 
-    protected virtual IEnumerator PlayTrail(Vector3 StartPoint, Vector3 EndPoint, RaycastHit Hit)
-    {
-        TrailRenderer trailInstance = TrailPool.Get();
-        trailInstance.transform.position = StartPoint;
-        trailInstance.gameObject.SetActive(true);
-        yield return null;
+    // private TrailRenderer CreateTrail()
+    // {
+    //     GameObject instance = new GameObject("Bullet Trail");
 
-        trailInstance.emitting = true;
+    //     TrailRenderer trail = instance.AddComponent<TrailRenderer>();
+    //     trail.material = TrailConfig.Material;
+    //     trail.colorGradient = TrailConfig.Color;
+    //     trail.widthCurve = TrailConfig.WidthCurve;
+    //     trail.time = TrailConfig.Duration;
+    //     trail.minVertexDistance = TrailConfig.MinVertexDistance;
 
-        float distance = Vector3.Distance(StartPoint, EndPoint);
-        float remainingDistance = distance;
-        while (remainingDistance > 0)
-        {
-            trailInstance.transform.position = Vector3.Lerp(
-                StartPoint,
-                EndPoint,
-                Mathf.Clamp01(1 - (remainingDistance / distance))
-            );
-            remainingDistance -= TrailConfig.SimulationSpeed * Time.deltaTime ;
+    //     trail.emitting = false;
+    //     trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+    //     return trail;
+    // }
 
-            yield return null;
-        }
+    // private VisualEffect CreateImpactParticle()
+    // {
+    //     GameObject instance = new GameObject("Impact Particle");
+    //     VisualEffect impact = instance.AddComponent<VisualEffect>();
+    //     impact.visualEffectAsset = ImpactParticle;
+    //     return impact;
+    // }
 
-        trailInstance.transform.position = EndPoint;
 
-        if (Hit.collider != null)
-        {
-            VisualEffect impactInstance = ImpactPool.Get();
-            impactInstance.transform.position = EndPoint;
-            impactInstance.gameObject.SetActive(true);
-            yield return new WaitForSeconds(0.3f);
-            impactInstance.gameObject.SetActive(false);
-            ImpactPool.Release(impactInstance);
-        }
 
-        yield return new WaitForSeconds(TrailConfig.Duration);
-        yield return null;
 
-        trailInstance.emitting = false;
-        trailInstance.gameObject.SetActive(false);
-        TrailPool.Release(trailInstance);
-    }
+    // protected virtual IEnumerator PlayTrail(Vector3 StartPoint, Vector3 EndPoint, RaycastHit Hit)
+    // {
+    //     TrailRenderer trailInstance = TrailPool.Get();
+    //     trailInstance.transform.position = StartPoint;
+    //     trailInstance.gameObject.SetActive(true);
+    //     yield return null;
+
+    //     trailInstance.emitting = true;
+
+    //     float distance = Vector3.Distance(StartPoint, EndPoint);
+    //     float remainingDistance = distance;
+    //     while (remainingDistance > 0)
+    //     {
+    //         trailInstance.transform.position = Vector3.Lerp(
+    //             StartPoint,
+    //             EndPoint,
+    //             Mathf.Clamp01(1 - (remainingDistance / distance))
+    //         );
+    //         remainingDistance -= TrailConfig.SimulationSpeed * Time.deltaTime ;
+
+    //         yield return null;
+    //     }
+
+    //     trailInstance.transform.position = EndPoint;
+
+    //     if (Hit.collider != null)
+    //     {
+    //         VisualEffect impactInstance = ImpactPool.Get();
+    //         impactInstance.transform.position = EndPoint;
+    //         impactInstance.gameObject.SetActive(true);
+    //         yield return new WaitForSeconds(0.3f);
+    //         impactInstance.gameObject.SetActive(false);
+    //         ImpactPool.Release(impactInstance);
+    //     }
+
+    //     yield return new WaitForSeconds(TrailConfig.Duration);
+    //     yield return null;
+
+    //     trailInstance.emitting = false;
+    //     trailInstance.gameObject.SetActive(false);
+    //     TrailPool.Release(trailInstance);
+    // }
 }

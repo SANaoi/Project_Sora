@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 
+[RequireComponent(typeof(CharacterStats))]
 public class PlayerManager : MonoBehaviour
 {
     Rigidbody rig;
@@ -52,7 +53,9 @@ public class PlayerManager : MonoBehaviour
     private CharacterController characterController;
     // 记录上一帧人物速度
     private Vector3 moveDirection = Vector3.zero;
+    [HideInInspector]
     public float gravity = -9.8f;
+    [HideInInspector]
     public float jumpVelocity = 5f;
     private Vector3 moveVelocity; // 平滑速度向量
     // 场景可获取物品功能参数
@@ -68,6 +71,7 @@ public class PlayerManager : MonoBehaviour
             _gameObjectList = value;
         }
     }
+    [HideInInspector]
     public string SelectingID = "";
     private float searchRadius;
     #region 玩家姿态及相关动画参数阈值

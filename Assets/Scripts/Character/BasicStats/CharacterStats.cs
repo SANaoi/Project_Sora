@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,15 @@ public class CharacterStats : MonoBehaviour
 {
     // 通用人物状态
     public CharacterData_SO characterData;
+    public CharacterData_SO templateData;
+    public int currentHealth;
+    int Damage = 8;
+
+    void Awake()
+    {
+        if (templateData != null)
+            characterData = Instantiate(templateData);
+    }
 
     public int MaxHealth
     {
@@ -22,9 +32,16 @@ public class CharacterStats : MonoBehaviour
         get { if (characterData != null) return characterData.baseDefence; else return 0; }
         set { characterData.baseDefence = value; }
     }
-
+    
     public void TakeDamage(CharacterStats attacker, CharacterStats defender)
     {
         
+    }
+    // 函数重载
+    public void TakeDamage(CharacterStats defender)
+    {
+        int currentDamage = Math.Max(Damage - defender.BaseDefence, 0);
+        CurrentHealth = Math.Max(CurrentHealth - currentDamage, 0);
+        print(defender.transform.name+ ": CurrentHealth: "+ CurrentHealth);
     }
 }

@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
     private PackageTable_SO packageTable;
 
-    public ShootController shootController;
+    // public ShootController shootController;
 
     public static GameManager Instance
     {
