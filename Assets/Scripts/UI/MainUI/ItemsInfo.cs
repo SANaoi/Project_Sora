@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ItemsInfo : MonoBehaviour
+public class ItemsInfo : BasePanel
 {
     private Transform UIScrollView;
     public RectTransform scrollContent;

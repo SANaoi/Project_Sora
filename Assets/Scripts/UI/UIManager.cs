@@ -43,7 +43,7 @@ public class UIManager
     }
     private void InitMainUI()
     {
-        ItemsInfo = GetUIGameObject("ItemsInfo").GetComponent<ItemsInfo>();
+        ItemsInfo = OpenPanel("ItemsInfo").GetComponent<ItemsInfo>();
     }
 
     private void InitDicts()
@@ -59,6 +59,8 @@ public class UIManager
             {UIConst.ItemsInfo, "MainUI/ItemsInfo"},
             {UIConst.GunInfo, "MainUI/GunInfo"},
             {UIConst.ItemDetail, "MainUI/ItemDetail"},
+            {UIConst.HealthBarUI, "CharacterUI/Bar Holder"},
+            {UIConst.PlayerMainUI, "CharacterUI/PlayerMainUI"}
         };
     }
 
@@ -105,8 +107,34 @@ public class UIManager
         return true;
     }
 
-    public GameObject GetUIGameObject(string name)
+    public BasePanel OpenPanel(string name, Transform UIRoot)
     {   
+        BasePanel panel = null;
+        if(panelDict.TryGetValue(name, out panel))
+        {
+            return panel;
+        }
+        string path = "";
+        if (!pathDict.TryGetValue(name, out path))
+        {
+            Debug.LogError("未配置路径：" + name);
+            return null;
+        }
+        GameObject panelPrefab = null;
+        if (!prefabDict.TryGetValue(name, out panelPrefab))
+        {
+            string realPath = "Prefab/Panel/" + path;
+            panelPrefab = Resources.Load<GameObject>(realPath);
+            prefabDict.Add(name, panelPrefab);
+        }
+        GameObject panelObject = GameObject.Instantiate(panelPrefab, UIRoot, false);
+        panel = panelObject.GetComponent<BasePanel>();
+        panelDict.Add(name, panel);
+        return panel;
+    }
+
+    public GameObject OpenGameObject(string name, Transform UIRoot)
+    {
         string path = "";
         if (!pathDict.TryGetValue(name, out path))
         {
@@ -123,13 +151,20 @@ public class UIManager
         GameObject panelObject = GameObject.Instantiate(panelPrefab, UIRoot, false);
         return panelObject;
     }
+
 }
 public class UIConst
 {
     // 配置名称
+
+    // 背包
     public const string PackagePanel = "PackagePanel";
+
+    // 场景
     public const string Item = "Item";
     public const string ItemDetail = "ItemDetail";
     public const string ItemsInfo = "ItemsInfo";
     public const string GunInfo = "GunInfo";
+    public const string HealthBarUI = "HealthBarUI";
+    public const string PlayerMainUI = "PlayerMainUI";
 }

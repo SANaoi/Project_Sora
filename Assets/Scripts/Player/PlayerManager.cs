@@ -132,6 +132,7 @@ public class PlayerManager : MonoBehaviour
         mainCamera = Camera.main;
         animator.SetFloat("ScaleFactor", 1 / animator.humanScale);
         shootController = GetComponent<ShootController>();
+        UIManager.Instance.OpenPanel(UIConst.PlayerMainUI);
     }
 
     void OnEnable()
@@ -276,14 +277,14 @@ public class PlayerManager : MonoBehaviour
         {
             Vector3 tep = targetRotationDirection * movementSpeed - currentPlayerHorizontalVelocity;
             Vector3 targetMoveDirection = new Vector3(tep.x, 0f, tep.z);
-            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.1f);
+            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.0f);
         }
         else
         {
             Vector3 tep = AimingmovementDirection * Mathf.Abs(movementSpeed) - currentPlayerHorizontalVelocity;
             Vector3 targetMoveDirection = new Vector3(tep.x, 0f, tep.z);
             
-            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.1f);
+            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.0f);
         }
     }
     private void Move()

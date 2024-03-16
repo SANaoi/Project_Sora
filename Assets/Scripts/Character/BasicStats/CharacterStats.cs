@@ -5,16 +5,18 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
+    public Action<int, int> UpdateHealthBarOnAttack;
     // 通用人物状态
     public CharacterData_SO characterData;
     public CharacterData_SO templateData;
     public int currentHealth;
-    int Damage = 8;
+    int Damage = 15;
 
     void Awake()
     {
         if (templateData != null)
             characterData = Instantiate(templateData);
+
     }
 
     public int MaxHealth
@@ -43,5 +45,6 @@ public class CharacterStats : MonoBehaviour
         int currentDamage = Math.Max(Damage - defender.BaseDefence, 0);
         CurrentHealth = Math.Max(CurrentHealth - currentDamage, 0);
         print(defender.transform.name+ ": CurrentHealth: "+ CurrentHealth);
+        UpdateHealthBarOnAttack?.Invoke(CurrentHealth, MaxHealth);
     }
 }

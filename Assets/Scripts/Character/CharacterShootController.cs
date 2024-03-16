@@ -71,6 +71,11 @@ public class CharacterShootController : BaseShoot
                 FireHole.transform.position,
                 hit.point,
                 hit));
+
+                 if (hit.transform.CompareTag("Player"))
+                    {
+                        hit.transform.GetComponent<CharacterStats>().TakeDamage(hit.transform.GetComponent<CharacterStats>());
+                    }
             }
             else
             {

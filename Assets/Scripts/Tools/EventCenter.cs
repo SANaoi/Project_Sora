@@ -21,11 +21,6 @@ public class EventCenter
             return instance;
         }
     }
-    /// <summary>
-    /// 添加事件监听
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="action"></param>
     public void AddEventListener(string name, UnityAction action)
     {
         if (_eventDic.ContainsKey(name))
@@ -37,10 +32,6 @@ public class EventCenter
             _eventDic.Add(name, new EventInfo(action));
         }
     }
-    /// <summary>
-    /// 分发事件
-    /// </summary>
-    /// <param name="name"></param>
     public void EventTrigger(string name)
     {
         if (_eventDic.ContainsKey(name))
@@ -51,11 +42,6 @@ public class EventCenter
             }
         }
     }
-    /// <summary>
-    /// 移除事件监听
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="action"></param>
     public void RemoveEventListener(string name, UnityAction action)
     {
         if (_eventDic.ContainsKey(name))
@@ -68,12 +54,6 @@ public class EventCenter
     {
         _eventDic.Clear();
     }
-
-    /// <summary>
-    /// 添加带参数的事件监听
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="action"></param>
     public void AddEventListener<T>(string name, UnityAction<T> action)
     {
         if (_eventDic.ContainsKey(name))
@@ -85,11 +65,6 @@ public class EventCenter
             _eventDic.Add(name, new EventInfo<T>(action));
         }
     }
-
-    /// <summary>
-    /// 分发带参数的事件
-    /// </summary>
-    /// <param name="name"></param>
     public void EventTrigger<T>(string name, T info)
     {
         if (_eventDic.ContainsKey(name))
@@ -100,12 +75,6 @@ public class EventCenter
             }
         }
     }
-
-    /// <summary>
-    /// 移除带参数的事件监听
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="action"></param>
     public void RemoveEventListener<T>(string name, UnityAction<T> action)
     {
         if (_eventDic.ContainsKey(name))
