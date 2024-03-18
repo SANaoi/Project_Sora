@@ -7,7 +7,7 @@ using System;
 
 public class GMCmd
 {
-    [MenuItem("GMCmd/读取背包数据")]
+    [MenuItem("GMCmd/背包功能/读取背包数据")]
     public static void ReadPackageTable()
     {
         PackageTable_SO packageTable = Resources.Load<PackageTable_SO>("PackageData/PackageTable");
@@ -20,7 +20,7 @@ public class GMCmd
         }
     }
 
-    [MenuItem("GMCmd/创建背包测试数据")]
+    [MenuItem("GMCmd/背包功能/创建背包测试数据")]
     public static void CreateLocalPackageData()
     {
         PackageLocalData.Instance.items = new List<PackageLocalItem>();
@@ -37,14 +37,14 @@ public class GMCmd
         PackageLocalData.Instance.SavePackage();
     }
 
-    [MenuItem("GMCmd/清除背包数据")]
+    [MenuItem("GMCmd/背包功能/清除背包数据")]
     public static void DeleteLocalPackageData()
     {
         PackageLocalData.Instance.items.Clear();
         PackageLocalData.Instance.SavePackage();
     }
 
-    [MenuItem("GMCmd/读取背包测试数据")]
+    [MenuItem("GMCmd/背包功能/读取背包测试数据")]
     public static void ReadLoadPackData()
     {
         List<PackageLocalItem> readItems = PackageLocalData.Instance.LoadPackage();
@@ -54,7 +54,7 @@ public class GMCmd
         } 
     }
 
-    [MenuItem("GMCmd/打开背包主界面")]
+    [MenuItem("GMCmd/背包功能/打开背包主界面")]
     public static void OpenPackagePanel()
     {
         UIManager.Instance.OpenPanel(UIConst.PackagePanel);
@@ -64,5 +64,17 @@ public class GMCmd
     public static void PrintInfo()
     {
         Debug.Log($"当前选中物品的SelectingID: {PlayerManager.Instance.SelectingID}");
+    }
+
+    [MenuItem("GMCmd/输入系统/激活角色输入")]
+    public static void ActivePlayerInputSystem()
+    {
+        EventCenter.Instance.EventTrigger("ActiveInputSystem");
+    }
+
+    [MenuItem("GMCmd/输入系统/注销角色输入")]
+    public static void LogoutPlayerInputSystem()
+    {
+        EventCenter.Instance.EventTrigger("LogoutInputSystem");
     }
 }

@@ -29,7 +29,7 @@ public class PlayerManager : MonoBehaviour
     Vector3 dampedTargetRotationCurrentVelocity;
     Vector3 dampedTargetRotationPassedTime;
     GameObject aimingIdleTarget;
-    Vector2 playerMoveContext => inputActions.Player.Move.ReadValue<Vector2>();
+    Vector2 playerMoveContext;
 
     [HideInInspector]
     public PlayerPostureState playerPosture;
@@ -43,7 +43,6 @@ public class PlayerManager : MonoBehaviour
     private Transform[] AllChildrenList;
     private GameObject HandleOnHand;
     private GameObject HandleOnBack;
-    public PlayerMoveControls inputActions;
     private TwoBoneIKConstraint rightHandConstraint;
     private TwoBoneIKConstraint leftHandConstraint;
     private DampedTransform AimingConstraint;
@@ -122,35 +121,31 @@ public class PlayerManager : MonoBehaviour
             Destroy(gameObject);
         else
             _instance = (PlayerManager)this;
+
+        animator =              GetComponent<Animator>();
+        rig =                   GetComponent<Rigidbody>();
+        shootController =       GetComponent<ShootController>();
+        characterController =   GetComponent<CharacterController>();
+
         // Cursor.lockState = CursorLockMode.Locked;
-
-        characterController = GetComponent<CharacterController>();
         aimingIdleTarget = new GameObject("aimingIdleTarget");
-        inputActions = PlayerMoveControls.Instance;
-        animator = GetComponent<Animator>();
-        rig = GetComponent<Rigidbody>();
+
         mainCamera = Camera.main;
-        animator.SetFloat("ScaleFactor", 1 / animator.humanScale);
-        shootController = GetComponent<ShootController>();
+
         UIManager.Instance.OpenPanel(UIConst.PlayerMainUI);
+        animator.SetFloat("ScaleFactor", 1 / animator.humanScale);
     }
 
-    void OnEnable()
-    {
-        inputActions.Enable();
-    }
-
-    void Disable()
-    {
-        inputActions.Disable();
-    }
 
     void Start()
     {   
         InitDicts();
         InitGameObjects();
         InitInputSystem();
+        InitEnvet();
+
         UpdatePackageLocalData();
+
         playerMoveState = PlayerMoveState.Run;
         playerPosture = PlayerPostureState.Stand;
         AimingIdleConstraint.data.sourceObject = aimingIdleTarget.transform;
@@ -220,14 +215,36 @@ public class PlayerManager : MonoBehaviour
 
     private void InitInputSystem()
     {
-        inputActions.Player.Jump.performed += GetJumpInput;
-        inputActions.Player.PickUp.canceled += GetPickUpInput;
-        inputActions.Player.Aiming.performed += GetAimingInput;
-        inputActions.Player.Reload.performed += GetReloadInput;
-        inputActions.Player.Rifle.performed += GetArmRifleInput;
-        inputActions.Player.Crouch.performed += GetPostureStateInput;
-        inputActions.Player.SelectItem.performed += GetSelectItemInput;
-        inputActions.Player.WalkToggle.performed += GetWalkToggleInput;
+        GameManager.Instance.inputActions.Player.Move.performed += GetplayerMoveInput;
+        GameManager.Instance.inputActions.Player.Move.canceled += CancelPlayerMoveInput;
+        GameManager.Instance.inputActions.Player.Jump.performed += GetJumpInput;
+        GameManager.Instance.inputActions.Player.PickUp.canceled += GetPickUpInput;
+        GameManager.Instance.inputActions.Player.Aiming.performed += GetAimingInput;
+        GameManager.Instance.inputActions.Player.Reload.performed += GetReloadInput;
+        GameManager.Instance.inputActions.Player.Rifle.performed += GetArmRifleInput;
+        GameManager.Instance.inputActions.Player.Crouch.performed += GetPostureStateInput;
+        GameManager.Instance.inputActions.Player.SelectItem.performed += GetSelectItemInput;
+        GameManager.Instance.inputActions.Player.WalkToggle.performed += GetWalkToggleInput;
+    }
+
+    private void LogoutInputSystem()
+    {   
+        GameManager.Instance.inputActions.Player.Move.performed -= GetplayerMoveInput;
+        GameManager.Instance.inputActions.Player.Move.canceled -= CancelPlayerMoveInput;
+        GameManager.Instance.inputActions.Player.Jump.performed -= GetJumpInput;
+        GameManager.Instance.inputActions.Player.PickUp.canceled -= GetPickUpInput;
+        GameManager.Instance.inputActions.Player.Aiming.performed -= GetAimingInput;
+        GameManager.Instance.inputActions.Player.Reload.performed -= GetReloadInput;
+        GameManager.Instance.inputActions.Player.Rifle.performed -= GetArmRifleInput;
+        GameManager.Instance.inputActions.Player.Crouch.performed -= GetPostureStateInput;
+        GameManager.Instance.inputActions.Player.SelectItem.performed -= GetSelectItemInput;
+        GameManager.Instance.inputActions.Player.WalkToggle.performed -= GetWalkToggleInput;
+    }
+
+    void InitEnvet()
+    {
+        EventCenter.Instance.AddEventListener("ActiveInputSystem", InitInputSystem);
+        EventCenter.Instance.AddEventListener("LogoutInputSystem", LogoutInputSystem);
     }
 
     private void UpdateConstraintWeight()
@@ -536,127 +553,6 @@ public class PlayerManager : MonoBehaviour
     }
     #endregion
 
-    #region InputSystem Methods
-    private void GetWalkToggleInput(InputAction.CallbackContext context)
-    {
-        isWalk = !isWalk;
-    }
-
-    public void GetArmRifleInput(InputAction.CallbackContext context)
-    {
-        isArmRifle = !isArmRifle;
-        if (isArmRifle)
-        {
-            playerArmState = PlayerArmState.Rifle;
-        }
-        else
-        {
-            isAiming = false;
-            animator.SetBool("Aiming", isAiming);
-            playerArmState = PlayerArmState.Normal;
-        }
-
-    }
-    public void GetAimingInput(InputAction.CallbackContext context)
-    {
-        isAiming = !isAiming;
-        if (isAiming)
-        {
-            isArmRifle = true;
-            animator.SetBool("Rifle", isArmRifle);
-            playerArmState = PlayerArmState.Aim;
-        }
-        else
-        {
-            animator.SetBool("Aiming", isAiming);
-            playerArmState = PlayerArmState.Rifle;
-        }
-    }
-
-    private void GetPostureStateInput(InputAction.CallbackContext context)
-    {
-        if (playerPosture == PlayerPostureState.Stand)
-        {
-            playerPosture = PlayerPostureState.Crouch;
-        }
-        else
-        {
-            playerPosture = PlayerPostureState.Stand;
-        }
-    }
-
-    private void GetJumpInput(InputAction.CallbackContext context)
-    {
-        isJumping = context.ReadValueAsButton();
-    }
-
-    private void GetSelectItemInput(InputAction.CallbackContext context)
-    {
-        if (SelectingID == "" || gameObjectList.Count == 0)
-        {
-            return;
-        }
-        if (context.ReadValueAsButton())
-        {
-            // 上移
-            UIManager.Instance.ItemsInfo.UpSelectID();
-        }
-        else
-        {
-            // 下移
-            UIManager.Instance.ItemsInfo.DownSelectID();
-        }
-    }
-
-    private void GetPickUpInput(InputAction.CallbackContext context)
-    {
-        if (SelectingID != "" && gameObjectList.Count != 0)
-        {
-            foreach (GameObject Item in gameObjectList)
-            {
-                ItemCell ItemInfo = Item.GetComponent<ItemCell>();
-                if (ItemInfo.uid == SelectingID)
-                {
-                    int ItemNum = UIManager.Instance.ItemsInfo.GetItemNumByUID(SelectingID);
-                    if (ItemNum == UIManager.Instance.ItemsInfo.scrollContent.childCount - 1)
-                    {
-
-                        UIManager.Instance.ItemsInfo.UpSelectID();
-                        PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
-                        UpdatePackageLocalData();
-                        ItemInfo.Destroy();
-                        return;
-                    }
-                    else
-                    {
-                        UIManager.Instance.ItemsInfo.DownSelectID();
-                        PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
-                        UpdatePackageLocalData();
-                        ItemInfo.Destroy();
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
-    private void GetReloadInput(InputAction.CallbackContext context)
-    {
-        // TODO 数据同步到背包数据
-        if (shootController.MagazineAmmo + shootController.TotalAmmo < shootController.ShootConfig.Capacity)
-        {
-            shootController.MagazineAmmo += shootController.TotalAmmo;
-            shootController.TotalAmmo = 0;
-        }
-        else
-        {
-            shootController.TotalAmmo -= shootController.ShootConfig.Capacity - shootController.MagazineAmmo;
-            shootController.MagazineAmmo = shootController.ShootConfig.Capacity;
-        }
-        UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(shootController.MagazineAmmo,shootController.TotalAmmo);
-    }
-    #endregion
-
     #region 玩家运动状态
     void SwitchPlayerMoveStates()
     {
@@ -781,6 +677,139 @@ public class PlayerManager : MonoBehaviour
 
     }
     #endregion
+    
+    #region InputSystem Methods
+    private void GetWalkToggleInput(InputAction.CallbackContext context)
+    {
+        isWalk = !isWalk;
+    }
+
+    public void GetArmRifleInput(InputAction.CallbackContext context)
+    {
+        isArmRifle = !isArmRifle;
+        if (isArmRifle)
+        {
+            playerArmState = PlayerArmState.Rifle;
+        }
+        else
+        {
+            isAiming = false;
+            animator.SetBool("Aiming", isAiming);
+            playerArmState = PlayerArmState.Normal;
+        }
+
+    }
+    public void GetAimingInput(InputAction.CallbackContext context)
+    {
+        isAiming = !isAiming;
+        if (isAiming)
+        {
+            isArmRifle = true;
+            animator.SetBool("Rifle", isArmRifle);
+            playerArmState = PlayerArmState.Aim;
+        }
+        else
+        {
+            animator.SetBool("Aiming", isAiming);
+            playerArmState = PlayerArmState.Rifle;
+        }
+    }
+
+    private void GetPostureStateInput(InputAction.CallbackContext context)
+    {
+        if (playerPosture == PlayerPostureState.Stand)
+        {
+            playerPosture = PlayerPostureState.Crouch;
+        }
+        else
+        {
+            playerPosture = PlayerPostureState.Stand;
+        }
+    }
+
+    private void GetJumpInput(InputAction.CallbackContext context)
+    {
+        isJumping = context.ReadValueAsButton();
+    }
+
+    private void GetSelectItemInput(InputAction.CallbackContext context)
+    {
+        if (SelectingID == "" || gameObjectList.Count == 0)
+        {
+            return;
+        }
+        if (context.ReadValueAsButton())
+        {
+            // 上移
+            UIManager.Instance.ItemsInfo.UpSelectID();
+        }
+        else
+        {
+            // 下移
+            UIManager.Instance.ItemsInfo.DownSelectID();
+        }
+    }
+
+    private void GetplayerMoveInput(InputAction.CallbackContext context)
+    {
+        playerMoveContext = GameManager.Instance.inputActions.Player.Move.ReadValue<Vector2>();
+    }
+
+    private void CancelPlayerMoveInput(InputAction.CallbackContext context)
+    {
+        playerMoveContext = Vector2.zero;
+    }
+
+    private void GetPickUpInput(InputAction.CallbackContext context)
+    {
+        if (SelectingID != "" && gameObjectList.Count != 0)
+        {
+            foreach (GameObject Item in gameObjectList)
+            {
+                ItemCell ItemInfo = Item.GetComponent<ItemCell>();
+                if (ItemInfo.uid == SelectingID)
+                {
+                    int ItemNum = UIManager.Instance.ItemsInfo.GetItemNumByUID(SelectingID);
+                    if (ItemNum == UIManager.Instance.ItemsInfo.scrollContent.childCount - 1)
+                    {
+
+                        UIManager.Instance.ItemsInfo.UpSelectID();
+                        PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
+                        UpdatePackageLocalData();
+                        ItemInfo.Destroy();
+                        return;
+                    }
+                    else
+                    {
+                        UIManager.Instance.ItemsInfo.DownSelectID();
+                        PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
+                        UpdatePackageLocalData();
+                        ItemInfo.Destroy();
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private void GetReloadInput(InputAction.CallbackContext context)
+    {
+        // TODO 数据同步到背包数据
+        if (shootController.MagazineAmmo + shootController.TotalAmmo < shootController.ShootConfig.Capacity)
+        {
+            shootController.MagazineAmmo += shootController.TotalAmmo;
+            shootController.TotalAmmo = 0;
+        }
+        else
+        {
+            shootController.TotalAmmo -= shootController.ShootConfig.Capacity - shootController.MagazineAmmo;
+            shootController.MagazineAmmo = shootController.ShootConfig.Capacity;
+        }
+        UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(shootController.MagazineAmmo,shootController.TotalAmmo);
+    }
+    #endregion
+
+    
     // public Animator animator;
     [Range(0, 1)]
     public float RightWeight;

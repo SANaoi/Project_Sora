@@ -44,7 +44,7 @@ public class CharacterStats : MonoBehaviour
     {
         int currentDamage = Math.Max(Damage - defender.BaseDefence, 0);
         CurrentHealth = Math.Max(CurrentHealth - currentDamage, 0);
-        print(defender.transform.name+ ": CurrentHealth: "+ CurrentHealth);
+        print(defender.transform.name + ": CurrentHealth: "+ CurrentHealth);
         UpdateHealthBarOnAttack?.Invoke(CurrentHealth, MaxHealth);
     }
 }

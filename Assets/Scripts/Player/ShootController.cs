@@ -26,7 +26,7 @@ public class ShootController : BaseShoot
     // public VisualEffectAsset ImpactParticle;
     private void Start()
     {
-        InputActions = PlayerMoveControls.Instance;
+        InputActions = GameManager.Instance.inputActions;
         mainCamera = FindObjectOfType<Camera>();
         // TrailPool = new ObjectPool<TrailRenderer>(CreateTrail);
         // ImpactPool = new ObjectPool<VisualEffect>(CreateImpactParticle);

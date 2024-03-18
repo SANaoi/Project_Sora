@@ -18,18 +18,7 @@ using UnityEngine.InputSystem.Utilities;
 public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
 {
     public InputActionAsset asset { get; }
-    private static PlayerMoveControls instance;
-    public static PlayerMoveControls Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = new PlayerMoveControls();
-            }
-            return instance;
-        }
-    }
+
     public @PlayerMoveControls()
     {
         asset = InputActionAsset.FromJson(@"{

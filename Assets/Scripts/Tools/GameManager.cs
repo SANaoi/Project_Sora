@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
+    public PlayerMoveControls inputActions;
     private PackageTable_SO packageTable;
 
     // public ShootController shootController;
@@ -14,6 +16,10 @@ public class GameManager : MonoBehaviour
     {
         get
         {
+            if (_instance == null)
+            {
+                _instance = new GameManager();
+            }
             return _instance;
         }
     }
@@ -23,17 +29,35 @@ public class GameManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
 
-        PlayerMoveControls.Instance.Player.OpenPackage.performed += GetOpenPackageInput;
+        inputActions = new PlayerMoveControls();
+
+        UIManager.Instance.OpenPanel(UIConst.DialogBox);
+
+        inputActions.Player.OpenPackage.performed += GetOpenPackageInput;
 
         // shootController = new ShootController();
     }
     
+    void OnEnable()
+    {
+        inputActions.Enable();
+    }
+
+    void Disable()
+    {
+        inputActions.Disable();
+    }
+    
+    private void Start()
+    {
+    }
+
     #region 背包的基础功能
     public PackageTable_SO GetPackageTable()
     {
         if(packageTable == null)
         {
-            packageTable = Resources.Load<PackageTable_SO>("PackageData/PackageTable");
+            packageTable = Resources.Load<PackageTable_SO>("Data/PackageData/PackageTable");
         }
         return packageTable;
     }

@@ -42,7 +42,7 @@ public class EnemyController : MonoBehaviour
     // 动画相关参数
     float Speed;
     bool isAiming;
-    bool isDead;
+    bool isDead; 
     bool isTurn;
     bool isLeftTurn;
     float Idle = 0;

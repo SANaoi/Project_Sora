@@ -43,7 +43,7 @@ public class AimingController : MonoBehaviour
     {
         mainCamera = GetComponent<Camera>();
         playerMoveController = PlayerManager.Instance;
-        inputActions = PlayerMoveControls.Instance;
+        inputActions = GameManager.Instance.inputActions;
         inputActions.Player.Aiming.performed += SwitchCameraParameter;
         VisualnormalCamera = normalCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
         VisualnormalCamera.m_ScreenX = default_m_ScreenX;

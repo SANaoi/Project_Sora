@@ -58,7 +58,9 @@ public class UIManager
             {UIConst.Item, "MainUI/Item"},
             {UIConst.ItemsInfo, "MainUI/ItemsInfo"},
             {UIConst.GunInfo, "MainUI/GunInfo"},
+            {UIConst.DialogBox, "MainUI/DialogBox"},
             {UIConst.ItemDetail, "MainUI/ItemDetail"},
+            
             {UIConst.HealthBarUI, "CharacterUI/Bar Holder"},
             {UIConst.PlayerMainUI, "CharacterUI/PlayerMainUI"}
         };
@@ -95,7 +97,7 @@ public class UIManager
 
     public bool ClosePanel(string name)
     {   
-        PlayerMoveControls.Instance.Player.Aiming.performed += AimingController.Instance.SwitchCameraParameter;
+        GameManager.Instance.inputActions.Player.Aiming.performed += AimingController.Instance.SwitchCameraParameter;
 
         BasePanel panel = null;
         if(!panelDict.TryGetValue(name, out panel))
@@ -167,4 +169,5 @@ public class UIConst
     public const string GunInfo = "GunInfo";
     public const string HealthBarUI = "HealthBarUI";
     public const string PlayerMainUI = "PlayerMainUI";
+    public const string DialogBox = "DialogBox";
 }
