@@ -77,4 +77,10 @@ public class GMCmd
     {
         EventCenter.Instance.EventTrigger("LogoutInputSystem");
     }
+
+    [MenuItem("GMCmd/对话系统/打开测试对话框")]
+    public static void OpenTestDialog()
+    {
+        UIManager.Instance.OpenPanel(UIConst.DialogBox);
+    }
 }

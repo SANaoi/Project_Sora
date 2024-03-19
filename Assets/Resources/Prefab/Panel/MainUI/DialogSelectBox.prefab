@@ -397,6 +397,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fb7a7e5394695a40a50403e59feab28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SelectCellPrefab: {fileID: 6827993060646688629, guid: 51eeec2a1169a0147b784dfb260988c1,
+    type: 3}
 --- !u!1 &8726826644877293898
 GameObject:
   m_ObjectHideFlags: 0

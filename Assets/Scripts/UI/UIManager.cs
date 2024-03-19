@@ -60,6 +60,7 @@ public class UIManager
             {UIConst.GunInfo, "MainUI/GunInfo"},
             {UIConst.DialogBox, "MainUI/DialogBox"},
             {UIConst.ItemDetail, "MainUI/ItemDetail"},
+            {UIConst.SelectBox, "MainUI/DialogSelectBox"},
             
             {UIConst.HealthBarUI, "CharacterUI/Bar Holder"},
             {UIConst.PlayerMainUI, "CharacterUI/PlayerMainUI"}
@@ -170,4 +171,5 @@ public class UIConst
     public const string HealthBarUI = "HealthBarUI";
     public const string PlayerMainUI = "PlayerMainUI";
     public const string DialogBox = "DialogBox";
+    public const string SelectBox = "DialogSelectBox";
 }
