@@ -9,10 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49465ea5122e16d49b19ea11d4fc98d4, type: 3}
-  m_Name: PlayerStatsData
+  m_Script: {fileID: 11500000, guid: 332c27058f9a11b468b3c92f5baa8bdf, type: 3}
+  m_Name: EnemyData_SO
   m_EditorClassIdentifier: 
-  Id: 100
-  maxHealth: 100
-  currentHealth: 100
-  baseDefence: 5
+  enemyID: 22
+  enemyName: "\u53F2\u83B1\u59C6"
+  MaxHealth: 0
+  MoveSpeed: 0
+  Damage: 0
+  isDead: 0

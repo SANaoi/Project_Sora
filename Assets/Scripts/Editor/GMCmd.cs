@@ -83,4 +83,15 @@ public class GMCmd
     {
         UIManager.Instance.OpenPanel(UIConst.DialogBox);
     }
+
+    [MenuItem("GMCmd/任务系统/添加测试任务")]
+    public static void AddDefaultTask()
+    {
+
+    }
+    [MenuItem("GMCmd/任务系统/打开任务列表")]
+    public static void OpenTasksPanel()
+    {
+        UIManager.Instance.OpenPanel(UIConst.TasksPanel);
+    }
 }

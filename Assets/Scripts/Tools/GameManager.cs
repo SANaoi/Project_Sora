@@ -30,11 +30,9 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         inputActions = new PlayerMoveControls();
-
-        UIManager.Instance.OpenPanel(UIConst.DialogBox);
-
         inputActions.Player.OpenPackage.performed += GetOpenPackageInput;
-
+        
+        // UIManager.Instance.OpenPanel(UIConst.DialogBox);
         // shootController = new ShootController();
     }
     

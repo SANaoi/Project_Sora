@@ -1244,7 +1244,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af94b7d534a2fc44d936ea264b9fb20a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  barPoint: {fileID: 0}
+  barPoint: {fileID: 7606596955987117247}
+  alwaysVisable: 0
 --- !u!4 &6681694699854434720 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8571873144747624462, guid: 36078ab0369161e49a29d349ae3e0739,

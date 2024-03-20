@@ -33,18 +33,18 @@ public class PackageCell : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
         UIMouseSelectedAni = transform.Find("SelectAni").GetComponent<Animator>();
     }
 
-     public void Refresh(PackageLocalItem packageLocalItem, PackagePanel uiParent)
-     {
-        this.packageLocalItem = packageLocalItem;
-        this.uiParent = uiParent;
-        this.packageTableItem = GameManager.Instance.GetPackageTableItemById(packageLocalItem.id);
+    public void Refresh(PackageLocalItem packageLocalItem, PackagePanel uiParent)
+    {
+       this.packageLocalItem = packageLocalItem;
+       this.uiParent = uiParent;
+       this.packageTableItem = GameManager.Instance.GetPackageTableItemById(packageLocalItem.id);
 
-        Texture2D t = (Texture2D)Resources.Load(this.packageTableItem.imagePath);
-        Sprite temp = Sprite.Create(t, new Rect(0, 0, t.width, t.height), new Vector2(0, 0));
-        UIIcon.GetComponent<Image>().sprite = temp;
+       Texture2D t = (Texture2D)Resources.Load(this.packageTableItem.imagePath);
+       Sprite temp = Sprite.Create(t, new Rect(0, 0, t.width, t.height), new Vector2(0, 0));
+       UIIcon.GetComponent<Image>().sprite = temp;
 
-        UIName.GetComponent<Text>().text = packageTableItem.name;
-     }
+       UIName.GetComponent<Text>().text = packageTableItem.name;
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
