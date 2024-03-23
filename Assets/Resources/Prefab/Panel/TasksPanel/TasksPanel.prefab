@@ -1008,9 +1008,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c48f42fe14bb5047aa8a3fe55c3afb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  taskData: {fileID: 11400000, guid: 1529181c192f03c448b1867f261f77ca, type: 2}
+  currentTask: {fileID: 11400000, guid: b60b986bfc4b8ae489897dad9baac144, type: 2}
   TaskCellPrefab: {fileID: 2818227447871931165, guid: 134891c79517694438868858c6fe2e42,
     type: 3}
-  RewardPreview: {fileID: 9106884573737747443, guid: d8405b275c85f9344a256cae2232b134,
+  RewardPreviewPrefab: {fileID: 9106884573737747443, guid: d8405b275c85f9344a256cae2232b134,
     type: 3}
 --- !u!1 &5979852322527511018
 GameObject:

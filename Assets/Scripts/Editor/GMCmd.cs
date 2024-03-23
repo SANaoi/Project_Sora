@@ -84,14 +84,24 @@ public class GMCmd
         UIManager.Instance.OpenPanel(UIConst.DialogBox);
     }
 
-    [MenuItem("GMCmd/任务系统/添加测试任务")]
-    public static void AddDefaultTask()
-    {
-
-    }
     [MenuItem("GMCmd/任务系统/打开任务列表")]
     public static void OpenTasksPanel()
     {
-        UIManager.Instance.OpenPanel(UIConst.TasksPanel);
+        UIManager.Instance.OpenPanel(UIConst.TasksPanel) ;
+        
     }
+
+    [MenuItem("GMCmd/任务系统/添加测试任务")]
+    public static void AddDefaultTask()
+    {
+        BasePanel taskPanel = UIManager.Instance.OpenPanel(UIConst.TasksPanel) as TaskPanel;
+        taskPanel.GetComponent<TaskPanel>().testAddTask(1);
+    }
+    [MenuItem("GMCmd/任务系统/移除测试任务")]
+    public static void ReMoveDefaultTask()
+    {
+        BasePanel taskPanel = UIManager.Instance.OpenPanel(UIConst.TasksPanel) as TaskPanel;
+        taskPanel.GetComponent<TaskPanel>().testRemoveTask(1);
+    }
+
 }

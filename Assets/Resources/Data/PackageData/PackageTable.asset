@@ -23,3 +23,8 @@ MonoBehaviour:
     name: "\u6B65\u67AA\u5B50\u5F39"
     description: "AK-47\u6807\u914D\u5B50\u5F39\uFF0C\u76F4\u5F847.62\u6BEB\u7C73"
     imagePath: Prefab/Image/bullets
+  - id: 3
+    type: 3
+    name: "\u836F\u54C1"
+    description: "\u80FD\u4F7F\u4EBA\u91CD\u65B0\u632F\u4F5C"
+    imagePath: Prefab/Image/remedy
