@@ -54,32 +54,32 @@ public class EventCenter
     {
         _eventDic.Clear();
     }
-    public void AddEventListener<T>(string name, UnityAction<T> action)
+    public void AddEventListener<T, K>(string name, UnityAction<T, K> action)
     {
         if (_eventDic.ContainsKey(name))
         {
-            (_eventDic[name] as EventInfo<T>).actions += action;
+            (_eventDic[name] as EventInfo<T, K>).actions += action;
         }
         else
         {
-            _eventDic.Add(name, new EventInfo<T>(action));
+            _eventDic.Add(name, new EventInfo<T, K>(action));
         }
     }
-    public void EventTrigger<T>(string name, T info)
+    public void EventTrigger<T, K>(string name, T info1, K info2)
     {
         if (_eventDic.ContainsKey(name))
         {
-            if ((_eventDic[name] as EventInfo<T>).actions != null)
+            if ((_eventDic[name] as EventInfo<T, K>).actions != null)
             {
-                (_eventDic[name] as EventInfo<T>).actions.Invoke(info); 
+                (_eventDic[name] as EventInfo<T, K>).actions.Invoke(info1, info2); 
             }
         }
     }
-    public void RemoveEventListener<T>(string name, UnityAction<T> action)
+    public void RemoveEventListener<T, K>(string name, UnityAction<T, K> action)
     {
         if (_eventDic.ContainsKey(name))
         {
-            (_eventDic[name] as EventInfo<T>).actions -= action;
+            (_eventDic[name] as EventInfo<T, K>).actions -= action;
         }
     }
 }
@@ -100,10 +100,10 @@ public class EventInfo: IEventInfo
     }
 }
 // 带泛型的相应事件
-public class EventInfo<T>: IEventInfo
+public class EventInfo<T, K>: IEventInfo
 {
-    public UnityAction<T> actions;
-    public EventInfo(UnityAction<T> action)
+    public UnityAction<T, K> actions;
+    public EventInfo(UnityAction<T, K> action)
     {
         actions += action;
     }

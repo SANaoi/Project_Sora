@@ -23,6 +23,8 @@ public class ItemCell : MonoBehaviour
 
     public void Destroy()
     {
+        GameManager.Instance.IncreaseTestTaskProgress(itemInfo.id);
+
         PlayerManager.Instance.gameObjectList.Remove(gameObject);
         UIManager.Instance.ItemsInfo.DelScrollContent(gameObject);
         Destroy(gameObject);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using aoi;
+using System.Security.Cryptography;
 public class TaskPanel : BasePanel
 {
     public TaskData_SO taskData;
@@ -15,10 +16,15 @@ public class TaskPanel : BasePanel
     private Transform UITaskReward;
     private Transform UITaskRewardPreview;
     private Transform UITaskListContent;
+    private Transform UITaskTrailButton;
 
     public GameObject TaskCellPrefab;
     public GameObject RewardPreviewPrefab;
-    
+
+    private PlayerMainUI playerMainUI;
+    // private static int _currentID;
+    public static int CurrentID;
+    public Dictionary<int , int> TaskDict;
     private int _chooseID;
     public int chooseID
     {
@@ -76,7 +82,10 @@ public class TaskPanel : BasePanel
         UITaskDemand = transform.Find("Center/TaskDetail/Center/Demand");
         UITaskReward = transform.Find("Center/TaskDetail/Bottom");
         UITaskRewardPreview = transform.Find("Center/TaskDetail/Center/RewardPreview");
+        UITaskTrailButton = transform.Find("Bottom/Trail");
         UITaskListContent = UITasksList.GetComponent<ScrollRect>().content;
+
+        playerMainUI = UIManager.Instance.OpenPanel(UIConst.PlayerMainUI) as PlayerMainUI;
     }
 
     private void RefreshUI()
@@ -88,48 +97,17 @@ public class TaskPanel : BasePanel
 
     private void RefreshDetail()
     {
-        print("RefreshDetail");
         if (chooseID != 0)
         {   
             TaskDetails taskDetail = currentTask.TaskDetailsList.Find(i => i.taskID == chooseID);
             UITaskName.GetComponent<Text>().text = taskDetail.taskName;
             UITaskDescription.GetComponent<Text>().text = taskDetail.taskDescription;
-            if (taskDetail.taskType == TaskType.击杀)
-            {
-                string textContent = "";
-                for (int i = 0; i < taskDetail.DefaultLsit.Count; i++)
-                {
-                    Default collect = taskDetail.DefaultLsit[i];
-                    textContent += $"{collect.enemyPrefab.name}: {collect.CurrentKill} / {collect.killTarget} \n";
-                }
-                UITaskDemand.GetComponent<Text>().text = textContent;
-                return;
-            }
-            else if (taskDetail.taskType == TaskType.收集)
-            {   
-                string textContent = "";
-                for (int i = 0; i < taskDetail.CollectLsit.Count; i++)
-                {
-                    Collect collect = taskDetail.CollectLsit[i];
-                    textContent += $"{collect.ItemInfo.itemName}: {collect.CurrentNumber} / {collect.CollectTarget} \n";
-                }
-                UITaskDemand.GetComponent<Text>().text = textContent;
-                return;
-            }
-            else if (taskDetail.taskType == TaskType.歼灭)
-            {
-                UITaskDemand.GetComponent<Text>().text = taskDetail.ExterminateList.ToString();
-                return;
-            }
-            else if (taskDetail.taskType == TaskType.存活)
-            {
-                UITaskDemand.GetComponent<Text>().text = taskDetail.SurvivalLsit.ToString();
-                return;
-            }
+            string textContent = "";
+            CheckTaskType(taskDetail, ref textContent);
+            UITaskDemand.GetComponent<Text>().text = textContent;
         }
-
-        
     }
+
     
     private void RefreshTaskList()
     {
@@ -168,12 +146,21 @@ public class TaskPanel : BasePanel
     private void InitClik()
     {   
         UICancelButton.GetComponent<Button>().onClick.AddListener(OnClickCancel);
+        UITaskTrailButton.GetComponent<Button>().onClick.AddListener(OnClickTrail);
     }
 
     private void OnClickCancel()
     {
         ClosePanel(UIConst.TasksPanel);
         print("----- OnClickClose");
+    }
+
+    private void OnClickTrail()
+    {   
+        print(chooseID);
+        CurrentID = chooseID;
+        playerMainUI.RefreshTaskInfo();
+        print("--------" + CurrentID);
     }
 
     // 将总表的任务添加，移除到当前列表并标记.
@@ -193,5 +180,95 @@ public class TaskPanel : BasePanel
     // 选取一个当前列表选取一个任务进行跟踪.
     
     // 为相应任务对象添加触发事件
+    public void ActiveCurrentTask()
+    {
+
+    }
+
     
+    public static void CheckTaskType(TaskDetails taskDetail, ref string textContent)
+    {
+        if (taskDetail.taskType == TaskType.击杀)
+        {
+            for (int i = 0; i < taskDetail.DefaultLsit.Count; i++)
+            {
+                Default defaultList = taskDetail.DefaultLsit[i];
+                textContent += $"{defaultList.targetData.CharacterName}: {defaultList.CurrentKill} / {defaultList.killTarget} \n";
+            }
+        }
+        else if (taskDetail.taskType == TaskType.收集)
+        {   
+            for (int i = 0; i < taskDetail.CollectLsit.Count; i++)
+            {
+                Collect collect = taskDetail.CollectLsit[i];
+                textContent += $"{collect.ItemInfo.itemName}: {collect.CurrentNumber} / {collect.CollectTarget} \n";
+            }
+        }
+        else if (taskDetail.taskType == TaskType.歼灭)
+        {
+        }
+        else if (taskDetail.taskType == TaskType.存活)
+        {
+        }
+    }
+    
+    public static void IncreaseTaskProgress(TaskDetails taskDetail,int targetId ,ref string textContent)
+    {
+        if (taskDetail.taskType == TaskType.击杀)
+        {
+            for (int i = 0; i < taskDetail.DefaultLsit.Count; i++)
+            {
+                Default defaultList = taskDetail.DefaultLsit[i];
+                if (targetId == defaultList.targetData.Id && defaultList.CurrentKill < defaultList.killTarget)
+                {
+                    defaultList.CurrentKill += 1;
+                }
+                textContent += $"{defaultList.targetData.CharacterName}: {defaultList.CurrentKill} / {defaultList.killTarget} \n";
+            }
+        }
+        else if (taskDetail.taskType == TaskType.收集)
+        {   
+            for (int i = 0; i < taskDetail.CollectLsit.Count; i++)
+            {
+                Collect collect = taskDetail.CollectLsit[i];
+                if (targetId == collect.ItemInfo.id && collect.CurrentNumber < collect.CollectTarget)
+                {
+                    collect.CurrentNumber += 1;
+                }
+                textContent += $"{collect.ItemInfo.itemName}: {collect.CurrentNumber} / {collect.CollectTarget} \n";
+            }
+        }
+        else if (taskDetail.taskType == TaskType.歼灭)
+        {
+        }
+        else if (taskDetail.taskType == TaskType.存活)
+        {
+        }
+    }
+            // if (taskDetail.taskType == TaskType.击杀)
+            // {
+            //     for (int i = 0; i < taskDetail.DefaultLsit.Count; i++)
+            //     {
+            //         Default defaultList = taskDetail.DefaultLsit[i];
+            //         textContent += $"{defaultList.targerData.CharacterName}: {defaultList.CurrentKill} / {defaultList.killTarget} \n";
+            //     }
+            //     UITaskDemand.GetComponent<Text>().text = textContent;
+            // }
+            // else if (taskDetail.taskType == TaskType.收集)
+            // {   
+            //     for (int i = 0; i < taskDetail.CollectLsit.Count; i++)
+            //     {
+            //         Collect collect = taskDetail.CollectLsit[i];
+            //         textContent += $"{collect.ItemInfo.itemName}: {collect.CurrentNumber} / {collect.CollectTarget} \n";
+            //     }
+            //     UITaskDemand.GetComponent<Text>().text = textContent;
+            // }
+            // else if (taskDetail.taskType == TaskType.歼灭)
+            // {
+            //     UITaskDemand.GetComponent<Text>().text = taskDetail.ExterminateList.ToString();
+            // }
+            // else if (taskDetail.taskType == TaskType.存活)
+            // {
+            //     UITaskDemand.GetComponent<Text>().text = taskDetail.SurvivalLsit.ToString();
+            // }
 }

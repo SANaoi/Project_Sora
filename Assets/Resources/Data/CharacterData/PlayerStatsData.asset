@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: PlayerStatsData
   m_EditorClassIdentifier: 
   Id: 100
+  CharacterName: "\u94F6\u72FC"
   maxHealth: 100
   currentHealth: 100
   baseDefence: 5

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ArmatureShooterStatsData
   m_EditorClassIdentifier: 
   Id: 1
+  CharacterName: "\u9632\u536B\u578B\u5175\u5668\u8FDC\u7A0B\u6B3EX\u578B"
   maxHealth: 70
   currentHealth: 70
   baseDefence: 3

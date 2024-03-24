@@ -38,8 +38,8 @@ public class HealthBarUI : MonoBehaviour
     {
         if (currentHealth <= 0)
         {
-            // Destroy(gameObject);
-            gameObject.SetActive(false);
+            Destroy(gameObject);
+            //gameObject.SetActive(false);
         }
         UIbar.GetComponent<HealthBarCell>().RefreshUI(currentHealth,maxHralth);  
     }

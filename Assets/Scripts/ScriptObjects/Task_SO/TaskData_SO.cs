@@ -41,14 +41,14 @@ public class TaskDetails
 [System.Serializable]
 public class Default
 {
-    public GameObject enemyPrefab; 
+    public CharacterData_SO targetData; 
     public int CurrentKill;
     public int killTarget;
 }
 [System.Serializable]
 public class Exterminate
 {
-    public GameObject enemyPrefab; 
+    public CharacterData_SO targerData; 
     public int killTarget;
 }
 [System.Serializable]

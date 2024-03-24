@@ -11,8 +11,6 @@ public class HealthBarCell : MonoBehaviour
     void Awake()
     {
         InitUI();
-
-
     }
 
     void InitUI()

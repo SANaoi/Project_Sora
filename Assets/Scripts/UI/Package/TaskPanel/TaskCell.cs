@@ -49,5 +49,6 @@ public class TaskCell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandle
     }
     public void OnPointerExit(PointerEventData eventData)
     {
+        
     }
 }

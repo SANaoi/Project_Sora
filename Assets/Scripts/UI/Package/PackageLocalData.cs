@@ -47,6 +47,19 @@ public class PackageLocalData
         } 
     }
 
+    public void AddPackageLocalItem(ItemInfo_SO itemInfo)
+    {
+        items = LoadPackage();
+        PackageLocalItem packageLocalItem = new()
+        {
+            uid = Guid.NewGuid().ToString(),
+            id = itemInfo.id,
+            num = itemInfo.num,
+        };
+        items.Add(packageLocalItem);
+        SavePackage();
+    }
+
     public void AddPackageLocalItem(ItemCell itemInfo)
     {
         items = LoadPackage();

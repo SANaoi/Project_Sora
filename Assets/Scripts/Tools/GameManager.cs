@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using aoi;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,6 +11,7 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
     public PlayerMoveControls inputActions;
     private PackageTable_SO packageTable;
+    public CurrentTask_SO currentTask;
 
     // public ShootController shootController;
 
@@ -121,9 +124,64 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    #region 界面UI基础功能
+    #region 任务系统
+    public void IncreaseTestTaskProgress(int targetId)
+    {
+        string textContent = "";
+        int currentID = TaskPanel.CurrentID;
+        aoi.TaskDetails taskDetail = currentTask.TaskDetailsList.Find(i => i.taskID == currentID);
+        if (taskDetail != null)
+        {
+            TaskPanel.IncreaseTaskProgress(taskDetail, targetId, ref textContent);
+            (UIManager.Instance.OpenPanel(UIConst.PlayerMainUI) as PlayerMainUI).RefreshTaskInfo();
+        }
+    }
 
+    public bool IsCompleteTask(TaskDetails taskDetail)
+    {
+        if (taskDetail.taskType == TaskType.击杀)
+        {
+            for (int i = 0; i < taskDetail.DefaultLsit.Count; i++)
+            {
+                Default defaultList = taskDetail.DefaultLsit[i];
+                if (defaultList.CurrentKill != defaultList.killTarget) { return false; }
+            }
+        }
+        else if (taskDetail.taskType == TaskType.收集)
+        {   
+            for (int i = 0; i < taskDetail.CollectLsit.Count; i++)
+            {
+                Collect CollectLsit = taskDetail.CollectLsit[i];
+                if (CollectLsit.CurrentNumber != CollectLsit.CollectTarget) { return false; }
+            }
+        }
+        else if (taskDetail.taskType == TaskType.歼灭)
+        {
 
+        }
+        else if (taskDetail.taskType == TaskType.存活)
+        {
+
+        }
+
+        return true;
+    }
+
+    public void GetTaskReward(TaskDetails taskDetail)
+    {
+        
+        for (int i = 0; i < taskDetail.remuneration.Count; i++)
+        {
+            ItemInfo_SO reward = taskDetail.remuneration[i];
+            PackageLocalData.Instance.AddPackageLocalItem(reward);
+        }
+    }
+
+    public void ReMoveCurrentTask(TaskDetails taskDetail)
+    {
+        currentTask.TaskDetailsList.Remove(taskDetail);
+        TaskPanel.CurrentID = 0;
+    }
     #endregion
 }
 

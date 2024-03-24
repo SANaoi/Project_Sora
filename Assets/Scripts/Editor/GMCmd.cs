@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
+using UnityEngine.UI;
+using aoi;
 
 
 public class GMCmd
@@ -87,7 +89,8 @@ public class GMCmd
     [MenuItem("GMCmd/任务系统/打开任务列表")]
     public static void OpenTasksPanel()
     {
-        UIManager.Instance.OpenPanel(UIConst.TasksPanel) ;
+        TaskPanel taskPanel = UIManager.Instance.OpenPanel(UIConst.TasksPanel).GetComponent<TaskPanel>();
+        Debug.Log(TaskPanel.CurrentID);
         
     }
 
@@ -102,6 +105,31 @@ public class GMCmd
     {
         BasePanel taskPanel = UIManager.Instance.OpenPanel(UIConst.TasksPanel) as TaskPanel;
         taskPanel.GetComponent<TaskPanel>().testRemoveTask(1);
+    }
+    [MenuItem("GMCmd/任务系统/增加测试任务进度")]
+    public static void IncreaseTestTaskProgress()
+    {
+        string textContent = "";
+        int currentID = TaskPanel.CurrentID;
+        aoi.TaskDetails taskDetail = GameManager.Instance.currentTask.TaskDetailsList.Find(i => i.taskID == currentID);
+        if (taskDetail != null)
+        {
+            TaskPanel.IncreaseTaskProgress(taskDetail, 1, ref textContent);
+            (UIManager.Instance.OpenPanel(UIConst.PlayerMainUI) as PlayerMainUI).RefreshTaskInfo();
+        }
+    }
+    [MenuItem("GMCmd/任务系统/交付任务")]
+    public static void PostTask()
+    {
+        aoi.TaskDetails taskDetail = GameManager.Instance.currentTask.TaskDetailsList.Find(i => i.taskID == 1);
+        if (taskDetail != null)
+        {
+            GameManager.Instance.IsCompleteTask(taskDetail);
+            GameManager.Instance.GetTaskReward(taskDetail);
+            GameManager.Instance.ReMoveCurrentTask(taskDetail);
+            (UIManager.Instance.OpenPanel(UIConst.PlayerMainUI) as PlayerMainUI).RefreshTaskInfo();
+            Debug.Log("完成任务");
+        }
     }
 
 }

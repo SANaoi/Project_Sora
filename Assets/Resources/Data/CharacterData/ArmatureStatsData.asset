@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49465ea5122e16d49b19ea11d4fc98d4, type: 3}
   m_Name: ArmatureStatsData
   m_EditorClassIdentifier: 
+  Id: 0
+  CharacterName: "\u9632\u536B\u578B\u5175\u5668X\u578B"
   maxHealth: 100
   currentHealth: 100
   baseDefence: 5
