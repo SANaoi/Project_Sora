@@ -12,7 +12,7 @@ public class PackageTable_SO : ScriptableObject
 [System.Serializable]
 public class PackageTableItem
 {
-    public int id;
+    public int id; // 唯一标识
     public int type;
     public string name;
     public string description;

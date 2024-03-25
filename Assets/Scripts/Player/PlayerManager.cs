@@ -142,7 +142,7 @@ public class PlayerManager : MonoBehaviour
         InitDicts();
         InitGameObjects();
         InitInputSystem();
-        InitEnvet();
+        InitDelegate();
 
         UpdatePackageLocalData();
 
@@ -241,7 +241,7 @@ public class PlayerManager : MonoBehaviour
         GameManager.Instance.inputActions.Player.WalkToggle.performed -= GetWalkToggleInput;
     }
 
-    void InitEnvet()
+    void InitDelegate()
     {
         EventCenter.Instance.AddEventListener("ActiveInputSystem", InitInputSystem);
         EventCenter.Instance.AddEventListener("LogoutInputSystem", LogoutInputSystem);
@@ -630,7 +630,7 @@ public class PlayerManager : MonoBehaviour
         List<GameObject> ToBeDeleted = new();
         foreach (var foundObject in foundObjects)
         {
-            if (foundObject.CompareTag("Item"))
+            if (foundObject.CompareTag("Item") || foundObject.CompareTag("NPC"))
             {
                 foundItems.Add(foundObject.gameObject);
                 string NowUid = foundObject.GetComponent<ItemCell>().uid;
@@ -767,7 +767,7 @@ public class PlayerManager : MonoBehaviour
             foreach (GameObject Item in gameObjectList)
             {
                 ItemCell ItemInfo = Item.GetComponent<ItemCell>();
-                if (ItemInfo.uid == SelectingID)
+                if (ItemInfo.uid == SelectingID && ItemInfo.id != 101) // 101为不可拾取的特殊场景物体
                 {
                     int ItemNum = UIManager.Instance.ItemsInfo.GetItemNumByUID(SelectingID);
                     if (ItemNum == UIManager.Instance.ItemsInfo.scrollContent.childCount - 1)
@@ -787,6 +787,11 @@ public class PlayerManager : MonoBehaviour
                         ItemInfo.Destroy();
                         return;
                     }
+                }
+                else if (ItemInfo.uid == SelectingID && ItemInfo.id == 101)
+                {
+                    NPCController nPC = Item.GetComponent<NPCController>();
+                    nPC.ShowDialog();
                 }
             }
         }

@@ -7,7 +7,7 @@ public class ItemCell : MonoBehaviour
 {
     public ItemInfo_SO itemInfo;
     public string uid;
-    public int id;
+    public int id; // 101为不可拾取的其他特殊图标
     public string itemName;
     public int num;
     public string imagePath;

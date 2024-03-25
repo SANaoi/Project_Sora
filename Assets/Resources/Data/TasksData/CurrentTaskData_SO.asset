@@ -35,10 +35,10 @@ MonoBehaviour:
     taskType: 0
     DefaultLsit:
     - targetData: {fileID: 11400000, guid: d1aa4b7fc87878840adc694cc670a2ed, type: 2}
-      CurrentKill: 0
+      CurrentKill: 1
       killTarget: 3
     - targetData: {fileID: 11400000, guid: fecba6adcb2d1f244b510c60b1cfec8d, type: 2}
-      CurrentKill: 0
+      CurrentKill: 1
       killTarget: 3
     ExterminateList: []
     CollectLsit: []
