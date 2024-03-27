@@ -164,16 +164,16 @@ public class TaskPanel : BasePanel
     }
 
     // 将总表的任务添加，移除到当前列表并标记.
-    public void testAddTask(int ID)
-    {
-        TaskDetails taskDetails = taskData.TaskDetailsList.Find(i => i.taskID == ID);
-        currentTask.TaskDetailsList.Add(taskDetails);
-    }
-    public void testRemoveTask(int ID)
-    {
-        TaskDetails taskDetails = taskData.TaskDetailsList.Find(i => i.taskID == ID);
-        currentTask.TaskDetailsList.Remove(taskDetails);
-    }
+    // public void AddTask(int ID)
+    // {
+    //     TaskDetails taskDetails = taskData.TaskDetailsList.Find(i => i.taskID == ID);
+    //     currentTask.TaskDetailsList.Add(taskDetails);
+    // }
+    // public void RemoveTask(int ID)
+    // {
+    //     TaskDetails taskDetails = taskData.TaskDetailsList.Find(i => i.taskID == ID);
+    //     currentTask.TaskDetailsList.Remove(taskDetails);
+    // }
     
     // 根据当前列表的内容刷新任务UI的信息.
     

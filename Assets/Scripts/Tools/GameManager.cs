@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using aoi;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,6 +10,7 @@ public class GameManager : MonoBehaviour
     public PlayerMoveControls inputActions;
     private PackageTable_SO packageTable;
     public CurrentTask_SO currentTask;
+    public TaskData_SO taskData;
 
     // public ShootController shootController;
 
@@ -137,6 +136,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void AddTaskToCurrentTask(int ID)
+    {
+        TaskDetails taskDetails = taskData.TaskDetailsList.Find(i => i.taskID == ID);
+        currentTask.TaskDetailsList.Add(taskDetails);
+    }
+    public void RemoveTaskToCurrentTask(int ID)
+    {
+        TaskDetails taskDetails = taskData.TaskDetailsList.Find(i => i.taskID == ID);
+        currentTask.TaskDetailsList.Remove(taskDetails);
+    }
     public bool IsCompleteTask(TaskDetails taskDetail)
     {
         if (taskDetail.taskType == TaskType.击杀)

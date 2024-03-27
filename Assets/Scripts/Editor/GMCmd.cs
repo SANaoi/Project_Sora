@@ -71,13 +71,13 @@ public class GMCmd
     [MenuItem("GMCmd/输入系统/激活角色输入")]
     public static void ActivePlayerInputSystem()
     {
-        EventCenter.Instance.EventTrigger("ActiveInputSystem");
+        EventCenter.Instance.EventTrigger(EventConst.ActiveInputSystem);
     }
 
     [MenuItem("GMCmd/输入系统/注销角色输入")]
     public static void LogoutPlayerInputSystem()
     {
-        EventCenter.Instance.EventTrigger("LogoutInputSystem");
+        EventCenter.Instance.EventTrigger(EventConst.LogoutInputSystem);
     }
 
     [MenuItem("GMCmd/对话系统/打开测试对话框")]
@@ -94,18 +94,18 @@ public class GMCmd
         
     }
 
-    [MenuItem("GMCmd/任务系统/添加测试任务")]
-    public static void AddDefaultTask()
-    {
-        BasePanel taskPanel = UIManager.Instance.OpenPanel(UIConst.TasksPanel) as TaskPanel;
-        taskPanel.GetComponent<TaskPanel>().testAddTask(1);
-    }
-    [MenuItem("GMCmd/任务系统/移除测试任务")]
-    public static void ReMoveDefaultTask()
-    {
-        BasePanel taskPanel = UIManager.Instance.OpenPanel(UIConst.TasksPanel) as TaskPanel;
-        taskPanel.GetComponent<TaskPanel>().testRemoveTask(1);
-    }
+    // [MenuItem("GMCmd/任务系统/添加测试任务")]
+    // public static void AddDefaultTask()
+    // {
+    //     BasePanel taskPanel = UIManager.Instance.OpenPanel(UIConst.TasksPanel) as TaskPanel;
+    //     taskPanel.GetComponent<TaskPanel>().AddTask(1);
+    // }
+    // [MenuItem("GMCmd/任务系统/移除测试任务")]
+    // public static void ReMoveDefaultTask()
+    // {
+    //     BasePanel taskPanel = UIManager.Instance.OpenPanel(UIConst.TasksPanel) as TaskPanel;
+    //     taskPanel.GetComponent<TaskPanel>().RemoveTask(1);
+    // }
     [MenuItem("GMCmd/任务系统/增加测试任务进度")]
     public static void IncreaseTestTaskProgress()
     {

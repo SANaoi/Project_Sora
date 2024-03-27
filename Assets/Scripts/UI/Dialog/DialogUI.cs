@@ -12,10 +12,13 @@ public class DialogUI : BasePanel
     Transform DialogueContent;
     public Transform SelectBox;
     public TextAsset dialogDataFile;
-
     public bool isSelecting;
     public int dialogIndex;
     string[] dialogRows;
+    // 任务相关
+    public TaskList taskList;
+    public bool IsAccepted;
+    public bool IsCompleted;
 
     
     void Awake()
@@ -26,11 +29,12 @@ public class DialogUI : BasePanel
     void Start()
     {
         // TODO 测试调用，待删除
-        reloadData(dialogDataFile);
-        ShowDialogRows();
+        // reloadData(dialogDataFile);
+        // ShowDialogRows();
 
         GameManager.Instance.inputActions.Player.Fire.started += OnClickNext;
         SelectBox = UIManager.Instance.OpenPanel(UIConst.SelectBox).transform;
+        EventCenter.Instance.EventTrigger(EventConst.LogoutInputSystem);
     }
     void InitUI()
     {
@@ -38,14 +42,11 @@ public class DialogUI : BasePanel
         DialogueContent = transform.Find("Dialogue Content");
     }
 
-    public void reloadData(TextAsset _textAsset)
+    public void reloadData(TaskList _textAsset)
     {
-        dialogRows = _textAsset.text.Split("\n");
-
-        // foreach (var row in rows)
-        // {
-        //     string[] cell = row.Split(",");
-        // }
+        taskList = _textAsset;
+        dialogRows = _textAsset.TaskScript.text.Split("\n");
+        IsAccepted = false;
     }
 
 // 0:标志 1:ID  2:人物	3:内容	4:跳转	5:效果	6:目标
@@ -65,8 +66,14 @@ public class DialogUI : BasePanel
                 }
 
                 else if (cells[0] == "End"  && int.Parse(cells[1]) == dialogIndex)
-                {
+                {   
+                    
+                    if (IsAccepted == true)
+                    {
+                        taskList.IsAccepted = true;
+                    }
                     GameManager.Instance.inputActions.Player.Fire.started -= OnClickNext;
+                    EventCenter.Instance.EventTrigger(EventConst.ActiveInputSystem);
                     ClosePanel(UIConst.DialogBox);
                 }
 

@@ -35,6 +35,17 @@ public class SelectCellUI : MonoBehaviour
         // TODO 与其他模块联动,例如：任务系统
         DialogBox.GetComponent<DialogUI>().dialogIndex = m_jumpTo;
         DialogBox.GetComponent<DialogUI>().isSelecting = false;
+        
+        if (m_effect != "")
+        {
+            string[] i = m_effect.Split("@");
+            if (i[0] == "任务")
+            {
+                int index = int.Parse(i[1]);
+                GameManager.Instance.AddTaskToCurrentTask(index);
+                DialogBox.GetComponent<DialogUI>().IsAccepted = true;
+            }
+        }
         DialogBox.GetComponent<DialogUI>().ShowDialogRows();
         UIManager.Instance.ClosePanel(UIConst.SelectBox);
     }

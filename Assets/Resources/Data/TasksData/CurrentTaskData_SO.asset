@@ -12,39 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58766e44582c2424eb711f1b815b3c15, type: 3}
   m_Name: CurrentTaskData_SO
   m_EditorClassIdentifier: 
-  TaskDetailsList:
-  - taskID: 1
-    taskName: "\u8E0F\u4E0A\u65C5\u9014"
-    taskDescription: "\u8E0F\u4E0A\u524D\u5F80\u7EC8\u672B\u7684\u65C5\u9014\u5427\uFF01"
-    taskType: 2
-    DefaultLsit: []
-    ExterminateList: []
-    CollectLsit:
-    - ItemInfo: {fileID: 11400000, guid: bdd8f3168968aeb4986a3b2ec2d33152, type: 2}
-      CurrentNumber: 0
-      CollectTarget: 1
-    SurvivalLsit: []
-    remuneration:
-    - {fileID: 11400000, guid: 05398d4d636f2e143b002d5533b7f422, type: 2}
-    - {fileID: 11400000, guid: 2e919ee04bf691c438b3e4e394d6a38b, type: 2}
-    taskCompleted: 0
-    isMandatoryTask: 0
-  - taskID: 2
-    taskName: "\u5C0F\u8BD5\u8EAB\u624B"
-    taskDescription: "\u51FB\u9000\u9644\u8FD1\u6E38\u8361\u7684\u673A\u7532\uFF0C\u5E2E\u52A9\u8425\u5730\u7684\u5E78\u5B58\u8005\u3002"
-    taskType: 0
-    DefaultLsit:
-    - targetData: {fileID: 11400000, guid: d1aa4b7fc87878840adc694cc670a2ed, type: 2}
-      CurrentKill: 1
-      killTarget: 3
-    - targetData: {fileID: 11400000, guid: fecba6adcb2d1f244b510c60b1cfec8d, type: 2}
-      CurrentKill: 1
-      killTarget: 3
-    ExterminateList: []
-    CollectLsit: []
-    SurvivalLsit: []
-    remuneration:
-    - {fileID: 11400000, guid: 2e919ee04bf691c438b3e4e394d6a38b, type: 2}
-    - {fileID: 11400000, guid: bdd8f3168968aeb4986a3b2ec2d33152, type: 2}
-    taskCompleted: 0
-    isMandatoryTask: 0
+  TaskDetailsList: []

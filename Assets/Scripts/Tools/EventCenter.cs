@@ -108,3 +108,9 @@ public class EventInfo<T, K>: IEventInfo
         actions += action;
     }
 }
+
+public class EventConst
+{
+    public const string ActiveInputSystem = "ActiveInputSystem";
+    public const string LogoutInputSystem = "LogoutInputSystem";
+}
