@@ -36,6 +36,7 @@ public class SelectCellUI : MonoBehaviour
         DialogBox.GetComponent<DialogUI>().dialogIndex = m_jumpTo;
         DialogBox.GetComponent<DialogUI>().isSelecting = false;
         
+        
         if (m_effect != "")
         {
             string[] i = m_effect.Split("@");
@@ -44,9 +45,13 @@ public class SelectCellUI : MonoBehaviour
                 int index = int.Parse(i[1]);
                 GameManager.Instance.AddTaskToCurrentTask(index);
                 DialogBox.GetComponent<DialogUI>().IsAccepted = true;
+                
             }
         }
-        DialogBox.GetComponent<DialogUI>().ShowDialogRows();
         UIManager.Instance.ClosePanel(UIConst.SelectBox);
+        DialogBox.GetComponent<DialogUI>().ShowDialogRows();
+        GameManager.Instance.inputActions.Player.Fire.started += DialogBox.GetComponent<DialogUI>().OnClickNext;
+
     }
+
 }

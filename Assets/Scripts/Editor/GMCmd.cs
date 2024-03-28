@@ -128,6 +128,7 @@ public class GMCmd
             GameManager.Instance.GetTaskReward(taskDetail);
             GameManager.Instance.ReMoveCurrentTask(taskDetail);
             (UIManager.Instance.OpenPanel(UIConst.PlayerMainUI) as PlayerMainUI).RefreshTaskInfo();
+            
             Debug.Log("完成任务");
         }
     }

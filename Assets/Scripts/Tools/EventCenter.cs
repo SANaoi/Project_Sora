@@ -113,4 +113,6 @@ public class EventConst
 {
     public const string ActiveInputSystem = "ActiveInputSystem";
     public const string LogoutInputSystem = "LogoutInputSystem";
+    public const string ActiveClickDialog = "ActiveClikDialog";
+    public const string LogoutClickDialog = "LogoutClickDialog";
 }

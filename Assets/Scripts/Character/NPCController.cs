@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using aoi;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
@@ -106,16 +107,23 @@ public class NPCController : MonoBehaviour
         DialogUI DialogBox = UIManager.Instance.OpenPanel(UIConst.DialogBox) as DialogUI;
         foreach (TaskList taskList in  characterTaskList.textAssets)
         {
+            
+            DialogBox.reloadData(taskList);
             if (!taskList.IsAccepted)
             {
-                DialogBox.reloadData(taskList);
                 DialogBox.ShowDialogRows();
                 return;
             }
             else if (taskList.IsAccepted && !taskList.IsCompleted)
             {
-                Debug.Log("ok");
-                DialogBox.ClosePanel(UIConst.DialogBox);
+                TaskDetails taskDetail = GameManager.Instance.GetTaskDetailByID(taskList.taskID);
+                if (GameManager.Instance.IsCompleteTask(taskDetail))
+                {
+                    taskList.IsCompleted = true;
+                    DialogBox.ShowDialogRows(true,true);
+                    return;
+                }
+                DialogBox.ShowDialogRows(true);
                 return;
             }
         }

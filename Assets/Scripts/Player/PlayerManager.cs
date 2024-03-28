@@ -279,12 +279,10 @@ public class PlayerManager : MonoBehaviour
         }
         Vector3 movementDirection = GetMovementInputDirection();
 
-        Vector3 AimingmovementDirection = GetPalyerMoveVector();
-
         float targetRotationYAngle = Rotate(movementDirection);
 
         Vector3 targetRotationDirection = GetTargetRotationDirection(targetRotationYAngle);
-
+        
         float movementSpeed = GetMovementSpeed();
 
         Vector3 currentPlayerHorizontalVelocity = GetPlayerHorizontalVelocity();
@@ -298,6 +296,7 @@ public class PlayerManager : MonoBehaviour
         }
         else
         {
+            Vector3 AimingmovementDirection = GetPalyerMoveVector();
             Vector3 tep = AimingmovementDirection * Mathf.Abs(movementSpeed) - currentPlayerHorizontalVelocity;
             Vector3 targetMoveDirection = new Vector3(tep.x, 0f, tep.z);
             
@@ -443,7 +442,7 @@ public class PlayerManager : MonoBehaviour
         return angle;
     }
 
-    private float  GetDirectionAngle(Vector3 direction)
+    private float GetDirectionAngle(Vector3 direction)
     {
         // Mathf.Atan2: 算出夹角弧度
         // Mathf.Rad2Deg：弧度转度（范围[-pi，pi])
@@ -486,16 +485,16 @@ public class PlayerManager : MonoBehaviour
     {
         // 使用SmoothDampAngle平滑地将玩家旋转到目标旋转。
         float currentYAngle = rig.rotation.eulerAngles.y;
-
         if (currentYAngle == currentTargetRotation.y)
         {
             return;
         }
-
+        // float smoothedYAngle = Mathf.SmoothDampAngle(currentYAngle, currentTargetRotation.y, ref dampedTargetRotationCurrentVelocity.y,
+        //                                             timeToReachTargetRotation.y - dampedTargetRotationPassedTime.y);
         float smoothedYAngle = Mathf.SmoothDampAngle(currentYAngle, currentTargetRotation.y, ref dampedTargetRotationCurrentVelocity.y,
                                                     timeToReachTargetRotation.y - dampedTargetRotationPassedTime.y);
         dampedTargetRotationPassedTime.y += Time.deltaTime;
-
+        smoothedYAngle = Mathf.Lerp(currentYAngle, smoothedYAngle, 10f * Time.deltaTime);
         Quaternion targetRotation = Quaternion.Euler(0f, smoothedYAngle, 0f);
 
         rig.MoveRotation(targetRotation);
@@ -798,6 +797,11 @@ public class PlayerManager : MonoBehaviour
     }
 
     private void GetReloadInput(InputAction.CallbackContext context)
+    {
+        RefreshGunInfo();
+    }
+
+    public void RefreshGunInfo()
     {
         // TODO 数据同步到背包数据
         if (shootController.MagazineAmmo + shootController.TotalAmmo < shootController.ShootConfig.Capacity)

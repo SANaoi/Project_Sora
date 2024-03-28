@@ -21,6 +21,9 @@ public class PackageLocalData
     }
     public void SavePackage()
     {
+        // 更新UI信息
+        GameManager.Instance.RefreshUI();
+
         string inventoryJson = JsonUtility.ToJson(this);
         PlayerPrefs.SetString("PackageLocalData", inventoryJson);
         PlayerPrefs.Save();
@@ -41,7 +44,6 @@ public class PackageLocalData
         }
         else
         {
-            Debug.Log(2);
             items = new List<PackageLocalItem>();
             return items;
         } 

@@ -13,6 +13,7 @@ public class TaskList
 {
     [Header("文本")]
     public TextAsset TaskScript;
+    [Header("对应任务ID")]public int taskID;
     [Header("是否接取")]public bool IsAccepted;
     [Header("是否完成")]public bool IsCompleted;
 }

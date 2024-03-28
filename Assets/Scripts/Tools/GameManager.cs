@@ -124,6 +124,12 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region 任务系统
+    public TaskDetails GetTaskDetailByID(int Id)
+    {
+        return currentTask.TaskDetailsList.Find(i => i.taskID == Id);
+    }
+
+
     public void IncreaseTestTaskProgress(int targetId)
     {
         string textContent = "";
@@ -191,7 +197,28 @@ public class GameManager : MonoBehaviour
         currentTask.TaskDetailsList.Remove(taskDetail);
         TaskPanel.CurrentID = 0;
     }
+
+    public void PostTask(int ID)
+    {
+        aoi.TaskDetails taskDetail = GameManager.Instance.currentTask.TaskDetailsList.Find(i => i.taskID == ID);
+        if (taskDetail != null)
+        {
+            IsCompleteTask(taskDetail);
+            GetTaskReward(taskDetail);
+            ReMoveCurrentTask(taskDetail);
+            (UIManager.Instance.OpenPanel(UIConst.PlayerMainUI) as PlayerMainUI).RefreshTaskInfo();
+            Debug.Log("完成任务");
+        }
+    }
     #endregion
+
+    # region UI相关
+    public void RefreshUI()
+    {
+        PlayerManager.Instance.RefreshGunInfo();
+    }
+
+    # endregion
 }
 
 public class PackageItemComparer : IComparer<PackageLocalItem>
