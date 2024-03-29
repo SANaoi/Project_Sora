@@ -65,7 +65,9 @@ public class UIManager
             {UIConst.HealthBarUI, "CharacterUI/Bar Holder"},
             {UIConst.PlayerMainUI, "CharacterUI/PlayerMainUI"},
 
-            {UIConst.TasksPanel, "TasksPanel/TasksPanel"}
+            {UIConst.TasksPanel, "TasksPanel/TasksPanel"},
+
+            {UIConst.AimImage, "AimImage"}
         };
     }
 
@@ -175,4 +177,5 @@ public class UIConst
     public const string DialogBox = "DialogBox";
     public const string SelectBox = "DialogSelectBox";
     public const string TasksPanel = "TaskPanel";
+    public const string AimImage = "AimImage";
 }

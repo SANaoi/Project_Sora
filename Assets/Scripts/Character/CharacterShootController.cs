@@ -31,23 +31,21 @@ public class CharacterShootController : BaseShoot
         // ImpactPool = new ObjectPool<VisualEffect>(CreateImpactParticle);
         animator = GetComponent<Animator>();
         LastShootTime = 0f;
-        isShooting = true;
-
-        FireRate = 1f;
+        VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(true);
+        FireRate = 2f;
        
     }
     
 
     void Update()
     { 
-        if (isShooting && animator.GetBool("Aim"))
+        if (animator.GetBool("Aim"))
         {
-            VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(true);
             Shoot();
         }
         else
         {
-            VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(false);
+            // VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(false);
         }
     }
 

@@ -1,13 +1,11 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Pool;
 using UnityEngine.VFX;
 
 public class ShootController : BaseShoot
 {
-    bool isShooting;
+    public bool isShooting;
     float LastShootTime;
     public int MagazineAmmo;
     public int TotalAmmo;
@@ -17,6 +15,8 @@ public class ShootController : BaseShoot
     private Ray FireRay;
     public PlayerMoveControls InputActions;
     private UIGunInfo GunInfo;
+
+    private Cinemachine.CinemachineCollisionImpulseSource Inpulse;
     private void Start()
     {
         InputActions = GameManager.Instance.inputActions;
@@ -28,17 +28,20 @@ public class ShootController : BaseShoot
         MagazineAmmo = ShootConfig.Capacity;
 
         GunInfo = UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>();
-        // 2: 步枪子弹
+        // 2: 步枪子弹Id
         TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2);
+        Inpulse = GetComponent<Cinemachine.CinemachineCollisionImpulseSource>();
         
     }
 
 
     private void Update()
     {
-        if (isShooting && animator.GetBool("Aiming") && MagazineAmmo > 0)
+        if (isShooting && animator.GetBool("Aiming") && MagazineAmmo > 0 && animator.GetCurrentAnimatorStateInfo(1).IsName("Rifle Aiming Idle"))
         {
             VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(true);
+            Inpulse.GenerateImpulse();
+            
             Shoot();
         }
         else
@@ -90,6 +93,10 @@ public class ShootController : BaseShoot
                     if (hit.transform.CompareTag("Enemy"))
                     {
                         hit.transform.GetComponent<CharacterStats>().TakeDamage(hit.transform.GetComponent<CharacterStats>());
+                        hit.transform.GetComponent<EnemyController>().enemyStates = EnemyStates.CHASE;
+                        hit.transform.GetComponent<EnemyController>().ExitTime = 0f;
+                        hit.transform.GetComponent<EnemyController>().agent.destination = transform.position;
+                        hit.transform.GetComponent<EnemyController>().isTurn = false;
                     }
                 }
             else

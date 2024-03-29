@@ -13,8 +13,8 @@ public enum EnemyStates { GUARD, PATROL, CHASE,BATTLE, DEAD }
 public class EnemyController : MonoBehaviour
 {
 
-    private NavMeshAgent agent;
-    private EnemyStates enemyStates;
+    public NavMeshAgent agent;
+    public EnemyStates enemyStates;
     private Animator animator;
     private Vector3 guardPos;
     private Quaternion currentRotation;
@@ -43,16 +43,22 @@ public class EnemyController : MonoBehaviour
     float Speed;
     bool isAiming;
     bool isDead; 
-    bool isTurn;
+    public bool isTurn;
     bool isLeftTurn;
     float Idle = 0;
     float walk = 2;
-    float chase = 4;
+    float chase = 3;
     private bool isPatrol;
     // 运动停止相关参数
     public float BunkerStoppingDistance;
     public float guardStoppingDistance;
     public float ChaseStoppingDistance;
+
+    public float continueTime;
+    public float ExitTime;
+    public float tiggerTime;
+    // public float LastFoundTime;
+    // public float lastExitTime;
 
 
     void Awake()
@@ -115,7 +121,7 @@ public class EnemyController : MonoBehaviour
         {
             enemyStates = EnemyStates.DEAD;
         }
-        else if (FoundPlayer(signtRadius) && enemyStates != EnemyStates.BATTLE)
+        else if (FoundPlayer(signtRadius) && enemyStates != EnemyStates.BATTLE  && continueTime >= tiggerTime)
         {
             enemyStates = EnemyStates.CHASE;
         }
@@ -149,11 +155,13 @@ public class EnemyController : MonoBehaviour
             case EnemyStates.CHASE:
             agent.speed = chase;
             Speed = chase;
-            if (!FoundPlayer(signtRadius))
+            if (!FoundPlayer(signtRadius) && ExitTime < tiggerTime) ExitTime = Mathf.Clamp(ExitTime + Time.deltaTime, 0f, tiggerTime);
+            if (!FoundPlayer(signtRadius) && ExitTime == tiggerTime)
             {
+
                 if (!isGetGuardPosition)
                 {
-                    isGetGuardPosition =true;
+                    isGetGuardPosition = true;
                     
                     rotationToGuardPosition = Quaternion.LookRotation(guardPos - transform.position);
                 }
@@ -165,16 +173,18 @@ public class EnemyController : MonoBehaviour
                 
                 if (isGuard && !isTurn)
                 {
+                    continueTime = 0f;
                     Speed = walk;
                     agent.speed = walk;
                     enemyStates = EnemyStates.GUARD;
                 }
                 else if (isPatrol && !isTurn)
                 {
+                    continueTime = 0f;
                     enemyStates = EnemyStates.PATROL;
                 }
             }
-            else
+            else if (FoundPlayer(signtRadius) && continueTime == tiggerTime)
             {
                 
                 Vector3 direction = attackTarget.transform.position - transform.position;
@@ -187,7 +197,6 @@ public class EnemyController : MonoBehaviour
                 }
 
             }
-
             break;
 
             case EnemyStates.BATTLE:
@@ -237,6 +246,7 @@ public class EnemyController : MonoBehaviour
 
     bool FoundPlayer(float Radius)
     {
+        
         var colliders = Physics.OverlapSphere(transform.position, Radius);
         foreach (var collider in colliders)
         {
@@ -245,9 +255,12 @@ public class EnemyController : MonoBehaviour
                 attackTarget = collider.gameObject;
                 isTurn = false;
                 multiAim.weight = 1f;
+                continueTime = Mathf.Clamp(continueTime + Time.deltaTime, 0f, tiggerTime);
+                ExitTime = 0f;
                 return true;
             }
         }
+        continueTime = 0f;
         multiAim.weight = 0f;
         attackTarget = null;
         return false;

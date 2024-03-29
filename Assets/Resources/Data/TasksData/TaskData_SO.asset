@@ -21,8 +21,8 @@ MonoBehaviour:
     ExterminateList: []
     CollectLsit:
     - ItemInfo: {fileID: 11400000, guid: bdd8f3168968aeb4986a3b2ec2d33152, type: 2}
-      CurrentNumber: 0
-      CollectTarget: 1
+      CurrentNumber: 2
+      CollectTarget: 2
     SurvivalLsit: []
     remuneration:
     - {fileID: 11400000, guid: 05398d4d636f2e143b002d5533b7f422, type: 2}

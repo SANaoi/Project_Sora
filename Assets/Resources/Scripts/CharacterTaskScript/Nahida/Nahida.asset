@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textAssets:
   - TaskScript: {fileID: 4900000, guid: 6a691fee4eb8f3a409c687f388421910, type: 3}
-    IsAccepted: 0
-    IsCompleted: 0
+    taskID: 1
+    IsAccepted: 1
+    IsCompleted: 1
   - TaskScript: {fileID: 4900000, guid: 0528de50483b90148a05f3f277ef0a63, type: 3}
-    IsAccepted: 0
+    taskID: 2
+    IsAccepted: 1
     IsCompleted: 0

@@ -1,8 +1,9 @@
-using System;
+//using System;
 using System.Collections;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 
 public class AimingController : MonoBehaviour
@@ -15,6 +16,10 @@ public class AimingController : MonoBehaviour
     public GameObject LookPointObject;
     public CinemachineVirtualCamera normalCamera;
     private CinemachineFramingTransposer VisualnormalCamera;
+
+    public Sprite Aim;
+    public Sprite Reload;
+
     [Range(0, 180f)]
     public float z;
     private static AimingController _instance;
@@ -62,9 +67,10 @@ public class AimingController : MonoBehaviour
     {
     }
     void UpdateLookPoint()
-    {
+    {   
         // 计算移动和旋转的目标位置和朝向
-        Vector3 targetPosition = mainCamera.transform.rotation * new Vector3(0f, 0f, z) + mainCamera.transform.position;
+        Vector3 targetPosition = mainCamera.transform.rotation * new Vector3(0f , 0f, z) + mainCamera.transform.position;
+        
         Quaternion targetRotation = Quaternion.LookRotation(mainCamera.transform.position - LookPointObject.transform.position);
 
         // 使用插值平滑过渡位置和旋转

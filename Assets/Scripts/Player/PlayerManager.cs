@@ -21,7 +21,7 @@ public class PlayerManager : MonoBehaviour
     float backwardSpeed = -1.3f;
     float currentSpeed = 0f;
     float WalkSpeed = 1.5f;
-    float RunSpeed = 6f;
+    float RunSpeed = 4f;
     float baseSpeed;
 
     Vector3 currentTargetRotation;
@@ -55,7 +55,7 @@ public class PlayerManager : MonoBehaviour
     [HideInInspector]
     public float gravity = -9.8f;
     [HideInInspector]
-    public float jumpVelocity = 5f;
+    public float jumpVelocity = 3f;
     private Vector3 moveVelocity; // 平滑速度向量
     // 场景可获取物品功能参数
     private List<GameObject> _gameObjectList;
@@ -799,6 +799,7 @@ public class PlayerManager : MonoBehaviour
     private void GetReloadInput(InputAction.CallbackContext context)
     {
         RefreshGunInfo();
+        animator.SetTrigger("Reload");
     }
 
     public void RefreshGunInfo()
