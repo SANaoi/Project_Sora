@@ -51,7 +51,7 @@ public class CharacterShootController : BaseShoot
 
         void Shoot()
     {
-        if (Time.time > FireRate + LastShootTime && GetComponent<EnemyController>().attackTarget)
+        if (Time.time > FireRate + LastShootTime && GetComponent<EnemyController>().attackTarget && animator.GetCurrentAnimatorStateInfo(1).IsName("Rifle Aiming Idle"))
         {
             Vector3 shootDirection = -FireHole.transform.forward;
             VFX_Flash.Play();

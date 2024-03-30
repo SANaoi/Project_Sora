@@ -59,6 +59,7 @@ public class EnemyController : MonoBehaviour
     public float tiggerTime;
     // public float LastFoundTime;
     // public float lastExitTime;
+    public GameObject dropItemPrefab;
 
 
     void Awake()
@@ -332,7 +333,7 @@ public class EnemyController : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, signtRadius);
     }
 
-    void Rotate(GameObject attackTarget)
+    public void Rotate(GameObject attackTarget)
     {
         Vector3 direction = attackTarget.transform.position - transform.position;
         Quaternion rotationToTarget = Quaternion.LookRotation(direction);

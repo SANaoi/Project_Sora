@@ -25,8 +25,8 @@ public class TaskDetails
     public TaskType taskType;// 任务类型
     [Header("击杀")] public List<Default> DefaultLsit;
     [Header("歼灭")] public List<Exterminate> ExterminateList;
-    [Header("收集")] public List<Collect> CollectLsit;
-    [Header("存活")] public List<Survival> SurvivalLsit;
+    [Header("收集")] public List<Collect> CollectList;
+    [Header("存活")] public List<Survival> SurvivalList;
 
     [Header("参数")]
     [Header("任务报酬")] public List<ItemInfo_SO> remuneration;

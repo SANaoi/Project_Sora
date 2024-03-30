@@ -93,10 +93,19 @@ public class ShootController : BaseShoot
                     if (hit.transform.CompareTag("Enemy"))
                     {
                         hit.transform.GetComponent<CharacterStats>().TakeDamage(hit.transform.GetComponent<CharacterStats>());
-                        hit.transform.GetComponent<EnemyController>().enemyStates = EnemyStates.CHASE;
-                        hit.transform.GetComponent<EnemyController>().ExitTime = 0f;
-                        hit.transform.GetComponent<EnemyController>().agent.destination = transform.position;
-                        hit.transform.GetComponent<EnemyController>().isTurn = false;
+                        if (hit.transform.GetComponent<CharacterStats>().CurrentHealth > 0)
+                        {
+                            hit.transform.GetComponent<EnemyController>().enemyStates = EnemyStates.CHASE;
+                            
+                            hit.transform.GetComponent<EnemyController>().Rotate(transform.gameObject);
+                            hit.transform.GetComponent<EnemyController>().ExitTime = 0f;
+                            hit.transform.GetComponent<EnemyController>().isTurn = false;
+                            hit.transform.GetComponent<EnemyController>().agent.destination = transform.position;
+                        }
+                        else
+                        {
+                            GameObject dropItem = Instantiate(hit.transform.GetComponent<EnemyController>().dropItemPrefab, hit.transform.position, Quaternion.identity);
+                        }
                     }
                 }
             else

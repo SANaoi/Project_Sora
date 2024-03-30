@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using aoi;
@@ -93,6 +94,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
+
     public List<PackageLocalItem> GetSortPackageLocalData()
     {
         List<PackageLocalItem> localItems = PackageLocalData.Instance.LoadPackage();
@@ -120,6 +122,41 @@ public class GameManager : MonoBehaviour
             }
         }
         return res;
+    }
+    public void RemovePackageTableItemByList(List<PackageLocalItem> Removeitems)
+    {
+        List<PackageLocalItem> items = PackageLocalData.Instance.LoadPackage();
+        if (Removeitems == null) return;
+        foreach (PackageLocalItem item in Removeitems)
+        {
+            items.Remove(item);
+        }
+        PackageLocalData.Instance.SavePackage();
+    }
+    public void DiscountPackageLocalItemsNumById(int id ,int DiscountNum)
+    {
+        List<PackageLocalItem> items = PackageLocalData.Instance.LoadPackage();
+        List<PackageLocalItem> Removeitems = new();
+        foreach (PackageLocalItem item in items)
+        {
+            if (item.id == id)
+            {
+                if (item.num > DiscountNum)
+                {
+                    item.num -= DiscountNum;
+                    RemovePackageTableItemByList(Removeitems);
+                    return;
+                }
+                else
+                {
+                    DiscountNum -= item.num;
+                    Removeitems.Add(item);
+                    print(2);
+                }
+            }
+        }
+        RemovePackageTableItemByList(Removeitems);
+        PackageLocalData.Instance.SavePackage();
     }
     #endregion
 
@@ -164,11 +201,18 @@ public class GameManager : MonoBehaviour
         }
         else if (taskDetail.taskType == TaskType.收集)
         {   
-            for (int i = 0; i < taskDetail.CollectLsit.Count; i++)
+            // TODO 检测背包是否满足数量
+            
+            for (int i = 0; i < taskDetail.CollectList.Count; i++)
             {
-                Collect CollectLsit = taskDetail.CollectLsit[i];
-                if (CollectLsit.CurrentNumber != CollectLsit.CollectTarget) { return false; }
+                Collect CollectList = taskDetail.CollectList[i];
+                if (CollectList.CurrentNumber != CollectList.CollectTarget) { return false; }
+
+                List<PackageLocalItem> Removeitems = PackageLocalData.Instance.GetListWithHaveSameID(CollectList.ItemInfo.id);
+                if (Removeitems.Count >= CollectList.CollectTarget) RemovePackageTableItemByList(Removeitems);
+                else return false;
             }
+            
         }
         else if (taskDetail.taskType == TaskType.歼灭)
         {
@@ -178,7 +222,7 @@ public class GameManager : MonoBehaviour
         {
 
         }
-
+        
         return true;
     }
 
@@ -206,6 +250,8 @@ public class GameManager : MonoBehaviour
             IsCompleteTask(taskDetail);
             GetTaskReward(taskDetail);
             ReMoveCurrentTask(taskDetail);
+            PackageLocalData.Instance.SavePackage();
+            PlayerManager.Instance.RefreshGunInfo();
             (UIManager.Instance.OpenPanel(UIConst.PlayerMainUI) as PlayerMainUI).RefreshTaskInfo();
             Debug.Log("完成任务");
         }
@@ -213,10 +259,10 @@ public class GameManager : MonoBehaviour
     #endregion
 
     # region UI相关
-    public void RefreshUI()
-    {
-        PlayerManager.Instance.RefreshGunInfo();
-    }
+    // public void RefreshUI()
+    // {
+    //     PlayerManager.Instance.RefreshGunInfo();
+    // }
 
     # endregion
 }

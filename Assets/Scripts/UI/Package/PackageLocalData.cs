@@ -22,7 +22,7 @@ public class PackageLocalData
     public void SavePackage()
     {
         // 更新UI信息
-        GameManager.Instance.RefreshUI();
+        // GameManager.Instance.RefreshUI();
 
         string inventoryJson = JsonUtility.ToJson(this);
         PlayerPrefs.SetString("PackageLocalData", inventoryJson);
@@ -73,6 +73,30 @@ public class PackageLocalData
         };
         items.Add(packageLocalItem);
         SavePackage();
+    }
+    
+    public PackageLocalItem GetRemovePackageTableItemByID(int id)
+    {
+        items = LoadPackage();
+        PackageLocalItem packageLocalItem = items.Find(i => i.id == id);
+        if (packageLocalItem != null)
+        {
+            return packageLocalItem;
+        }
+        return null;
+    }
+    public List<PackageLocalItem> GetListWithHaveSameID(int ID)
+    {
+        items = LoadPackage();
+        List<PackageLocalItem> list = new();
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i].id == ID)
+            {
+                list.Add(items[i]);
+            }
+        }
+        return list;
     }
 }
 

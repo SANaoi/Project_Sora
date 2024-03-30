@@ -1,0 +1,203 @@
+{
+  "m_Shader": {
+    "m_FileID": 1,
+    "m_PathID": 4831611746708244658,
+    "Name": "miHoYo/CRP_Scene/Effect/Effect_DreamBubble",
+    "IsNull": false
+  },
+  "m_SavedProperties": {
+    "m_TexEnvs": {
+      "_ColorTex1": {
+        "m_Texture": {
+          "m_FileID": 2,
+          "m_PathID": -7686415849130431201,
+          "Name": "M_Chap03_Eff_SkyColorMask12",
+          "IsNull": false
+        },
+        "m_Scale": {
+          "X": 1.0,
+          "Y": 0.1
+        },
+        "m_Offset": {
+          "X": 0.1,
+          "Y": 0.0
+        }
+      },
+      "_ColorTex2": {
+        "m_Texture": {
+          "m_FileID": 3,
+          "m_PathID": -7407679628137600597,
+          "Name": "M_Chap03_Eff_SkyColorMask03",
+          "IsNull": false
+        },
+        "m_Scale": {
+          "X": 1.0,
+          "Y": 1.0
+        },
+        "m_Offset": {
+          "X": 0.0,
+          "Y": 0.1
+        }
+      },
+      "_DistTex": {
+        "m_Texture": {
+          "m_FileID": 4,
+          "m_PathID": 2502351409756749328,
+          "Name": "Chap02_Eff_X01_SkyBox_PerlinNoise",
+          "IsNull": false
+        },
+        "m_Scale": {
+          "X": 3.0,
+          "Y": 3.0
+        },
+        "m_Offset": {
+          "X": 0.5,
+          "Y": 0.0
+        }
+      },
+      "_GPUAniTexture": {
+        "m_Texture": {
+          "m_FileID": 0,
+          "m_PathID": 0,
+          "Name": "",
+          "IsNull": true
+        },
+        "m_Scale": {
+          "X": 1.0,
+          "Y": 1.0
+        },
+        "m_Offset": {
+          "X": 0.0,
+          "Y": 0.0
+        }
+      },
+      "_MainTex": {
+        "m_Texture": {
+          "m_FileID": 5,
+          "m_PathID": -5252632832925464886,
+          "Name": "M_Chap02_Eff_FogShape",
+          "IsNull": false
+        },
+        "m_Scale": {
+          "X": 1.0,
+          "Y": 1.0
+        },
+        "m_Offset": {
+          "X": 0.0,
+          "Y": 0.0
+        }
+      },
+      "_Reftex": {
+        "m_Texture": {
+          "m_FileID": 6,
+          "m_PathID": -9203666432182460602,
+          "Name": "",
+          "IsNull": false
+        },
+        "m_Scale": {
+          "X": 1.0,
+          "Y": 1.0
+        },
+        "m_Offset": {
+          "X": 0.0,
+          "Y": 0.0
+        }
+      }
+    },
+    "m_Ints": null,
+    "m_Floats": {
+      "_ColorMode": 0.0,
+      "_CullMode": 2.0,
+      "_DistAmount": 0.07,
+      "_DistDir": 0.0,
+      "_DitherAlpha": 1.0,
+      "_DitherDistanceScale": 0.25,
+      "_ForwardOffsetFactor": 0.0,
+      "_ForwardOffsetUnits": 0.0,
+      "_GPUAniDuration": 0.0,
+      "_GPUAniTexHeight": 2.0,
+      "_GPUAniTexWidth": 2.0,
+      "_GPUAniTime": 0.0,
+      "_GPUBoneNum": 1.0,
+      "_LightedEdgeBlend": 0.1,
+      "_LightedEdgeWidth": 0.35,
+      "_RefLod": 1.0,
+      "_RimEdge": 0.0,
+      "_RimEdgeWidth": 0.0,
+      "_RimInst": 0.0,
+      "_SoftEdgeAmount": 0.25,
+      "_TexInts": 1.0,
+      "_UseColorTex": 0.0,
+      "_UseDither": 1.0,
+      "_UseGPUCrowd": 0.0,
+      "_UseLocalSpace": 0.0,
+      "_UseQTange": 1.0,
+      "_VolumInts": 1.0,
+      "_ZWriteMode": 1.0
+    },
+    "m_Colors": {
+      "_Color1": {
+        "r": 0.08235292,
+        "g": 0.32461262,
+        "b": 0.6313726,
+        "a": 1.0
+      },
+      "_EdgeColor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "_FrsnParams": {
+        "r": -2.0,
+        "g": 1.0,
+        "b": 0.0,
+        "a": 0.0
+      },
+      "_GPUAniRemapParams": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 0.0
+      },
+      "_MainSpeed": {
+        "r": 2.0,
+        "g": 0.2,
+        "b": 0.05,
+        "a": 1.0
+      },
+      "_NoiseSize1": {
+        "r": 1.0,
+        "g": 0.2,
+        "b": 0.2,
+        "a": 0.5
+      },
+      "_NoiseSize2": {
+        "r": 0.25,
+        "g": 0.2,
+        "b": 2.0,
+        "a": 0.35
+      },
+      "_OutLineColor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "_SubSpeed": {
+        "r": 0.0,
+        "g": 0.0,
+        "b": 0.0,
+        "a": 0.0
+      },
+      "_TintColor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      }
+    }
+  },
+  "m_Name": "M_Chap03_GameplayProp_DreamBubble_23_Lod0",
+  "Name": "M_Chap03_GameplayProp_DreamBubble_23_Lod0"
+}

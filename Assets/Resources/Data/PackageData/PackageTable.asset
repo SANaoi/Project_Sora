@@ -28,6 +28,11 @@ MonoBehaviour:
     name: "\u836F\u54C1"
     description: "\u80FD\u4F7F\u4EBA\u91CD\u65B0\u632F\u4F5C"
     imagePath: Prefab/Image/remedy
+  - id: 4
+    type: 1
+    name: "\u673A\u68B0\u9F7F\u8F6E"
+    description: "\u4E07\u80FD\u7684\u673A\u68B0\u4FEE\u590D\u96F6\u4EF6"
+    imagePath: Prefab/Image/cog
   - id: 101
     type: 101
     name: "\u5BF9\u8BDD"

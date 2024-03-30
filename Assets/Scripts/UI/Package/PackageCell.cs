@@ -48,7 +48,6 @@ public class PackageCell : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        print("OnPointerEnter: " + eventData.ToString());
         UIMouseOverAni.SetTrigger("In");
     }
 
@@ -64,7 +63,6 @@ public class PackageCell : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        print("OnPointerExit: " + eventData.ToString());
         UIMouseOverAni.SetTrigger("Out");
 
     }

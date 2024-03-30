@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6e8854c2c951244ba98351c4153ad10, type: 3}
+  m_Name: Firefly
+  m_EditorClassIdentifier: 
+  textAssets:
+  - TaskScript: {fileID: 4900000, guid: 15edea94f73e01640ad7fb797095d360, type: 3}
+    taskID: 3
+    IsAccepted: 1
+    IsCompleted: 1
+  - TaskScript: {fileID: 4900000, guid: b46e8c9f118022b489074e793208d894, type: 3}
+    taskID: -1
+    IsAccepted: 0
+    IsCompleted: 0

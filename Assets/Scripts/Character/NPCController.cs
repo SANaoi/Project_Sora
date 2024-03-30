@@ -139,7 +139,6 @@ public class NPCController : MonoBehaviour
             {
                 postureStates = PostureStates.Talk;
 
-
                 Quaternion rotationToTarget = Quaternion.FromToRotation(transform.forward, (LookAtPoint.position - transform.position).normalized);
                 Vector3 angles = rotationToTarget.eulerAngles;
                 float angle = angles.y;

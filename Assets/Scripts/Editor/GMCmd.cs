@@ -46,6 +46,19 @@ public class GMCmd
         PackageLocalData.Instance.SavePackage();
     }
 
+    [MenuItem("GMCmd/背包功能/删除指定背包道具")]
+    public static void DeleteLocalPackageDatabByID()
+    {
+        List<PackageLocalItem> items = PackageLocalData.Instance.LoadPackage();
+        PackageLocalItem packageLocalItem = PackageLocalData.Instance.items.Find(i => i.id == 2);
+        Debug.Log(packageLocalItem.ToString());
+        if (packageLocalItem != null)
+        {
+            items.Remove(packageLocalItem);
+        }
+        PackageLocalData.Instance.SavePackage();
+    }
+
     [MenuItem("GMCmd/背包功能/读取背包测试数据")]
     public static void ReadLoadPackData()
     {

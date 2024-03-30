@@ -198,9 +198,9 @@ public class TaskPanel : BasePanel
         }
         else if (taskDetail.taskType == TaskType.收集)
         {   
-            for (int i = 0; i < taskDetail.CollectLsit.Count; i++)
+            for (int i = 0; i < taskDetail.CollectList.Count; i++)
             {
-                Collect collect = taskDetail.CollectLsit[i];
+                Collect collect = taskDetail.CollectList[i];
                 textContent += $"{collect.ItemInfo.itemName}: {collect.CurrentNumber} / {collect.CollectTarget} \n";
             }
         }
@@ -228,9 +228,9 @@ public class TaskPanel : BasePanel
         }
         else if (taskDetail.taskType == TaskType.收集)
         {   
-            for (int i = 0; i < taskDetail.CollectLsit.Count; i++)
+            for (int i = 0; i < taskDetail.CollectList.Count; i++)
             {
-                Collect collect = taskDetail.CollectLsit[i];
+                Collect collect = taskDetail.CollectList[i];
                 if (targetId == collect.ItemInfo.id && collect.CurrentNumber < collect.CollectTarget)
                 {
                     collect.CurrentNumber += 1;

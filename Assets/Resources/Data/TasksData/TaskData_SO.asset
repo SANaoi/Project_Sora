@@ -19,32 +19,48 @@ MonoBehaviour:
     taskType: 2
     DefaultLsit: []
     ExterminateList: []
-    CollectLsit:
+    CollectList:
     - ItemInfo: {fileID: 11400000, guid: bdd8f3168968aeb4986a3b2ec2d33152, type: 2}
       CurrentNumber: 2
       CollectTarget: 2
-    SurvivalLsit: []
+    SurvivalList: []
     remuneration:
     - {fileID: 11400000, guid: 05398d4d636f2e143b002d5533b7f422, type: 2}
     - {fileID: 11400000, guid: 2e919ee04bf691c438b3e4e394d6a38b, type: 2}
     taskCompleted: 0
     isMandatoryTask: 0
   - taskID: 2
-    taskName: "\u5C0F\u8BD5\u8EAB\u624B"
+    taskName: "\u6218\u6597\uFF0C\u723D\uFF01"
     taskDescription: "\u51FB\u9000\u9644\u8FD1\u6E38\u8361\u7684\u673A\u5668\uFF0C\u5E2E\u52A9\u8425\u5730\u7684\u5E78\u5B58\u8005\u3002"
     taskType: 0
     DefaultLsit:
     - targetData: {fileID: 11400000, guid: d1aa4b7fc87878840adc694cc670a2ed, type: 2}
-      CurrentKill: 0
-      killTarget: 3
+      CurrentKill: 2
+      killTarget: 2
     - targetData: {fileID: 11400000, guid: fecba6adcb2d1f244b510c60b1cfec8d, type: 2}
-      CurrentKill: 0
-      killTarget: 3
+      CurrentKill: 2
+      killTarget: 2
     ExterminateList: []
-    CollectLsit: []
-    SurvivalLsit: []
+    CollectList: []
+    SurvivalList: []
     remuneration:
     - {fileID: 11400000, guid: 2e919ee04bf691c438b3e4e394d6a38b, type: 2}
     - {fileID: 11400000, guid: bdd8f3168968aeb4986a3b2ec2d33152, type: 2}
+    taskCompleted: 0
+    isMandatoryTask: 0
+  - taskID: 3
+    taskName: "\u5C0F\u8BD5\u8EAB\u624B"
+    taskDescription: "\u83B7\u53D6\u673A\u68B0\u96F6\u4EF6\uFF0C\u5E2E\u52A9\u6D41\u83B9\u5C0F\u59D0"
+    taskType: 2
+    DefaultLsit: []
+    ExterminateList: []
+    CollectList:
+    - ItemInfo: {fileID: 11400000, guid: 09d37bbbf12ab0b4caa277debcafc396, type: 2}
+      CurrentNumber: 3
+      CollectTarget: 3
+    SurvivalList: []
+    remuneration:
+    - {fileID: 11400000, guid: bdd8f3168968aeb4986a3b2ec2d33152, type: 2}
+    - {fileID: 11400000, guid: 2e919ee04bf691c438b3e4e394d6a38b, type: 2}
     taskCompleted: 0
     isMandatoryTask: 0

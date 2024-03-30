@@ -798,24 +798,36 @@ public class PlayerManager : MonoBehaviour
 
     private void GetReloadInput(InputAction.CallbackContext context)
     {
-        RefreshGunInfo();
-        animator.SetTrigger("Reload");
+        if (shootController.MagazineAmmo < shootController.ShootConfig.Capacity && shootController.TotalAmmo != 0)
+        {
+            RefreshGunInfo();
+            animator.SetTrigger("Reload");
+            // UpdatePackageLocalData();
+        }
     }
 
     public void RefreshGunInfo()
     {
         // TODO 数据同步到背包数据
-        if (shootController.MagazineAmmo + shootController.TotalAmmo < shootController.ShootConfig.Capacity)
+        int TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2); // 弹药总数
+
+        if (shootController.MagazineAmmo + TotalAmmo < shootController.ShootConfig.Capacity)
         {
-            shootController.MagazineAmmo += shootController.TotalAmmo;
+            shootController.MagazineAmmo += TotalAmmo;
+            GameManager.Instance.DiscountPackageLocalItemsNumById(2, TotalAmmo);
             shootController.TotalAmmo = 0;
+            print(1 +" "+ TotalAmmo);
         }
         else
         {
-            shootController.TotalAmmo -= shootController.ShootConfig.Capacity - shootController.MagazineAmmo;
+            int ReloadAmmo = shootController.ShootConfig.Capacity - shootController.MagazineAmmo; // 装填弹药量
+            GameManager.Instance.DiscountPackageLocalItemsNumById(2, ReloadAmmo);
             shootController.MagazineAmmo = shootController.ShootConfig.Capacity;
+            print(3 +" "+ TotalAmmo);
         }
-        UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(shootController.MagazineAmmo,shootController.TotalAmmo);
+        int leftAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2);
+        shootController.TotalAmmo = leftAmmo;
+        UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(shootController.MagazineAmmo, shootController.TotalAmmo);
     }
     #endregion
 
