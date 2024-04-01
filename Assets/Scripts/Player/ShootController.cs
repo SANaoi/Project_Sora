@@ -90,21 +90,25 @@ public class ShootController : BaseShoot
                             hit
                         )
                     );
-                    if (hit.transform.CompareTag("Enemy"))
+                    Transform hitInfo = FindRootTransform(hit.transform);
+                    if (hitInfo.CompareTag("Enemy"))
                     {
-                        hit.transform.GetComponent<CharacterStats>().TakeDamage(hit.transform.GetComponent<CharacterStats>());
-                        if (hit.transform.GetComponent<CharacterStats>().CurrentHealth > 0)
+                        Transform Enemy = hitInfo.transform;
+                        //CharacterStats characterStats = Enemy.GetComponent<CharacterStats>();
+                        EnemyController enemyController = Enemy.GetComponent<EnemyController>();
+                        Enemy.GetComponent<CharacterStats>().TakeDamage(Enemy.GetComponent<CharacterStats>());
+                        if (Enemy.GetComponent<CharacterStats>().CurrentHealth > 0)
                         {
-                            hit.transform.GetComponent<EnemyController>().enemyStates = EnemyStates.CHASE;
-                            
-                            hit.transform.GetComponent<EnemyController>().Rotate(transform.gameObject);
-                            hit.transform.GetComponent<EnemyController>().ExitTime = 0f;
-                            hit.transform.GetComponent<EnemyController>().isTurn = false;
-                            hit.transform.GetComponent<EnemyController>().agent.destination = transform.position;
+                            enemyController.enemyStates = EnemyStates.CHASE;
+                            enemyController.Rotate(transform.gameObject);
+                            enemyController.ExitTime = 0f;
+                            enemyController.isTurn = false;
+                            enemyController.agent.destination = transform.position;
                         }
                         else
                         {
-                            GameObject dropItem = Instantiate(hit.transform.GetComponent<EnemyController>().dropItemPrefab, hit.transform.position, Quaternion.identity);
+                            enemyController.agent.isStopped = true;
+                            GameObject dropItem = Instantiate(enemyController.dropItemPrefab, Enemy.position, Quaternion.identity);
                         }
                     }
                 }
@@ -113,7 +117,7 @@ public class ShootController : BaseShoot
                     StartCoroutine(
                         PlayTrail(
                             FireHole.transform.position,
-                            mainCamera.transform.forward + (shootDirection * TrailConfig.MissDistance),
+                            mainCamera.transform.position + (shootDirection * TrailConfig.MissDistance),
                             new RaycastHit()
                         )
                     );
@@ -121,5 +125,14 @@ public class ShootController : BaseShoot
             LastShootTime = Time.time;
             
         }
+    }
+
+    private Transform FindRootTransform(Transform obj)
+    {   
+        while (obj.parent != null)
+        {
+            obj = obj.parent;
+        }
+        return obj;
     }
 }

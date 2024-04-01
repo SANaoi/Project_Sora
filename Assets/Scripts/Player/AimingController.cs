@@ -19,6 +19,7 @@ public class AimingController : MonoBehaviour
 
     public Sprite Aim;
     public Sprite Reload;
+    private Zoom zoom;
 
     [Range(0, 180f)]
     public float z;
@@ -48,6 +49,7 @@ public class AimingController : MonoBehaviour
     {
         mainCamera = GetComponent<Camera>();
         playerMoveController = PlayerManager.Instance;
+        zoom = FindAnyObjectByType<Zoom>();
         inputActions = GameManager.Instance.inputActions;
         inputActions.Player.Aiming.performed += SwitchCameraParameter;
         VisualnormalCamera = normalCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
@@ -87,6 +89,7 @@ public class AimingController : MonoBehaviour
     {
         float targetFOV;
         float target_m_ScreenX;
+        float targetZoomDistance;
 
         bool isAiming = playerMoveController.isAiming;
 
@@ -99,18 +102,21 @@ public class AimingController : MonoBehaviour
         if (isAiming)
         {
             targetFOV = 40f;
-            target_m_ScreenX = 0.35f;
+            target_m_ScreenX = 0.2f;
+            targetZoomDistance = 1.2f;
         }
         else
         {
             targetFOV = 60f;
             target_m_ScreenX = 0.4f;
+            targetZoomDistance = 2f;
         }
 
         while (elapsedTime < duration)
         {
             normalCamera.m_Lens.FieldOfView = Mathf.Lerp(initialCameraFOV, targetFOV, elapsedTime / duration);
             VisualnormalCamera.m_ScreenX = Mathf.Lerp(initialCamera_m_ScreenX, target_m_ScreenX, elapsedTime / duration);
+            zoom.CameraZoom(targetZoomDistance);
             // VisualnormalCamera.m_CameraDistance = Mathf.Lerp(initialCamera_m_CameraDistance, target_m_CameraDistance, elapsedTime / duration);
             yield return null;
             elapsedTime += Time.deltaTime;

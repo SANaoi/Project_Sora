@@ -338,7 +338,32 @@ public class EnemyController : MonoBehaviour
         Vector3 direction = attackTarget.transform.position - transform.position;
         Quaternion rotationToTarget = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotationToTarget, 5f * Time.deltaTime);
-
     }
 
+    private void SetRigidBodiesNonKinematic()
+    {
+        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+        foreach (Rigidbody rb in rigidbodies)
+        {
+            rb.isKinematic = false;
+        }
+    }
+
+    public void DestroyObject()
+    {
+        animator.enabled = false;
+        SetRigidBodiesNonKinematic();
+        StartCoroutine(DestroyAfter());
+    }
+
+    private IEnumerator DestroyAfter()
+    {
+        yield return new WaitForSeconds(5f);
+        Destroy(gameObject);
+    }
+    // void OnDestroy()
+    // {
+    //     yield return new WaitForSeconds(5f);
+    //     Destroy(gameObject);
+    // }
 }

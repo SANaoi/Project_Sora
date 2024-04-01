@@ -11,11 +11,12 @@ public class HealthBarUI : MonoBehaviour
     CharacterStats currentStats;
     private float timeLeft;
     public bool alwaysVisable;
+    private EnemyController enemy;
 
     void Awake()
     {
         currentStats = GetComponent<CharacterStats>();
-        
+        enemy = GetComponent<EnemyController>();
     }
 
     void OnEnable()
@@ -36,13 +37,16 @@ public class HealthBarUI : MonoBehaviour
 
     void UpdateHealthBar(int currentHealth, int maxHralth)
     {
+        
+        UIbar.GetComponent<HealthBarCell>().RefreshUI(currentHealth,maxHralth);  
         if (currentHealth <= 0)
         {
-            Destroy(gameObject);
-            //gameObject.SetActive(false);
+            enemy.DestroyObject();
+            this.enabled = false;
+            return;
         }
-        UIbar.GetComponent<HealthBarCell>().RefreshUI(currentHealth,maxHralth);  
     }
+
     void LateUpdate()
     {   
         if (UIbar != null)

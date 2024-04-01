@@ -15,8 +15,8 @@ MonoBehaviour:
   textAssets:
   - TaskScript: {fileID: 4900000, guid: 15edea94f73e01640ad7fb797095d360, type: 3}
     taskID: 3
-    IsAccepted: 1
-    IsCompleted: 1
+    IsAccepted: 0
+    IsCompleted: 0
   - TaskScript: {fileID: 4900000, guid: b46e8c9f118022b489074e793208d894, type: 3}
     taskID: -1
     IsAccepted: 0

@@ -132,7 +132,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _HairBlendAlpha: 0.6
+    - _HairBlendAlpha: 1
     - _Metallic: 0
     - _Model: 0
     - _ModelScale: 1

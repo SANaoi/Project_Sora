@@ -1060,6 +1060,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ed89392201614f4a90a63930e049270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  agent: {fileID: 0}
+  enemyStates: 0
   attackTarget: {fileID: 0}
   signtRadius: 10
   battleRadius: 8
@@ -1068,9 +1070,15 @@ MonoBehaviour:
   PatrolRange: 3
   stoppingAngle: 5
   LookAt: {fileID: 5658225643492669989}
+  isTurn: 0
   BunkerStoppingDistance: 0.6
   guardStoppingDistance: 0.6
   ChaseStoppingDistance: 5
+  continueTime: 0
+  ExitTime: 0
+  tiggerTime: 1
+  dropItemPrefab: {fileID: 3757606353530540672, guid: a91a2cfc21d21ec4fba3343239e8851f,
+    type: 3}
 --- !u!114 &6789605324524786921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1084,7 +1092,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterData: {fileID: 0}
-  templateData: {fileID: 11400000, guid: fecba6adcb2d1f244b510c60b1cfec8d, type: 2}
+  templateData: {fileID: 11400000, guid: d1aa4b7fc87878840adc694cc670a2ed, type: 2}
   currentHealth: 0
 --- !u!136 &9027015605457974489
 CapsuleCollider:

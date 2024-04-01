@@ -23,6 +23,7 @@ public class HealthBarCell : MonoBehaviour
         if (currentHealth <= 0)
         {
             Destroy(gameObject);
+            return;
         }
         float sliderPercent = 1 - (float)currentHealth / maxHralth;
         HealthMask.GetComponent<Image>().fillAmount = sliderPercent;
