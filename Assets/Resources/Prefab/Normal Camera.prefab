@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8051595285972670034}
   - component: {fileID: 7925313678758892216}
   - component: {fileID: 8959746006870957723}
+  - component: {fileID: 5374737153008323177}
   m_Layer: 0
   m_Name: Normal Camera
   m_TagString: Untagged
@@ -105,6 +106,29 @@ MonoBehaviour:
   minimumDistance: 1
   maximumDistance: 6
   DefaultDistance: 2
+--- !u!114 &5374737153008323177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136434245437012412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ApplyAfter: 2
+  m_ChannelMask: 1
+  m_Gain: 1
+  m_Use2DDistance: 0
+  m_UseCameraSpace: 1
+  m_ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &5528890422076600257
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +258,7 @@ MonoBehaviour:
   m_HorizontalAxis:
     Value: 0
     m_SpeedMode: 1
-    m_MaxSpeed: 0.5
+    m_MaxSpeed: 0.2
     m_AccelTime: 0.1
     m_DecelTime: 0.1
     m_InputAxisName: Mouse X

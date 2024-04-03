@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8877ecadd83040748b123ed20c802bf3, type: 3}
   m_Name: Talk
   m_EditorClassIdentifier: 
-  id: 101
+  id: 5
   itemName: "\u5BF9\u8BDD"
   num: 1

@@ -14,7 +14,7 @@ public class NPCController : MonoBehaviour
     private Vector3 defaultHeadPosition;
     private PostureStates postureStates;
     private MultiAimConstraint multiAim;
-    private Transform LookAtPoint;
+    public Transform LookAtPoint;
     private WeightedTransformArray weightedTransforms;
     public CharacterTaskList_SO characterTaskList;
     public float HeadRotateAngle;
@@ -52,6 +52,8 @@ public class NPCController : MonoBehaviour
         SwitchStates();
         SwitchAnimation();
         FoundPlyer();
+        LookAtPoint.position = PlayerManager.Instance.LookPoint.transform.position;
+        LookAtPoint.rotation = PlayerManager.Instance.LookPoint.transform.rotation;
     }
     # endregion
 
@@ -59,7 +61,7 @@ public class NPCController : MonoBehaviour
     private void InitTransform()
     {
         defaultHeadPosition = transform.forward;
-        LookAtPoint = PlayerManager.Instance.LookPoint;
+        
         weightedTransforms = new()
         {
             new WeightedTransform(LookAtPoint, 1f)

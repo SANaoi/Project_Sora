@@ -33,8 +33,13 @@ MonoBehaviour:
     name: "\u673A\u68B0\u9F7F\u8F6E"
     description: "\u4E07\u80FD\u7684\u673A\u68B0\u4FEE\u590D\u96F6\u4EF6"
     imagePath: Prefab/Image/cog
-  - id: 101
+  - id: 5
     type: 101
     name: "\u5BF9\u8BDD"
     description: "npc\u5BF9\u8BDD\u901A\u7528\u56FE\u6807"
     imagePath: Prefab/Image/talk
+  - id: 6
+    type: 102
+    name: "\u4F20\u9001"
+    description: "\u4F20\u9001\u95E8\u56FE\u6807"
+    imagePath: Prefab/Image/transform

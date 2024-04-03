@@ -35,8 +35,6 @@ public class GameManager : MonoBehaviour
         inputActions = new PlayerMoveControls();
         inputActions.Player.OpenPackage.performed += GetOpenPackageInput;
         
-        // UIManager.Instance.OpenPanel(UIConst.DialogBox);
-        // shootController = new ShootController();
     }
     
     void OnEnable()

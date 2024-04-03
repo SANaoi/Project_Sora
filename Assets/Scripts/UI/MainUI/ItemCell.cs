@@ -8,6 +8,7 @@ public class ItemCell : MonoBehaviour
     public ItemInfo_SO itemInfo;
     public string uid;
     public int id; // 101为不可拾取的其他特殊图标
+    public int type;
     public string itemName;
     public int num;
     public string imagePath;
@@ -19,6 +20,7 @@ public class ItemCell : MonoBehaviour
         this.itemName = itemInfo.itemName;
         this.num = itemInfo.num;
         this.imagePath = GameManager.Instance.GetPackageTableItemById(id).imagePath;
+        this.type = GameManager.Instance.GetPackageTableItemById(id).type;
     }
 
     public void Destroy()

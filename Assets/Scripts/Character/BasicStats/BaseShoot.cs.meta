@@ -3,7 +3,12 @@ guid: 356111f9049bf4844a01c49b6bc10668
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - VFX_Flash: {instanceID: 0}
+  - ShootConfig: {fileID: 11400000, guid: 5dee06a96956d00409bd30ea9a243ad3, type: 2}
+  - TrailConfig: {fileID: 11400000, guid: d2fd919aeb15abc4c925be6bb8e7d182, type: 2}
+  - ImpactParticle: {fileID: 8926484042661614526, guid: d9bb07259519c714982cd6b20510ac9d,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

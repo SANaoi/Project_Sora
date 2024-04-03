@@ -1,4 +1,5 @@
 using System.Collections;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
@@ -7,6 +8,13 @@ public class ShootController : BaseShoot
 {
     public bool isShooting;
     float LastShootTime;
+
+    float accumulatedBallisticOffset_x; // 弹道累计的偏移量
+    float accumulatedBallisticOffset_y;
+
+    float targetOffset_x;
+    float targetOffset_y;
+
     public int MagazineAmmo;
     public int TotalAmmo;
     Camera mainCamera;
@@ -15,12 +23,14 @@ public class ShootController : BaseShoot
     private Ray FireRay;
     public PlayerMoveControls InputActions;
     private UIGunInfo GunInfo;
+    private CinemachinePOV virtualCamera;
 
     private Cinemachine.CinemachineCollisionImpulseSource Inpulse;
     private void Start()
     {
         InputActions = GameManager.Instance.inputActions;
         mainCamera = FindObjectOfType<Camera>();
+        virtualCamera = FindAnyObjectByType<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachinePOV>();
         InputActions.Player.Fire.started += OnFireStarte;
         InputActions.Player.Fire.canceled += OnFireCancel;
         animator = GetComponent<Animator>();
@@ -31,6 +41,8 @@ public class ShootController : BaseShoot
         // 2: 步枪子弹Id
         TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2);
         Inpulse = GetComponent<Cinemachine.CinemachineCollisionImpulseSource>();
+
+
         
     }
 
@@ -42,6 +54,7 @@ public class ShootController : BaseShoot
             VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(true);
             Inpulse.GenerateImpulse();
             
+            StartCoroutine(accumulatedOffset());
             Shoot();
         }
         else
@@ -53,6 +66,7 @@ public class ShootController : BaseShoot
     private void OnFireStarte(InputAction.CallbackContext context)
     {
         animator.SetBool("isShoot", true);
+        
         isShooting = true;
     }
     private void OnFireCancel(InputAction.CallbackContext context)
@@ -65,16 +79,14 @@ public class ShootController : BaseShoot
     {
         if (Time.time > ShootConfig.FireRate + LastShootTime)
         {
-        
             MagazineAmmo -= 1;
             GunInfo.Refresh(MagazineAmmo, TotalAmmo);
             VFX_Flash.Play();
             
             Vector3 shootDirection = mainCamera.transform.forward;
-            // Vector3 shootDirection = FireHole.transform.forward;
+            // Vector3 shootDirection = LookPointObject.transform.position;
             FireRay = new Ray(mainCamera.transform.position, shootDirection);
             shootDirection.Normalize();
-            
             
             if (Physics.Raycast(
                     // mainCamera.ScreenPointToRay(EndRayPoint),
@@ -105,7 +117,7 @@ public class ShootController : BaseShoot
                             enemyController.isTurn = false;
                             enemyController.agent.destination = transform.position;
                         }
-                        else
+                        else if (Enemy.GetComponent<CharacterStats>().CurrentHealth <= 0 && enemyController.agent.isStopped == false)
                         {
                             enemyController.agent.isStopped = true;
                             GameObject dropItem = Instantiate(enemyController.dropItemPrefab, Enemy.position, Quaternion.identity);
@@ -135,4 +147,21 @@ public class ShootController : BaseShoot
         }
         return obj;
     }
+    private IEnumerator accumulatedOffset()
+    {   
+
+        Vector2 RandomVector2 = new Vector2(
+                Random.Range(
+                    -ShootConfig.Spread.x,
+                    ShootConfig.Spread.x),
+                Random.Range(
+                0,
+                ShootConfig.Spread.y));
+
+        virtualCamera.m_HorizontalAxis.Value -= RandomVector2.x;
+        virtualCamera.m_VerticalAxis.Value -= RandomVector2.y;
+        yield return null;
+
+    }
+
 }

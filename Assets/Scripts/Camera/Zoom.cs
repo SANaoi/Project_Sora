@@ -40,8 +40,11 @@ public class Zoom : MonoBehaviour
                 currentDistance = Mathf.Lerp(targetDistance, currentDistance, 2f * Time.deltaTime);
         }
 
-        if (Mathf.Abs(currentDistance - m_targetDistance) < 0.1f) currentDistance = m_targetDistance;
-        if (currentDistance == m_targetDistance) m_targetDistance = 0f;
+        if (Mathf.Abs(currentDistance - m_targetDistance) < 0.1f)
+        {
+            currentDistance = m_targetDistance;
+            m_targetDistance = 0f;
+        } 
 
         currentDistance = Mathf.Clamp(inputProvider.GetAxisValue(2) + currentDistance, minimumDistance, maximumDistance);
         cinemachineFramingTransposer.m_CameraDistance = currentDistance;

@@ -38,13 +38,14 @@ public class HealthBarUI : MonoBehaviour
     void UpdateHealthBar(int currentHealth, int maxHralth)
     {
         
-        UIbar.GetComponent<HealthBarCell>().RefreshUI(currentHealth,maxHralth);  
         if (currentHealth <= 0)
         {
+            if (this.enabled) UIbar.GetComponent<HealthBarCell>().RefreshUI(currentHealth,maxHralth); 
             enemy.DestroyObject();
             this.enabled = false;
             return;
         }
+        UIbar.GetComponent<HealthBarCell>().RefreshUI(currentHealth,maxHralth);  
     }
 
     void LateUpdate()

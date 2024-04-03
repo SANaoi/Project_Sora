@@ -76,8 +76,8 @@ public class AimingController : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(mainCamera.transform.position - LookPointObject.transform.position);
 
         // 使用插值平滑过渡位置和旋转
-        LookPointObject.transform.position = Vector3.Lerp(LookPointObject.transform.position, targetPosition, Time.deltaTime * 100f);
-        LookPointObject.transform.rotation = Quaternion.Slerp(LookPointObject.transform.rotation, targetRotation, Time.deltaTime * 100f);
+        LookPointObject.transform.position = Vector3.Lerp(LookPointObject.transform.position, targetPosition,  1000f * Time.deltaTime);
+        LookPointObject.transform.rotation = Quaternion.Slerp(LookPointObject.transform.rotation, targetRotation, 1000f *Time.deltaTime );
     }
 
     public void SwitchCameraParameter(InputAction.CallbackContext ctx)
@@ -117,13 +117,11 @@ public class AimingController : MonoBehaviour
             normalCamera.m_Lens.FieldOfView = Mathf.Lerp(initialCameraFOV, targetFOV, elapsedTime / duration);
             VisualnormalCamera.m_ScreenX = Mathf.Lerp(initialCamera_m_ScreenX, target_m_ScreenX, elapsedTime / duration);
             zoom.CameraZoom(targetZoomDistance);
-            // VisualnormalCamera.m_CameraDistance = Mathf.Lerp(initialCamera_m_CameraDistance, target_m_CameraDistance, elapsedTime / duration);
             yield return null;
             elapsedTime += Time.deltaTime;
         }
         normalCamera.m_Lens.FieldOfView = targetFOV;
         VisualnormalCamera.m_ScreenX = target_m_ScreenX;
-        // VisualnormalCamera.m_CameraDistance = target_m_CameraDistance;
     }
     private void OnGUI()
     {
@@ -131,14 +129,15 @@ public class AimingController : MonoBehaviour
         {
             // 设置十字的颜色
             GUI.color = Color.white;
+            //Vector3 screenPosition = mainCamera.WorldToScreenPoint(LookPointObject.transform.position);
             // 获取屏幕中心的坐标
-            Vector2 center = new Vector2(Screen.width / 2, Screen.height / 2);
+            Vector2 screenPosition = new Vector2(Screen.width / 2, Screen.height / 2);
             // 设置十字的大小
             float crosshairSize = 20f;
             // 绘制垂直线
-            GUI.DrawTexture(new Rect(center.x - 1, center.y - crosshairSize / 2, 2, crosshairSize), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(screenPosition.x - 1, screenPosition.y - crosshairSize / 2, 2, crosshairSize), Texture2D.whiteTexture);
             // 绘制水平线
-            GUI.DrawTexture(new Rect(center.x - crosshairSize / 2, center.y - 1, crosshairSize, 2), Texture2D.whiteTexture);
+            GUI.DrawTexture(new Rect(screenPosition.x - crosshairSize / 2, screenPosition.y - 1, crosshairSize, 2), Texture2D.whiteTexture);
         }
     }
 }

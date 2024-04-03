@@ -28,7 +28,6 @@ public class PlayerManager : MonoBehaviour
     Vector3 timeToReachTargetRotation;
     Vector3 dampedTargetRotationCurrentVelocity;
     Vector3 dampedTargetRotationPassedTime;
-    GameObject aimingIdleTarget;
     Vector2 playerMoveContext;
 
     [HideInInspector]
@@ -45,9 +44,9 @@ public class PlayerManager : MonoBehaviour
     private GameObject HandleOnBack;
     private TwoBoneIKConstraint rightHandConstraint;
     private TwoBoneIKConstraint leftHandConstraint;
-    private DampedTransform AimingConstraint;
-    private DampedTransform AimingIdleConstraint;
-    private DampedTransform HeadConstraint;
+    private MultiAimConstraint AimingConstraint;
+    private MultiAimConstraint AimingIdleConstraint;
+    private MultiAimConstraint HeadConstraint;
     public AudioSource shootAudio;
     private CharacterController characterController;
     // 记录上一帧人物速度
@@ -128,7 +127,6 @@ public class PlayerManager : MonoBehaviour
         characterController =   GetComponent<CharacterController>();
 
         // Cursor.lockState = CursorLockMode.Locked;
-        aimingIdleTarget = new GameObject("aimingIdleTarget");
 
         mainCamera = Camera.main;
 
@@ -148,7 +146,6 @@ public class PlayerManager : MonoBehaviour
 
         playerMoveState = PlayerMoveState.Run;
         playerPosture = PlayerPostureState.Stand;
-        AimingIdleConstraint.data.sourceObject = aimingIdleTarget.transform;
         searchRadius = 2.0f;
 
         InvokeRepeating("SearchForGameObjectWithTag", 0.25f, 0.25f);
@@ -200,15 +197,15 @@ public class PlayerManager : MonoBehaviour
             }
             if (ChildObj.name == "Aiming Chest Rig")
             {
-                AimingConstraint = ChildObj.Find("Aiming Constraint").GetComponent<DampedTransform>();
+                AimingConstraint = ChildObj.Find("Aiming Constraint").GetComponent<MultiAimConstraint>();
             }
             if (ChildObj.name == "Aiming Body Rig")
             {
-                AimingIdleConstraint = ChildObj.Find("Aiming Idle Constraint").GetComponent<DampedTransform>();
+                AimingIdleConstraint = ChildObj.Find("Aiming Idle Constraint").GetComponent<MultiAimConstraint>();
             }
             if (ChildObj.name == "Aiming Head Rig")
             {
-                HeadConstraint = ChildObj.Find("Head Constraint").GetComponent<DampedTransform>();
+                HeadConstraint = ChildObj.Find("Head Constraint").GetComponent<MultiAimConstraint>();
             }
         }
     }
@@ -320,7 +317,8 @@ public class PlayerManager : MonoBehaviour
                 animator.SetFloat("VerticalSpeed", jumpVelocity);
             }
         }
-
+        
+        RotateTowardsTargetRotation();
         moveDirection.y += gravity * Time.deltaTime;
         characterController.Move(moveDirection * Time.deltaTime);
         if (!characterController.isGrounded)
@@ -370,7 +368,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (isAiming && playerMoveContext != Vector2.zero)
         {
-            AimingConstraint.weight = 0.01f;
+            AimingConstraint.weight = 1f;
         }
         else
         {
@@ -382,9 +380,7 @@ public class PlayerManager : MonoBehaviour
         if (isAiming && playerMoveContext == Vector2.zero)
         {
             transform.rotation = Quaternion.Euler(0f, mainCamera.transform.eulerAngles.y, 0f);
-            aimingIdleTarget.transform.position = new Vector3(0f, mainCamera.transform.position.y, 0f);
-            aimingIdleTarget.transform.rotation = Quaternion.Euler(0f, mainCamera.transform.position.y, 0f);
-            AimingIdleConstraint.weight = 0.01f;
+            AimingIdleConstraint.weight = 1f;
         }
         else
         {
@@ -395,7 +391,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (isAiming)
         {
-            HeadConstraint.weight = 0.1f;
+            HeadConstraint.weight = 1f;
         }
         else
         {
@@ -422,8 +418,6 @@ public class PlayerManager : MonoBehaviour
     {
         // 通过给定的方向来旋转玩家。更新目标旋转角度，使玩家朝向目标旋转，并返回方向角度。
         float directionAngle = UpdateTargetRotation(direction);
-
-        RotateTowardsTargetRotation();
 
         return directionAngle;
     }
@@ -489,12 +483,10 @@ public class PlayerManager : MonoBehaviour
         {
             return;
         }
-        // float smoothedYAngle = Mathf.SmoothDampAngle(currentYAngle, currentTargetRotation.y, ref dampedTargetRotationCurrentVelocity.y,
-        //                                             timeToReachTargetRotation.y - dampedTargetRotationPassedTime.y);
         float smoothedYAngle = Mathf.SmoothDampAngle(currentYAngle, currentTargetRotation.y, ref dampedTargetRotationCurrentVelocity.y,
                                                     timeToReachTargetRotation.y - dampedTargetRotationPassedTime.y);
         dampedTargetRotationPassedTime.y += Time.deltaTime;
-        smoothedYAngle = Mathf.Lerp(currentYAngle, smoothedYAngle, 10f * Time.deltaTime);
+        smoothedYAngle = Mathf.Lerp(currentYAngle, smoothedYAngle, 30f * Time.deltaTime);
         Quaternion targetRotation = Quaternion.Euler(0f, smoothedYAngle, 0f);
 
         rig.MoveRotation(targetRotation);
@@ -766,7 +758,7 @@ public class PlayerManager : MonoBehaviour
             foreach (GameObject Item in gameObjectList)
             {
                 ItemCell ItemInfo = Item.GetComponent<ItemCell>();
-                if (ItemInfo.uid == SelectingID && ItemInfo.id != 101) // 101为不可拾取的特殊场景物体
+                if (ItemInfo.uid == SelectingID && ItemInfo.type == 1) // 1为可拾取的场景物体
                 {
                     int ItemNum = UIManager.Instance.ItemsInfo.GetItemNumByUID(SelectingID);
                     if (ItemNum == UIManager.Instance.ItemsInfo.scrollContent.childCount - 1)
@@ -787,10 +779,17 @@ public class PlayerManager : MonoBehaviour
                         return;
                     }
                 }
-                else if (ItemInfo.uid == SelectingID && ItemInfo.id == 101)
+                else if (ItemInfo.uid == SelectingID && ItemInfo.type == 101)
                 {
                     NPCController nPC = Item.GetComponent<NPCController>();
                     nPC.ShowDialog();
+                }
+
+                else if (ItemInfo.uid == SelectingID && ItemInfo.type == 102)
+                {
+                    TransitionPoint transitionPoint = ItemInfo.transform.gameObject.GetComponent<TransitionPoint>();
+                    print(transitionPoint.sceneName);
+                    SceneController.Instance.TransitionToDestination(transitionPoint);
                 }
             }
         }
@@ -816,7 +815,6 @@ public class PlayerManager : MonoBehaviour
             shootController.MagazineAmmo += TotalAmmo;
             GameManager.Instance.DiscountPackageLocalItemsNumById(2, TotalAmmo);
             shootController.TotalAmmo = 0;
-            print(1 +" "+ TotalAmmo);
         }
         else
         {
