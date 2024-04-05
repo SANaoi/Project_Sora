@@ -60,7 +60,7 @@ public class EnemyController : MonoBehaviour
     // public float LastFoundTime;
     // public float lastExitTime;
     public GameObject dropItemPrefab;
-
+    private PlayerManager playerManager;
 
     void Awake()
     {
@@ -85,6 +85,7 @@ public class EnemyController : MonoBehaviour
         {
             enemyStates = EnemyStates.PATROL;
         }
+        playerManager = FindAnyObjectByType<PlayerManager>();
     }
 
     // Update is called once per frame
@@ -92,8 +93,6 @@ public class EnemyController : MonoBehaviour
     {
         SwitchStates();
         SwitchAnimation();
-        LookAt.position = PlayerManager.Instance.LookPoint.transform.position;
-        LookAt.rotation = PlayerManager.Instance.LookPoint.transform.rotation;
     }
 
     void SwitchAnimation()
@@ -253,6 +252,9 @@ public class EnemyController : MonoBehaviour
         {
             if (collider.CompareTag("Player"))
             {
+                
+                LookAt.position = playerManager.LookPoint.transform.position;
+                LookAt.rotation = playerManager.LookPoint.transform.rotation;
                 attackTarget = collider.gameObject;
                 isTurn = false;
                 multiAim.weight = 1f;

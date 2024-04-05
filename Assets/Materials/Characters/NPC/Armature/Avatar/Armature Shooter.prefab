@@ -2199,7 +2199,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e514f544f3c90864a9811e879fd6690c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VFX_Flash: {fileID: 4272044972191310320}
+  VFX_Flash: {fileID: 8926484042661614526, guid: 83b189832f10df84a81a864764163e61,
+    type: 3}
   ShootConfig: {fileID: 11400000, guid: 5dee06a96956d00409bd30ea9a243ad3, type: 2}
   TrailConfig: {fileID: 11400000, guid: d2fd919aeb15abc4c925be6bb8e7d182, type: 2}
   ImpactParticle: {fileID: 8926484042661614526, guid: d9bb07259519c714982cd6b20510ac9d,

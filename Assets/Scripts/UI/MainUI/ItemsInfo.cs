@@ -9,10 +9,16 @@ public class ItemsInfo : BasePanel
     private Transform UIScrollView;
     public RectTransform scrollContent;
     public GameObject ItemCellPrefab;
-    void Start()
+    private PlayerManager playerManager;
+    void Awake()
     {
+        // playerManager = FindAnyObjectByType<PlayerManager>();
         InitUI();
         InitScrollView();
+
+    }
+    void Start()
+    {
     }
 
     private void InitUI()
@@ -59,13 +65,14 @@ public class ItemsInfo : BasePanel
 
     public void UpSelectID()
     {
+        playerManager = FindAnyObjectByType<PlayerManager>();
         for (int i = 0; i < scrollContent.childCount; i++)
         {
-            if (PlayerManager.Instance.SelectingID == scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().uid)
+            if (playerManager.SelectingID == scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().uid)
             {
                 if (i > 0)
                 {
-                    PlayerManager.Instance.SelectingID = scrollContent.GetChild(i - 1).gameObject.GetComponent<ItemDetail>().uid;
+                    playerManager.SelectingID = scrollContent.GetChild(i - 1).gameObject.GetComponent<ItemDetail>().uid;
                     scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(false);
                     scrollContent.GetChild(i - 1).gameObject.GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
                     break;
@@ -76,13 +83,14 @@ public class ItemsInfo : BasePanel
 
     public void DownSelectID()
     {
+        playerManager = FindAnyObjectByType<PlayerManager>();
         for (int i = 0; i < scrollContent.childCount; i++)
         {
-            if (PlayerManager.Instance.SelectingID == scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().uid)
+            if (playerManager.SelectingID == scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().uid)
             {
                 if (i < scrollContent.childCount - 1)
                 {
-                    PlayerManager.Instance.SelectingID = scrollContent.GetChild(i + 1).gameObject.GetComponent<ItemDetail>().uid;
+                    playerManager.SelectingID = scrollContent.GetChild(i + 1).gameObject.GetComponent<ItemDetail>().uid;
                     scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(false);
                     scrollContent.GetChild(i + 1).gameObject.GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
                     break;

@@ -21,7 +21,7 @@ MonoBehaviour:
     ExterminateList: []
     CollectList:
     - ItemInfo: {fileID: 11400000, guid: bdd8f3168968aeb4986a3b2ec2d33152, type: 2}
-      CurrentNumber: 2
+      CurrentNumber: 0
       CollectTarget: 2
     SurvivalList: []
     remuneration:
@@ -35,10 +35,10 @@ MonoBehaviour:
     taskType: 0
     DefaultLsit:
     - targetData: {fileID: 11400000, guid: d1aa4b7fc87878840adc694cc670a2ed, type: 2}
-      CurrentKill: 2
+      CurrentKill: 0
       killTarget: 2
     - targetData: {fileID: 11400000, guid: fecba6adcb2d1f244b510c60b1cfec8d, type: 2}
-      CurrentKill: 2
+      CurrentKill: 0
       killTarget: 2
     ExterminateList: []
     CollectList: []
@@ -56,7 +56,7 @@ MonoBehaviour:
     ExterminateList: []
     CollectList:
     - ItemInfo: {fileID: 11400000, guid: 09d37bbbf12ab0b4caa277debcafc396, type: 2}
-      CurrentNumber: 3
+      CurrentNumber: 0
       CollectTarget: 3
     SurvivalList: []
     remuneration:

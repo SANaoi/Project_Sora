@@ -5,7 +5,7 @@ using UnityEngine.VFX;
 
 public class BaseShoot : MonoBehaviour 
 {
-    public VisualEffect VFX_Flash;
+    public VisualEffectAsset VFX_Flash;
     protected ObjectPool<TrailRenderer> TrailPool;
     protected ObjectPool<VisualEffect> ImpactPool;
     public ShootConfigurationScriptableObject ShootConfig;
@@ -86,5 +86,12 @@ public class BaseShoot : MonoBehaviour
         VisualEffect impact = instance.AddComponent<VisualEffect>();
         impact.visualEffectAsset = ImpactParticle;
         return impact;
+    }
+
+    protected VisualEffect CreateImpactFlash(GameObject FlashPoint)
+    {
+        VisualEffect Flash = FlashPoint.AddComponent<VisualEffect>();
+        Flash.visualEffectAsset = VFX_Flash;
+        return Flash;
     }
 }

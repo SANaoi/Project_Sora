@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.Interactions;
 
-public class UIManager
+public class UIManager : MonoBehaviour
 {
-    public static UIManager _instance;
+    private static UIManager _instance;
     private Transform _uiRoot;
     private Dictionary<string, string> pathDict;
     private Dictionary<string, GameObject> prefabDict;
@@ -19,7 +22,7 @@ public class UIManager
         {
             if(_instance == null)
             {
-                _instance = new UIManager();
+                _instance = new GameObject("UIManager").AddComponent<UIManager>();
             }
             return _instance;
         }
@@ -36,18 +39,51 @@ public class UIManager
         }
     }
 
-    private UIManager()
+    private void Awake()
     {
+        print(this.name + " Awake——------------");
+        DontDestroyOnLoad(this);
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        // 否则，设置这个实例为单例
+        _instance = this;
+
+
+    }
+    private void OnEnable()
+    {
+        print(this.name + " OnEnable------------");
+        InitDicts();
+        // InitMainUI();
+
+    }
+    private void OnDisable()
+    {
+        print(this.name + " OnDisable------------");
+    }
+    public void InitMainUI()
+    {
+        OpenPanel("ItemsInfo").GetComponent<ItemsInfo>();
+    }
+    public void RefreshManager()
+    {
+        EventSystem eventSystem = FindAnyObjectByType<EventSystem>();
+        if (eventSystem == null)
+        {
+            GameObject eventSystemObject = new GameObject("EventSystem");
+            eventSystemObject.AddComponent<EventSystem>();
+            eventSystemObject.AddComponent<StandaloneInputModule>();
+        }
         InitDicts();
         InitMainUI();
-    }
-    private void InitMainUI()
-    {
-        ItemsInfo = OpenPanel("ItemsInfo").GetComponent<ItemsInfo>();
     }
 
     private void InitDicts()
     {
+
         prefabDict = new Dictionary<string, GameObject>();
         panelDict = new Dictionary<string, BasePanel>();
         // 配置路径
@@ -92,8 +128,7 @@ public class UIManager
             string realPath = "Prefab/Panel/" + path;
             panelPrefab = Resources.Load<GameObject>(realPath);
             prefabDict.Add(name, panelPrefab);
-        }   
-
+        }
         GameObject panelObject = GameObject.Instantiate(panelPrefab, UIRoot, false);
         panel = panelObject.GetComponent<BasePanel>();
         panelDict.Add(name, panel);
@@ -102,7 +137,6 @@ public class UIManager
 
     public bool ClosePanel(string name)
     {   
-        GameManager.Instance.inputActions.Player.Aiming.performed += AimingController.Instance.SwitchCameraParameter;
 
         BasePanel panel = null;
         if(!panelDict.TryGetValue(name, out panel))
@@ -111,6 +145,10 @@ public class UIManager
             return false;
         }
         panel.ClosePanel(name);
+        if(panelDict.ContainsKey(name))
+        {
+            panelDict.Remove(name);
+        }
         return true;
     }
 
@@ -119,6 +157,7 @@ public class UIManager
         BasePanel panel = null;
         if(panelDict.TryGetValue(name, out panel))
         {
+            
             return panel;
         }
         string path = "";
@@ -137,6 +176,12 @@ public class UIManager
         GameObject panelObject = GameObject.Instantiate(panelPrefab, UIRoot, false);
         panel = panelObject.GetComponent<BasePanel>();
         panelDict.Add(name, panel);
+        if (panel == null)
+        {
+            Debug.Log("null");
+            Debug.Log(panelDict.Keys);
+        }
+        Debug.Log(name+"  将被生成" );
         return panel;
     }
 

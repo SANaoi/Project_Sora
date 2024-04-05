@@ -2,18 +2,14 @@ using System.Collections;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.VFX;
+
 
 public class ShootController : BaseShoot
 {
     public bool isShooting;
     float LastShootTime;
-
-    float accumulatedBallisticOffset_x; // 弹道累计的偏移量
-    float accumulatedBallisticOffset_y;
-
-    float targetOffset_x;
-    float targetOffset_y;
 
     public int MagazineAmmo;
     public int TotalAmmo;
@@ -21,57 +17,62 @@ public class ShootController : BaseShoot
     Animator animator;
     public GameObject FireHole;
     private Ray FireRay;
-    public PlayerMoveControls InputActions;
-    private UIGunInfo GunInfo;
     private CinemachinePOV virtualCamera;
-
+    private VisualEffect flash;
     private Cinemachine.CinemachineCollisionImpulseSource Inpulse;
-    private void Start()
+
+    private void Awake()
     {
-        InputActions = GameManager.Instance.inputActions;
-        mainCamera = FindObjectOfType<Camera>();
-        virtualCamera = FindAnyObjectByType<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachinePOV>();
-        InputActions.Player.Fire.started += OnFireStarte;
-        InputActions.Player.Fire.canceled += OnFireCancel;
-        animator = GetComponent<Animator>();
-        LastShootTime = 0f;
-        MagazineAmmo = ShootConfig.Capacity;
+        TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2); // 2: 步枪子弹Id
+        flash = CreateImpactFlash(FireHole.gameObject);
 
-        GunInfo = UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>();
-        // 2: 步枪子弹Id
-        TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2);
-        Inpulse = GetComponent<Cinemachine.CinemachineCollisionImpulseSource>();
-
-
-        
     }
 
+    private void OnEnable() 
+    {
+        animator = GetComponent<Animator>();
+    }
+    private void Start()
+    {
+        LastShootTime = 0f;
+        MagazineAmmo = ShootConfig.Capacity;
+        Inpulse = GetComponent<Cinemachine.CinemachineCollisionImpulseSource>();
+        mainCamera = FindObjectOfType<Camera>();
+        virtualCamera = FindAnyObjectByType<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachinePOV>();
+    }
+    
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        animator = GetComponent<Animator>();
+    }
+    private void OnDisable()
+    {
+    }
 
     private void Update()
     {
         if (isShooting && animator.GetBool("Aiming") && MagazineAmmo > 0 && animator.GetCurrentAnimatorStateInfo(1).IsName("Rifle Aiming Idle"))
         {
-            VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(true);
+            
             Inpulse.GenerateImpulse();
+            flash.gameObject.SetActive(true);
             
             StartCoroutine(accumulatedOffset());
             Shoot();
         }
         else
         {
-            VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(false);
+            flash.gameObject.SetActive(false);
         }
+        animator.SetBool("isShoot", isShooting);
     }
 
-    private void OnFireStarte(InputAction.CallbackContext context)
+    public void OnFireStarte(InputAction.CallbackContext context)
     {
-        animator.SetBool("isShoot", true);
-        
         isShooting = true;
     }
-    private void OnFireCancel(InputAction.CallbackContext context)
+    public void OnFireCancel(InputAction.CallbackContext context)
     {
-        animator.SetBool("isShoot", false);
         isShooting = false;
     }
 
@@ -80,8 +81,8 @@ public class ShootController : BaseShoot
         if (Time.time > ShootConfig.FireRate + LastShootTime)
         {
             MagazineAmmo -= 1;
-            GunInfo.Refresh(MagazineAmmo, TotalAmmo);
-            VFX_Flash.Play();
+            UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(MagazineAmmo, TotalAmmo);
+            flash.Play();
             
             Vector3 shootDirection = mainCamera.transform.forward;
             // Vector3 shootDirection = LookPointObject.transform.position;

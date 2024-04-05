@@ -14,7 +14,8 @@ public class BasePanel : MonoBehaviour
     }
 
     public virtual void ClosePanel(string name)
-    {
+    {   
+        print(name+"  将被删除" );
         isClose = true;
         gameObject.SetActive(false);
         Destroy(gameObject);
@@ -24,4 +25,5 @@ public class BasePanel : MonoBehaviour
             UIManager.Instance.panelDict.Remove(name);
         }
     }
+
 }

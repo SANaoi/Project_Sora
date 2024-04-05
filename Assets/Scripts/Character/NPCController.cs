@@ -18,8 +18,7 @@ public class NPCController : MonoBehaviour
     private WeightedTransformArray weightedTransforms;
     public CharacterTaskList_SO characterTaskList;
     public float HeadRotateAngle;
-
-
+    private PlayerManager playerManager;
 
     public enum PostureStates
     {
@@ -44,6 +43,7 @@ public class NPCController : MonoBehaviour
 
     void Start()
     {
+        playerManager = FindAnyObjectByType<PlayerManager>();
         // InvokeRepeating("FoundPlyer", 0.25f, 0.25f);
     }
 
@@ -52,8 +52,6 @@ public class NPCController : MonoBehaviour
         SwitchStates();
         SwitchAnimation();
         FoundPlyer();
-        LookAtPoint.position = PlayerManager.Instance.LookPoint.transform.position;
-        LookAtPoint.rotation = PlayerManager.Instance.LookPoint.transform.rotation;
     }
     # endregion
 
@@ -139,6 +137,9 @@ public class NPCController : MonoBehaviour
         {
             if (collider.CompareTag("Player"))
             {
+                
+                LookAtPoint.position = playerManager.LookPoint.transform.position;
+                LookAtPoint.rotation = playerManager.LookPoint.transform.rotation;
                 postureStates = PostureStates.Talk;
 
                 Quaternion rotationToTarget = Quaternion.FromToRotation(transform.forward, (LookAtPoint.position - transform.position).normalized);

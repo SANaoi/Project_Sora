@@ -78,7 +78,7 @@ public class GMCmd
     [MenuItem("GMCmd/选中物品的SelectingID")]
     public static void PrintInfo()
     {
-        Debug.Log($"当前选中物品的SelectingID: {PlayerManager.Instance.SelectingID}");
+        Debug.Log($"当前选中物品的SelectingID:");
     }
 
     [MenuItem("GMCmd/输入系统/激活角色输入")]

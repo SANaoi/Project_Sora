@@ -6,18 +6,18 @@ using Unity.VisualScripting;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-
+using Cinemachine;
 [RequireComponent(typeof(CharacterStats))]
 public class PlayerManager : MonoBehaviour
 {
     Rigidbody rig;
     Camera mainCamera;
     public Transform LookPoint;
-    bool isWalk = false;
+    bool isWalk;
     bool isArmRifle;
     public bool isJumping;
     [HideInInspector]
-    public bool isAiming = false;
+    public bool isAiming;
     float backwardSpeed = -1.3f;
     float currentSpeed = 0f;
     float WalkSpeed = 1.5f;
@@ -55,7 +55,12 @@ public class PlayerManager : MonoBehaviour
     public float gravity = -9.8f;
     [HideInInspector]
     public float jumpVelocity = 3f;
+    private CinemachineVirtualCamera virtualCamera;
     private Vector3 moveVelocity; // 平滑速度向量
+
+    private GameObject aimTarget;
+    private AimingController aimingController;
+
     // 场景可获取物品功能参数
     private List<GameObject> _gameObjectList;
     public List<GameObject> gameObjectList
@@ -101,72 +106,91 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region Mono自带类
-    private static PlayerManager _instance;
-
-    public static PlayerManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new PlayerManager();
-            }
-            return _instance;
-        }
-    }
     void Awake()
     {   
-        if (_instance != null)
-            Destroy(gameObject);
-        else
-            _instance = (PlayerManager)this;
-
-        animator =              GetComponent<Animator>();
         rig =                   GetComponent<Rigidbody>();
         shootController =       GetComponent<ShootController>();
         characterController =   GetComponent<CharacterController>();
 
-        // Cursor.lockState = CursorLockMode.Locked;
-
         mainCamera = Camera.main;
 
-        UIManager.Instance.OpenPanel(UIConst.PlayerMainUI);
-        animator.SetFloat("ScaleFactor", 1 / animator.humanScale);
+
+        RegisterPlayer();
     }
 
 
     void Start()
     {   
+        
         InitDicts();
         InitGameObjects();
-        InitInputSystem();
         InitDelegate();
 
         UpdatePackageLocalData();
+        animator =              GetComponent<Animator>();
+        animator.SetFloat("ScaleFactor", 1 / animator.humanScale);
 
         playerMoveState = PlayerMoveState.Run;
         playerPosture = PlayerPostureState.Stand;
         searchRadius = 2.0f;
 
+        isWalk = false;
+        isArmRifle = false;
+        isJumping = false;
+        isAiming = false;
+
+        // UIManager.Instance.OpenPanel(UIConst.ItemsInfo);
+        UIManager.Instance.OpenPanel(UIConst.PlayerMainUI);
+        UIManager.Instance.OpenPanel(UIConst.GunInfo);
         InvokeRepeating("SearchForGameObjectWithTag", 0.25f, 0.25f);
         // 确保 gunAudio 组件存在
         if (shootAudio == null)
         {
             shootAudio = gameObject.AddComponent<AudioSource>();
         }
+        if (aimingController == null)
+        {
+            aimingController = FindAnyObjectByType<AimingController>();
+        }
+        // print(this.name + "  start");
+        InitInputSystem();
     }
 
+    private void OnEnable()
+    {
+        // print(this.name + "  OnEnable  ");
+        
+    }
+
+    public void RegisterPlayer()
+    {
+        virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+
+        if (virtualCamera != null)
+        {
+            virtualCamera.Follow = LookPoint;
+            virtualCamera.LookAt = LookPoint;
+        }
+    }
+
+    private void OnDisable()
+    {
+        // print(this.name + "  OnDisable");
+        LogoutInputSystem();
+        animator = null;
+        gameObjectList.Clear();
+    }
     void Update()
     {
         SwitchStates();
         UpdateConstraintWeight();
         Move();
+        animator.SetBool("Rifle", isArmRifle);
+        animator.SetBool("Aiming", isAiming);
     }
-    void FixedUpdate()
+    void LateUpdate()
     {
-    }
-    void LateUpdate() 
-    {
+        UpdateAimingTransform();
     }
     #endregion
 
@@ -181,6 +205,10 @@ public class PlayerManager : MonoBehaviour
         AllChildrenList = GetComponentsInChildren<Transform>();
         foreach (Transform ChildObj in AllChildrenList)
         {   
+            if (ChildObj.name == "aimTarget")
+            {
+                aimTarget = ChildObj.GameObject();
+            }
             if (ChildObj.name == "Handle OnBack")
             {
                 HandleOnBack = ChildObj.GameObject();
@@ -222,6 +250,10 @@ public class PlayerManager : MonoBehaviour
         GameManager.Instance.inputActions.Player.Crouch.performed += GetPostureStateInput;
         GameManager.Instance.inputActions.Player.SelectItem.performed += GetSelectItemInput;
         GameManager.Instance.inputActions.Player.WalkToggle.performed += GetWalkToggleInput;
+
+        GameManager.Instance.inputActions.Player.Aiming.performed += aimingController.SwitchCameraParameter;
+        GameManager.Instance.inputActions.Player.Fire.started += shootController.OnFireStarte;
+        GameManager.Instance.inputActions.Player.Fire.canceled += shootController.OnFireCancel;
     }
 
     private void LogoutInputSystem()
@@ -236,6 +268,10 @@ public class PlayerManager : MonoBehaviour
         GameManager.Instance.inputActions.Player.Crouch.performed -= GetPostureStateInput;
         GameManager.Instance.inputActions.Player.SelectItem.performed -= GetSelectItemInput;
         GameManager.Instance.inputActions.Player.WalkToggle.performed -= GetWalkToggleInput;
+
+        GameManager.Instance.inputActions.Player.Aiming.performed -= aimingController.SwitchCameraParameter;
+        GameManager.Instance.inputActions.Player.Fire.started -= shootController.OnFireStarte;
+        GameManager.Instance.inputActions.Player.Fire.canceled -= shootController.OnFireCancel;
     }
 
     void InitDelegate()
@@ -260,11 +296,17 @@ public class PlayerManager : MonoBehaviour
         SwitchPlayerPostureStates();
     }
 
+
     public void UpdatePackageLocalData()
     {
         // 用于及时更新与界面UI有关的数据
         shootController.TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2);
         UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(shootController.MagazineAmmo,shootController.TotalAmmo);
+    }
+
+    public void UpdateAimingTransform()
+    {
+        aimTarget.transform.position = aimingController.UpdateLookPoint();
     }
 
     private void HorizontalVelocityCalculate()
@@ -619,6 +661,7 @@ public class PlayerManager : MonoBehaviour
         var foundObjects = Physics.OverlapSphere(transform.position, searchRadius);
         List<GameObject> foundItems = new();
         List<GameObject> ToBeDeleted = new();
+        ItemsInfo itemsInfo = UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>();
         foreach (var foundObject in foundObjects)
         {
             if (foundObject.CompareTag("Item") || foundObject.CompareTag("NPC"))
@@ -628,7 +671,7 @@ public class PlayerManager : MonoBehaviour
                 if (!gameObjectList.Any(gameObject => gameObject.GetComponent<ItemCell>().uid == NowUid))
                 {
                     gameObjectList.Add(foundObject.gameObject);
-                    UIManager.Instance.ItemsInfo.GetScrollContent(foundObject.gameObject);
+                    itemsInfo.GetScrollContent(foundObject.gameObject);
                 }
             }
         }
@@ -643,7 +686,7 @@ public class PlayerManager : MonoBehaviour
         foreach (GameObject obj in ToBeDeleted)
         {
             gameObjectList.Remove(obj);
-            UIManager.Instance.ItemsInfo.DelScrollContent(obj);
+            itemsInfo.DelScrollContent(obj);
         }
 
         // 刷新选中的物品
@@ -654,17 +697,17 @@ public class PlayerManager : MonoBehaviour
         }
         if (SelectingID != "")
         {
-            for (int i = 0; i < UIManager.Instance.ItemsInfo.scrollContent.childCount; i++)
+            for (int i = 0; i < itemsInfo.scrollContent.childCount; i++)
             {
-                ItemDetail temp = UIManager.Instance.ItemsInfo.scrollContent.GetChild(i).GetComponent<ItemDetail>();
+                ItemDetail temp = itemsInfo.scrollContent.GetChild(i).GetComponent<ItemDetail>();
                 if (temp.UISelecting.gameObject.activeSelf == true)
                 {
                     return;
                 }
             }
         }
-        SelectingID = UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().uid;
-        UIManager.Instance.ItemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
+        SelectingID = itemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().uid;
+        itemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
 
     }
     #endregion
@@ -685,7 +728,6 @@ public class PlayerManager : MonoBehaviour
         else
         {
             isAiming = false;
-            animator.SetBool("Aiming", isAiming);
             playerArmState = PlayerArmState.Normal;
         }
 
@@ -696,12 +738,10 @@ public class PlayerManager : MonoBehaviour
         if (isAiming)
         {
             isArmRifle = true;
-            animator.SetBool("Rifle", isArmRifle);
             playerArmState = PlayerArmState.Aim;
         }
         else
         {
-            animator.SetBool("Aiming", isAiming);
             playerArmState = PlayerArmState.Rifle;
         }
     }
@@ -732,18 +772,18 @@ public class PlayerManager : MonoBehaviour
         if (context.ReadValueAsButton())
         {
             // 上移
-            UIManager.Instance.ItemsInfo.UpSelectID();
+            UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().UpSelectID();
         }
         else
         {
             // 下移
-            UIManager.Instance.ItemsInfo.DownSelectID();
+            UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().DownSelectID();
         }
     }
 
     private void GetplayerMoveInput(InputAction.CallbackContext context)
     {
-        playerMoveContext = GameManager.Instance.inputActions.Player.Move.ReadValue<Vector2>();
+        playerMoveContext = context.ReadValue<Vector2>();
     }
 
     private void CancelPlayerMoveInput(InputAction.CallbackContext context)
@@ -760,11 +800,11 @@ public class PlayerManager : MonoBehaviour
                 ItemCell ItemInfo = Item.GetComponent<ItemCell>();
                 if (ItemInfo.uid == SelectingID && ItemInfo.type == 1) // 1为可拾取的场景物体
                 {
-                    int ItemNum = UIManager.Instance.ItemsInfo.GetItemNumByUID(SelectingID);
-                    if (ItemNum == UIManager.Instance.ItemsInfo.scrollContent.childCount - 1)
+                    int ItemNum = UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().GetItemNumByUID(SelectingID);
+                    if (ItemNum == UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().scrollContent.childCount - 1)
                     {
 
-                        UIManager.Instance.ItemsInfo.UpSelectID();
+                        UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().UpSelectID();
                         PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
                         UpdatePackageLocalData();
                         ItemInfo.Destroy();
@@ -772,7 +812,7 @@ public class PlayerManager : MonoBehaviour
                     }
                     else
                     {
-                        UIManager.Instance.ItemsInfo.DownSelectID();
+                        UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().DownSelectID();
                         PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
                         UpdatePackageLocalData();
                         ItemInfo.Destroy();
@@ -788,7 +828,6 @@ public class PlayerManager : MonoBehaviour
                 else if (ItemInfo.uid == SelectingID && ItemInfo.type == 102)
                 {
                     TransitionPoint transitionPoint = ItemInfo.transform.gameObject.GetComponent<TransitionPoint>();
-                    print(transitionPoint.sceneName);
                     SceneController.Instance.TransitionToDestination(transitionPoint);
                 }
             }

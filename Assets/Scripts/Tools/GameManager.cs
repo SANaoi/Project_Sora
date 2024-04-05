@@ -5,15 +5,19 @@ using aoi;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using UnityEngine.SceneManagement;
+
 public class GameManager : MonoBehaviour
 {
-    private static GameManager _instance;
     public PlayerMoveControls inputActions;
     private PackageTable_SO packageTable;
     public CurrentTask_SO currentTask;
     public TaskData_SO taskData;
+    public UIManager uIManager;
+    private static GameManager _instance;
+    private PlayerManager playerManager;
+    public GameObject playerPrefab;
 
-    // public ShootController shootController;
 
     public static GameManager Instance
     {
@@ -21,35 +25,65 @@ public class GameManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = new GameManager();
+                // 寻找场景中现有的 GameManager 实例
+                _instance = FindObjectOfType<GameManager>();
+                
+        
+                // 如果场景中没有 GameManager 实例，则创建一个
+                if (_instance == null)
+                {
+                    GameObject go = new GameObject("GameManager");
+                    _instance = go.AddComponent<GameManager>();
+                }
             }
             return _instance;
         }
     }
-
     private void Awake()
     {
-        _instance = this;
-        DontDestroyOnLoad(gameObject);
+        // 如果已经有了实例，并且不是这个实例，销毁这个实例
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
 
-        inputActions = new PlayerMoveControls();
-        inputActions.Player.OpenPackage.performed += GetOpenPackageInput;
+        // 否则，设置这个实例为单例
+        _instance = this;
+        // 可以在这里进行其他的初始化操作
+
+        print(this.name + "  Awake");
+        uIManager = UIManager.Instance;
+        if (inputActions == null)  inputActions = new PlayerMoveControls();
+        playerManager = FindAnyObjectByType<PlayerManager>();
         
     }
     
+
     void OnEnable()
     {
+        print(this.name + "  OnEnable");
         inputActions.Enable();
+        inputActions.Player.OpenPackage.performed += GetOpenPackageInput;
     }
-
+    
     void Disable()
     {
+        print(this.name + "  Disable");
+        inputActions.Player.OpenPackage.performed -= GetOpenPackageInput;
         inputActions.Disable();
     }
     
     private void Start()
     {
+        print(this.name + "  Start");
+        // UIManager.Instance.OpenPanel(UIConst.ItemsInfo);
+        // UIManager.Instance.OpenPanel(UIConst.PlayerMainUI);
+        // UIManager.Instance.OpenPanel(UIConst.GunInfo);
     }
+    # region 场景初始化
+
+    # endregion
 
     #region 背包的基础功能
     public PackageTable_SO GetPackageTable()
@@ -249,7 +283,7 @@ public class GameManager : MonoBehaviour
             GetTaskReward(taskDetail);
             ReMoveCurrentTask(taskDetail);
             PackageLocalData.Instance.SavePackage();
-            PlayerManager.Instance.RefreshGunInfo();
+            playerManager.RefreshGunInfo();
             (UIManager.Instance.OpenPanel(UIConst.PlayerMainUI) as PlayerMainUI).RefreshTaskInfo();
             Debug.Log("完成任务");
         }

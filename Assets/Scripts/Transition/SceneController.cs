@@ -1,12 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using UnityEngine.Animations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneController : Singleton<SceneController>
 {
     public GameObject playerPrefab;
+    public Animator animator;
     protected override void Awake()
     {
         base.Awake();
@@ -24,15 +24,18 @@ public class SceneController : Singleton<SceneController>
         
         }   
     }
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        animator = GetComponent<PlayerManager>().animator;
+    }
 
     IEnumerator Transition(string sceneName, TransitionDestination.DestinationTag destinationTag)
     {   
 
         if (SceneManager.GetActiveScene().name != sceneName)
-        {
-            print(2);
+        {   
             yield return SceneManager.LoadSceneAsync(sceneName);
-            yield return Instantiate(playerPrefab, GetDestination(destinationTag).transform.position, GetDestination(destinationTag).transform.rotation);
+            UIManager.Instance.RefreshManager();
             yield break;
         }
         yield return null;

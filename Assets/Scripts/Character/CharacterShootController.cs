@@ -31,7 +31,7 @@ public class CharacterShootController : BaseShoot
         // ImpactPool = new ObjectPool<VisualEffect>(CreateImpactParticle);
         animator = GetComponent<Animator>();
         LastShootTime = 0f;
-        VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(true);
+        // VFX_Flash.GetComponent<VisualEffect>().gameObject.SetActive(true);
         FireRate = 2f;
        
     }
@@ -54,7 +54,7 @@ public class CharacterShootController : BaseShoot
         if (Time.time > FireRate + LastShootTime && GetComponent<EnemyController>().attackTarget && animator.GetCurrentAnimatorStateInfo(1).IsName("Rifle Aiming Idle"))
         {
             Vector3 shootDirection = -FireHole.transform.forward;
-            VFX_Flash.Play();
+            // VFX_Flash.Play();
             FireRay = new Ray(FireHole.transform.position, shootDirection);
             shootDirection.Normalize();
 

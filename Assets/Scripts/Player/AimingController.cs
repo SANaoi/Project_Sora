@@ -8,90 +8,86 @@ using UnityEngine.UI;
 
 public class AimingController : MonoBehaviour
 {
-    Camera mainCamera;
     PlayerManager playerMoveController;
-
     float default_m_ScreenX = 0.45f;
     public PlayerMoveControls inputActions;
-    public GameObject LookPointObject;
     public CinemachineVirtualCamera normalCamera;
     private CinemachineFramingTransposer VisualnormalCamera;
+    public Vector3 LookPointPosition;
 
-    public Sprite Aim;
-    public Sprite Reload;
+    // public Sprite Aim;
+    // public Sprite Reload;
     private Zoom zoom;
+    private bool isStartSetCamera;
 
     [Range(0, 180f)]
     public float z;
-    private static AimingController _instance;
-    public static AimingController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new AimingController();
-            }
-            return _instance;
-        }
-    }
 
     private void Awake()
     {
-        if (_instance == null)
-        {
-            _instance = this;
-        }
+        // print(this.name + " Awake--------------");
     }
 
-    // Start is called before the first frame update
+    void OnEnable()
+    {
+        // print(this.name + " OnEnable--------------");
+    }
+    void OnDisable()
+    {
+        // inputActions.Player.Aiming.performed -= SwitchCameraParameter;
+    }
+
     void Start()
     {
-        mainCamera = GetComponent<Camera>();
-        playerMoveController = PlayerManager.Instance;
-        zoom = FindAnyObjectByType<Zoom>();
-        inputActions = GameManager.Instance.inputActions;
-        inputActions.Player.Aiming.performed += SwitchCameraParameter;
+        // print(this.name + " start--------------");
+        if (normalCamera == null)
+        {
+            normalCamera = FindAnyObjectByType<CinemachineVirtualCamera>();
+        }
+        isStartSetCamera = false;
         VisualnormalCamera = normalCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
         VisualnormalCamera.m_ScreenX = default_m_ScreenX;
+        inputActions = GameManager.Instance.inputActions;
+        zoom = FindAnyObjectByType<Zoom>();
+        playerMoveController = FindAnyObjectByType<PlayerManager>();
+        StartCoroutine(SmoothFOVSwitch());
     }
 
     void Update()
     {
-        // Shoot();
-        UpdateLookPoint();
+        
     }
-
     void LateUpdate()
     {
+        StartSetCamera();
     }
     void FixedUpdate()
     {
     }
-    void UpdateLookPoint()
+    public Vector3 UpdateLookPoint()
     {   
         // 计算移动和旋转的目标位置和朝向
-        Vector3 targetPosition = mainCamera.transform.rotation * new Vector3(0f , 0f, z) + mainCamera.transform.position;
-        
-        Quaternion targetRotation = Quaternion.LookRotation(mainCamera.transform.position - LookPointObject.transform.position);
-
+        Vector3 targetPosition = Camera.main.transform.rotation * new Vector3(0f , 0f, z) + Camera.main.transform.position;
         // 使用插值平滑过渡位置和旋转
-        LookPointObject.transform.position = Vector3.Lerp(LookPointObject.transform.position, targetPosition,  1000f * Time.deltaTime);
-        LookPointObject.transform.rotation = Quaternion.Slerp(LookPointObject.transform.rotation, targetRotation, 1000f *Time.deltaTime );
+        LookPointPosition = Vector3.Lerp(LookPointPosition, targetPosition,  1000f * Time.deltaTime);
+        return LookPointPosition;
     }
-
+    void StartSetCamera()
+    {
+        if(isStartSetCamera)
+            StartCoroutine(SmoothFOVSwitch());
+    }
     public void SwitchCameraParameter(InputAction.CallbackContext ctx)
     {
-        StartCoroutine(SmoothFOVSwitch());
+        isStartSetCamera = true;
     }
 
     IEnumerator SmoothFOVSwitch()
     {
+        isStartSetCamera = false;
         float targetFOV;
         float target_m_ScreenX;
         float targetZoomDistance;
-
-        bool isAiming = playerMoveController.isAiming;
 
         // 定义平滑过渡的时间
         float duration = 0.2f;
@@ -99,17 +95,21 @@ public class AimingController : MonoBehaviour
 
         float initialCameraFOV = normalCamera.m_Lens.FieldOfView;
         float initialCamera_m_ScreenX = VisualnormalCamera.m_ScreenX;
-        if (isAiming)
+        if (playerMoveController.isAiming)
         {
             targetFOV = 40f;
             target_m_ScreenX = 0.2f;
             targetZoomDistance = 1.2f;
         }
-        else
+        else if (!playerMoveController.isAiming)
         {
             targetFOV = 60f;
             target_m_ScreenX = 0.4f;
             targetZoomDistance = 2f;
+        }
+        else 
+        {
+            yield break;
         }
 
         while (elapsedTime < duration)
@@ -125,6 +125,7 @@ public class AimingController : MonoBehaviour
     }
     private void OnGUI()
     {
+        playerMoveController = FindAnyObjectByType<PlayerManager>();
         if (playerMoveController.isAiming)
         {
             // 设置十字的颜色

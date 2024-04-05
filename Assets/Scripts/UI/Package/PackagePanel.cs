@@ -43,12 +43,25 @@ public class PackagePanel : BasePanel
 
     private void Awake()
     {
+        print(this.name + "  Awake----------");
+    }
+    private void OnEnable()
+    {
+        print(this.name + "  OnEnable----------");
         InitUI();
         InitClik();
     }
 
+
+    private void OnDisable()
+    {
+        print(this.name + "  OnDisable----------");
+        // RemoveListener();
+    }
+
     private void Start()
     {
+        print(this.name + "  Start----------");
         RefreshUI();
     }
 
@@ -116,6 +129,16 @@ public class PackagePanel : BasePanel
         UIDeleteBackBtn.GetComponent<Button>().onClick.AddListener(OnClickDelete);
     }
 
+    private void RemoveListener()
+    {
+        UIMenuAll.GetComponent<Button>().onClick.RemoveListener(OnClickAll);
+        UIMenuWeapon.GetComponent<Button>().onClick.RemoveListener(OnClickWeapon);
+        UICloseBtn.GetComponent<Button>().onClick.RemoveListener(OnClickClose);
+        UILeftBtn.GetComponent<Button>().onClick.RemoveListener(OnClickLeft);
+        UIRightBtn.GetComponent<Button>().onClick.RemoveListener(OnClickRight);
+        UIDeleteBackBtn.GetComponent<Button>().onClick.RemoveListener(OnClickDelete);
+    }
+
     private void OnClickAll()
     {
         print("----- OnClickAll");
@@ -126,7 +149,7 @@ public class PackagePanel : BasePanel
         print("----- OnClickWeapon");
     }
 
-    private void OnClickClose()
+    public void OnClickClose()
     {
         print("----- OnClickClose");
         UIManager.Instance.ClosePanel("PackagePanel");

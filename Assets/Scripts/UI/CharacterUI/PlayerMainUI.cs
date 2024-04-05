@@ -11,8 +11,11 @@ public class PlayerMainUI : BasePanel
     private Transform UITaskButton;
     private Transform UITaskInfo;
     private CharacterStats currentStats;
+    private PlayerManager playerManager;
+
     void Start()
     {
+        playerManager = FindAnyObjectByType<PlayerManager>();
         InitInfo();
         UpdatePlayerHealthInfo(currentStats.CurrentHealth, currentStats.MaxHealth);
     }
@@ -25,7 +28,7 @@ public class PlayerMainUI : BasePanel
 
     void InitInfo()
     {
-        currentStats = PlayerManager.Instance.GetComponent<CharacterStats>();
+        currentStats = playerManager.GetComponent<CharacterStats>();
         currentStats.UpdateHealthBarOnAttack += UpdatePlayerHealthInfo;
         InitUI();
         InitClik();
