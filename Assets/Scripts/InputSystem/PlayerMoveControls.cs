@@ -18,7 +18,6 @@ using UnityEngine.InputSystem.Utilities;
 public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
 {
     public InputActionAsset asset { get; }
-
     public @PlayerMoveControls()
     {
         asset = InputActionAsset.FromJson(@"{
@@ -38,6 +37,15 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""ESC"",
+                    ""type"": ""Button"",
+                    ""id"": ""d8e871be-64a6-4d2a-8cb7-f2f6cdad1dc7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Rifle"",
                     ""type"": ""Button"",
                     ""id"": ""06947116-f9b7-4b5d-a52a-431b24791bb2"",
@@ -45,6 +53,15 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""f265bf42-ac66-4d1c-9dad-55b4f5fa3f2b"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Zoom"",
@@ -313,6 +330,50 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9354ef77-a889-44d8-9587-473baa44b9f0"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ESC"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""25ee932e-0302-4a7e-acfa-4aad86c42398"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dbcf7e64-f42d-4226-aea6-6b474826c569"",
+                    ""path"": ""<Pointer>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""83c38d77-5299-4163-b02e-8d357f844c33"",
+                    ""path"": ""<Joystick>/{Hatswitch}"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -322,7 +383,9 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
+        m_Player_ESC = m_Player.FindAction("ESC", throwIfNotFound: true);
         m_Player_Rifle = m_Player.FindAction("Rifle", throwIfNotFound: true);
+        m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
@@ -395,7 +458,9 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Fire;
+    private readonly InputAction m_Player_ESC;
     private readonly InputAction m_Player_Rifle;
+    private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Zoom;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Move;
@@ -411,7 +476,9 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
         private @PlayerMoveControls m_Wrapper;
         public PlayerActions(@PlayerMoveControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
+        public InputAction @ESC => m_Wrapper.m_Player_ESC;
         public InputAction @Rifle => m_Wrapper.m_Player_Rifle;
+        public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Move => m_Wrapper.m_Player_Move;
@@ -434,9 +501,15 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
+            @ESC.started += instance.OnESC;
+            @ESC.performed += instance.OnESC;
+            @ESC.canceled += instance.OnESC;
             @Rifle.started += instance.OnRifle;
             @Rifle.performed += instance.OnRifle;
             @Rifle.canceled += instance.OnRifle;
+            @Look.started += instance.OnLook;
+            @Look.performed += instance.OnLook;
+            @Look.canceled += instance.OnLook;
             @Zoom.started += instance.OnZoom;
             @Zoom.performed += instance.OnZoom;
             @Zoom.canceled += instance.OnZoom;
@@ -474,9 +547,15 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
+            @ESC.started -= instance.OnESC;
+            @ESC.performed -= instance.OnESC;
+            @ESC.canceled -= instance.OnESC;
             @Rifle.started -= instance.OnRifle;
             @Rifle.performed -= instance.OnRifle;
             @Rifle.canceled -= instance.OnRifle;
+            @Look.started -= instance.OnLook;
+            @Look.performed -= instance.OnLook;
+            @Look.canceled -= instance.OnLook;
             @Zoom.started -= instance.OnZoom;
             @Zoom.performed -= instance.OnZoom;
             @Zoom.canceled -= instance.OnZoom;
@@ -527,7 +606,9 @@ public partial class @PlayerMoveControls: IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         void OnFire(InputAction.CallbackContext context);
+        void OnESC(InputAction.CallbackContext context);
         void OnRifle(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnMove(InputAction.CallbackContext context);

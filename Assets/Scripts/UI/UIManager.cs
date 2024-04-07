@@ -103,12 +103,18 @@ public class UIManager : MonoBehaviour
 
             {UIConst.TasksPanel, "TasksPanel/TasksPanel"},
 
-            {UIConst.AimImage, "AimImage"}
+            {UIConst.AimImage, "AimImage"},
+
+            {UIConst.AudioUIManager, "AudioPanel/MainMenu"}
         };
     }
 
-    public BasePanel OpenPanel(string name)
+    public BasePanel OpenPanel(string name, bool isLockInput = false)
     {
+        if (isLockInput)
+        {
+            EventCenter.Instance.EventTrigger(EventConst.LogoutInputSystem);
+        }
         BasePanel panel = null;
         if(panelDict.TryGetValue(name, out panel))
         {
@@ -135,8 +141,12 @@ public class UIManager : MonoBehaviour
         return panel;
     }
 
-    public bool ClosePanel(string name)
+    public bool ClosePanel(string name, bool isLockInput = false)
     {   
+        if (isLockInput)
+        {
+            EventCenter.Instance.EventTrigger(EventConst.ActiveInputSystem);
+        }
 
         BasePanel panel = null;
         if(!panelDict.TryGetValue(name, out panel))
@@ -203,6 +213,15 @@ public class UIManager : MonoBehaviour
         GameObject panelObject = GameObject.Instantiate(panelPrefab, UIRoot, false);
         return panelObject;
     }
+    private void OnDestroy()
+    {
+        // 当 GameManager 实例被销毁时，清理静态实例引用
+        if (_instance == this)
+        {
+            _instance = null;
+        }
+    }
+
 
 }
 public class UIConst
@@ -223,4 +242,6 @@ public class UIConst
     public const string SelectBox = "DialogSelectBox";
     public const string TasksPanel = "TaskPanel";
     public const string AimImage = "AimImage";
+
+    public const string AudioUIManager = "AudioUIManager"; 
 }

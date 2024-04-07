@@ -14,21 +14,24 @@ public class GameManager : MonoBehaviour
     public CurrentTask_SO currentTask;
     public TaskData_SO taskData;
     public UIManager uIManager;
-    private static GameManager _instance;
     private PlayerManager playerManager;
     public GameObject playerPrefab;
+    public GameObject AudioManagerPrefab;
 
-
+    public static bool applicationIsQuitting = false;
+    private static GameManager _instance;
     public static GameManager Instance
     {
         get
         {
             if (_instance == null)
             {
+				if (applicationIsQuitting) {
+					//如果销毁了则直接返回，不能再创建
+					return _instance;
+				}
                 // 寻找场景中现有的 GameManager 实例
                 _instance = FindObjectOfType<GameManager>();
-                
-        
                 // 如果场景中没有 GameManager 实例，则创建一个
                 if (_instance == null)
                 {
@@ -53,7 +56,8 @@ public class GameManager : MonoBehaviour
         // 可以在这里进行其他的初始化操作
 
         print(this.name + "  Awake");
-        uIManager = UIManager.Instance;
+        AudioManager audioManager = FindAnyObjectByType<AudioManager>();
+        if (audioManager == null) Instantiate(AudioManagerPrefab);
         if (inputActions == null)  inputActions = new PlayerMoveControls();
         playerManager = FindAnyObjectByType<PlayerManager>();
         
@@ -65,21 +69,18 @@ public class GameManager : MonoBehaviour
         print(this.name + "  OnEnable");
         inputActions.Enable();
         inputActions.Player.OpenPackage.performed += GetOpenPackageInput;
+        inputActions.Player.ESC.performed += SwitchMenuInput;
     }
     
     void Disable()
     {
         print(this.name + "  Disable");
-        inputActions.Player.OpenPackage.performed -= GetOpenPackageInput;
         inputActions.Disable();
     }
     
     private void Start()
     {
         print(this.name + "  Start");
-        // UIManager.Instance.OpenPanel(UIConst.ItemsInfo);
-        // UIManager.Instance.OpenPanel(UIConst.PlayerMainUI);
-        // UIManager.Instance.OpenPanel(UIConst.GunInfo);
     }
     # region 场景初始化
 
@@ -135,10 +136,28 @@ public class GameManager : MonoBehaviour
     }
 
     public void GetOpenPackageInput(InputAction.CallbackContext context)
-    {
-        if(!UIManager.Instance.OpenPanel(UIConst.PackagePanel))
+    {   
+        BasePanel panel = null;
+        if(!UIManager.Instance.panelDict.TryGetValue(UIConst.PackagePanel, out panel))
         {
-            UIManager.Instance.OpenPanel(UIConst.PackagePanel);
+            UIManager.Instance.OpenPanel(UIConst.PackagePanel, true);
+        }
+        else
+        {
+            UIManager.Instance.ClosePanel(UIConst.PackagePanel, true);
+        }
+    }
+
+    private void SwitchMenuInput(InputAction.CallbackContext context)
+    {
+        BasePanel panel = null;
+        if(!UIManager.Instance.panelDict.TryGetValue(UIConst.AudioUIManager, out panel))
+        {
+            UIManager.Instance.OpenPanel(UIConst.AudioUIManager, true);
+        }
+        else
+        {
+            UIManager.Instance.ClosePanel(UIConst.AudioUIManager, true);
         }
     }
     
@@ -297,6 +316,9 @@ public class GameManager : MonoBehaviour
     // }
 
     # endregion
+    protected virtual void OnDestroy() {
+		applicationIsQuitting = true;
+	}
 }
 
 public class PackageItemComparer : IComparer<PackageLocalItem>

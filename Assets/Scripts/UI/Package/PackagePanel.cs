@@ -152,7 +152,7 @@ public class PackagePanel : BasePanel
     public void OnClickClose()
     {
         print("----- OnClickClose");
-        UIManager.Instance.ClosePanel("PackagePanel");
+        UIManager.Instance.ClosePanel("PackagePanel", true);
 
     }
 

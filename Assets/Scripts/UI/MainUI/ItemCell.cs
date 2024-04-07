@@ -28,7 +28,7 @@ public class ItemCell : MonoBehaviour
         GameManager.Instance.IncreaseTestTaskProgress(itemInfo.id);
 
         FindAnyObjectByType<PlayerManager>().gameObjectList.Remove(gameObject);
-        UIManager.Instance.ItemsInfo.DelScrollContent(gameObject);
+        UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().DelScrollContent(gameObject);
         Destroy(gameObject);
     }
 }

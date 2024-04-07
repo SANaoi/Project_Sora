@@ -21,6 +21,7 @@ public class ShootController : BaseShoot
     private VisualEffect flash;
     private Cinemachine.CinemachineCollisionImpulseSource Inpulse;
 
+    [SerializeField] private AudioClip shootSoundClip;
     private void Awake()
     {
         TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2); // 2: 步枪子弹Id
@@ -57,7 +58,7 @@ public class ShootController : BaseShoot
             Inpulse.GenerateImpulse();
             flash.gameObject.SetActive(true);
             
-            StartCoroutine(accumulatedOffset());
+            StartCoroutine(AccumulatedOffset());
             Shoot();
         }
         else
@@ -83,7 +84,7 @@ public class ShootController : BaseShoot
             MagazineAmmo -= 1;
             UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(MagazineAmmo, TotalAmmo);
             flash.Play();
-            
+            AudioManager.Instance.soundFXManager.PlaySoundFXClip(shootSoundClip, transform, 1f);
             Vector3 shootDirection = mainCamera.transform.forward;
             // Vector3 shootDirection = LookPointObject.transform.position;
             FireRay = new Ray(mainCamera.transform.position, shootDirection);
@@ -121,7 +122,7 @@ public class ShootController : BaseShoot
                         else if (Enemy.GetComponent<CharacterStats>().CurrentHealth <= 0 && enemyController.agent.isStopped == false)
                         {
                             enemyController.agent.isStopped = true;
-                            GameObject dropItem = Instantiate(enemyController.dropItemPrefab, Enemy.position, Quaternion.identity);
+                            Instantiate(enemyController.dropItemPrefab, Enemy.position, Quaternion.identity);
                         }
                     }
                 }
@@ -148,7 +149,38 @@ public class ShootController : BaseShoot
         }
         return obj;
     }
-    private IEnumerator accumulatedOffset()
+    // private IEnumerator AccumulatedOffset()
+    // {   
+
+    //     float elapsedTime = 0f;
+    //     float durationTime = 0.2f;
+
+    //     Vector2 RandomVector2 = new Vector2(
+    //             Random.Range(
+    //                 -ShootConfig.Spread.x,
+    //                 ShootConfig.Spread.x),
+    //             Random.Range(
+    //             0,
+    //             ShootConfig.Spread.y));
+
+    //     float init_x = virtualCamera.m_HorizontalAxis.Value;
+    //     float target_x = virtualCamera.m_HorizontalAxis.Value + RandomVector2.x;
+    //     float init_y = virtualCamera.m_VerticalAxis.Value;
+    //     float target_y = virtualCamera.m_VerticalAxis.Value + RandomVector2.y;
+
+    //     while (elapsedTime < durationTime)
+    //     {
+    //         // virtualCamera.m_HorizontalAxis.Value = RandomVector2.x;
+    //         // virtualCamera.m_VerticalAxis.Value = RandomVector2.y;
+    //         virtualCamera.m_HorizontalAxis.Value = Mathf.Lerp(init_x, target_x, elapsedTime / durationTime);
+    //         virtualCamera.m_VerticalAxis.Value = Mathf.Lerp(init_y, target_y, elapsedTime / durationTime);
+    //         elapsedTime += Time.deltaTime;
+    //         yield return null;
+    //     }
+    //     virtualCamera.m_HorizontalAxis.Value = target_x;
+    //     virtualCamera.m_VerticalAxis.Value = target_y;
+    // }
+    private IEnumerator AccumulatedOffset()
     {   
 
         Vector2 RandomVector2 = new Vector2(
@@ -158,11 +190,8 @@ public class ShootController : BaseShoot
                 Random.Range(
                 0,
                 ShootConfig.Spread.y));
-
-        virtualCamera.m_HorizontalAxis.Value -= RandomVector2.x;
-        virtualCamera.m_VerticalAxis.Value -= RandomVector2.y;
-        yield return null;
-
+            virtualCamera.m_HorizontalAxis.Value -= RandomVector2.x;
+            virtualCamera.m_VerticalAxis.Value -= RandomVector2.y;
+            yield return null;
     }
-
 }

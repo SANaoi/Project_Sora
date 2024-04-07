@@ -117,8 +117,8 @@ public class AimingController : MonoBehaviour
             normalCamera.m_Lens.FieldOfView = Mathf.Lerp(initialCameraFOV, targetFOV, elapsedTime / duration);
             VisualnormalCamera.m_ScreenX = Mathf.Lerp(initialCamera_m_ScreenX, target_m_ScreenX, elapsedTime / duration);
             zoom.CameraZoom(targetZoomDistance);
-            yield return null;
             elapsedTime += Time.deltaTime;
+            yield return null;
         }
         normalCamera.m_Lens.FieldOfView = targetFOV;
         VisualnormalCamera.m_ScreenX = target_m_ScreenX;

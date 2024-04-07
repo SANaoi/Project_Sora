@@ -7,15 +7,18 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Cinemachine;
+using System.Collections;
 [RequireComponent(typeof(CharacterStats))]
 public class PlayerManager : MonoBehaviour
 {
     Rigidbody rig;
     Camera mainCamera;
     public Transform LookPoint;
+    bool Grounded = true;
     bool isWalk;
     bool isArmRifle;
     public bool isJumping;
+    bool isFalling;
     [HideInInspector]
     public bool isAiming;
     float backwardSpeed = -1.3f;
@@ -47,10 +50,12 @@ public class PlayerManager : MonoBehaviour
     private MultiAimConstraint AimingConstraint;
     private MultiAimConstraint AimingIdleConstraint;
     private MultiAimConstraint HeadConstraint;
-    public AudioSource shootAudio;
     private CharacterController characterController;
-    // 记录上一帧人物速度
-    private Vector3 moveDirection = Vector3.zero;
+    // 运动相关
+    public float GroundedOffset = -0.14f;
+    public float GroundedRadius = 0.28f;
+    private Vector3 moveDirection = Vector3.zero;   // 记录上一帧人物速度
+    public LayerMask GroundLayers;
     [HideInInspector]
     public float gravity = -9.8f;
     [HideInInspector]
@@ -60,6 +65,11 @@ public class PlayerManager : MonoBehaviour
 
     private GameObject aimTarget;
     private AimingController aimingController;
+    
+    // 音频相关
+    [SerializeField] private AudioClip ReloadSound;
+    public AudioClip LandingAudioClip;
+    public AudioClip[] FootstepAudioClips;
 
     // 场景可获取物品功能参数
     private List<GameObject> _gameObjectList;
@@ -82,7 +92,8 @@ public class PlayerManager : MonoBehaviour
     {
         Stand,
         Crouch,
-        midAir
+        Jumping,
+        Falling,
     };
     #endregion
 
@@ -139,26 +150,18 @@ public class PlayerManager : MonoBehaviour
         isJumping = false;
         isAiming = false;
 
-        // UIManager.Instance.OpenPanel(UIConst.ItemsInfo);
         UIManager.Instance.OpenPanel(UIConst.PlayerMainUI);
         UIManager.Instance.OpenPanel(UIConst.GunInfo);
         InvokeRepeating("SearchForGameObjectWithTag", 0.25f, 0.25f);
-        // 确保 gunAudio 组件存在
-        if (shootAudio == null)
-        {
-            shootAudio = gameObject.AddComponent<AudioSource>();
-        }
         if (aimingController == null)
         {
             aimingController = FindAnyObjectByType<AimingController>();
         }
-        // print(this.name + "  start");
         InitInputSystem();
     }
 
     private void OnEnable()
     {
-        // print(this.name + "  OnEnable  ");
         
     }
 
@@ -175,7 +178,6 @@ public class PlayerManager : MonoBehaviour
 
     private void OnDisable()
     {
-        // print(this.name + "  OnDisable");
         LogoutInputSystem();
         animator = null;
         gameObjectList.Clear();
@@ -184,6 +186,7 @@ public class PlayerManager : MonoBehaviour
     {
         SwitchStates();
         UpdateConstraintWeight();
+        GroundedCheck();
         Move();
         animator.SetBool("Rifle", isArmRifle);
         animator.SetBool("Aiming", isAiming);
@@ -330,54 +333,52 @@ public class PlayerManager : MonoBehaviour
         if (!isAiming)
         {
             Vector3 tep = targetRotationDirection * movementSpeed - currentPlayerHorizontalVelocity;
-            Vector3 targetMoveDirection = new Vector3(tep.x, 0f, tep.z);
-            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.0f);
+            Vector3 targetMoveDirection = new Vector3(tep.x, moveDirection.y, tep.z);
+            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.1f * Time.deltaTime);
         }
         else
         {
             Vector3 AimingmovementDirection = GetPalyerMoveVector();
             Vector3 tep = AimingmovementDirection * Mathf.Abs(movementSpeed) - currentPlayerHorizontalVelocity;
-            Vector3 targetMoveDirection = new Vector3(tep.x, 0f, tep.z);
+            Vector3 targetMoveDirection = new Vector3(tep.x, moveDirection.y, tep.z);
             
-            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.0f);
+            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.1f * Time.deltaTime);
         }
     }
     private void Move()
     {
+        HorizontalVelocityCalculate();
+        RotateTowardsTargetRotation();
+        moveDirection.y += gravity * Time.deltaTime;
         if (isAiming)
         {
             ChangePlayerRotation();
         }
         if (characterController.isGrounded)
         {   
-            HorizontalVelocityCalculate();
-
-            moveDirection.y = 0.0f;
             if (isJumping)
             {
+                animator.Play("Jump Tree");
                 moveDirection.y = jumpVelocity;
                 animator.SetFloat("VerticalSpeed", jumpVelocity);
             }
         }
-        
-        RotateTowardsTargetRotation();
-        moveDirection.y += gravity * Time.deltaTime;
-        characterController.Move(moveDirection * Time.deltaTime);
-        if (!characterController.isGrounded)
+        else if (!characterController.isGrounded && !Grounded)
         {
             if (isJumping)
             {
                 animator.Play("Jump Tree");
-                playerPosture = PlayerPostureState.midAir; 
+                playerPosture = PlayerPostureState.Jumping; 
             }
             else if (moveDirection.y <= -1f)
             {
                 animator.Play("Jump Tree");
-                playerPosture = PlayerPostureState.midAir;
+                playerPosture = PlayerPostureState.Jumping;
                 isJumping = true;
             }
         }
-
+        
+        characterController.Move(moveDirection * Time.deltaTime);
         if (characterController.isGrounded && isJumping)
         {
             isJumping = false;
@@ -441,10 +442,6 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    private void ShootSound_Ak(int isShoot)
-    {
-        shootAudio.Play();
-    }
     
     
     #endregion
@@ -502,7 +499,7 @@ public class PlayerManager : MonoBehaviour
     }
     private float GetMovementSpeed()
     {
-        currentSpeed = Mathf.Lerp(baseSpeed, currentSpeed, 0.8f * Time.deltaTime);
+        currentSpeed = Mathf.Lerp(baseSpeed, currentSpeed, 0.5f * Time.deltaTime);
         // 返回移动速度，考虑到基础速度和速度修正。
         return currentSpeed;
     }
@@ -573,6 +570,21 @@ public class PlayerManager : MonoBehaviour
 
     #endregion
 
+    # region 动画事件
+    private void OnFootstep(AnimationEvent animationEvent)
+    {
+        if (animationEvent.animatorClipInfo.weight > 0.5f)
+            AudioManager.Instance.soundFXManager.PlayRandomSoundFXClip(FootstepAudioClips, transform, 0.5f);
+    }
+
+    private void OnFoolJump(AnimationEvent animationEvent)
+    {
+        if (animationEvent.animatorClipInfo.weight > 0.5f)
+            AudioManager.Instance.soundFXManager.PlaySoundFXClip(LandingAudioClip, transform, 0.5f);
+    }
+
+    # endregion
+
     #region 瞄准时玩家的移动逻辑
     private Vector3 GetPalyerMoveVector()
     {
@@ -628,7 +640,10 @@ public class PlayerManager : MonoBehaviour
             case PlayerPostureState.Crouch:
                 animator.SetBool("isCrouch", true);
                 break;
-            case PlayerPostureState.midAir:
+            case PlayerPostureState.Jumping:
+                animator.SetFloat("VerticalSpeed", moveDirection.y, 0.9f, Time.deltaTime);
+                break;
+            case PlayerPostureState.Falling:
                 animator.SetFloat("VerticalSpeed", moveDirection.y, 0.9f, Time.deltaTime);
                 break;
         }
@@ -666,6 +681,10 @@ public class PlayerManager : MonoBehaviour
         {
             if (foundObject.CompareTag("Item") || foundObject.CompareTag("NPC"))
             {
+                if (foundObject.GetComponent<ItemCell>() == null)
+                {
+                    return;
+                }
                 foundItems.Add(foundObject.gameObject);
                 string NowUid = foundObject.GetComponent<ItemCell>().uid;
                 if (!gameObjectList.Any(gameObject => gameObject.GetComponent<ItemCell>().uid == NowUid))
@@ -840,6 +859,7 @@ public class PlayerManager : MonoBehaviour
         {
             RefreshGunInfo();
             animator.SetTrigger("Reload");
+            AudioManager.Instance.soundFXManager.PlaySoundFXClip(ReloadSound, transform, 1f);
             // UpdatePackageLocalData();
         }
     }
@@ -868,6 +888,28 @@ public class PlayerManager : MonoBehaviour
     }
     #endregion
 
+    private void OnDrawGizmosSelected()
+    {
+        Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
+        Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
+
+        if (Grounded) Gizmos.color = transparentGreen;
+        else Gizmos.color = transparentRed;
+
+        // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
+        Gizmos.DrawSphere(
+            new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
+            GroundedRadius);
+    }
+    
+    private void GroundedCheck()
+    {
+        // set sphere position, with offset
+        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
+            transform.position.z);
+        Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
+
+    }
     
     // public Animator animator;
     [Range(0, 1)]

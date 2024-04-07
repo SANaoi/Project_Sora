@@ -353,6 +353,7 @@ public class EnemyController : MonoBehaviour
 
     public void DestroyObject()
     {
+        isDead = true;
         animator.enabled = false;
         SetRigidBodiesNonKinematic();
         StartCoroutine(DestroyAfter());

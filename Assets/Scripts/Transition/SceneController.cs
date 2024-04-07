@@ -24,10 +24,6 @@ public class SceneController : Singleton<SceneController>
         
         }   
     }
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        animator = GetComponent<PlayerManager>().animator;
-    }
 
     IEnumerator Transition(string sceneName, TransitionDestination.DestinationTag destinationTag)
     {   
