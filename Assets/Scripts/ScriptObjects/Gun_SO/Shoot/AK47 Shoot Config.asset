@@ -18,4 +18,4 @@ MonoBehaviour:
   Spread: {x: 0.1, y: 0.1, z: 0.01}
   FireRate: 0.15
   Damage: 5
-  Capacity: 30
+  Capacity: 999

@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using Cinemachine;
 using System.Collections;
+using UnityEngine.UIElements;
 [RequireComponent(typeof(CharacterStats))]
 public class PlayerManager : MonoBehaviour
 {
@@ -62,7 +63,7 @@ public class PlayerManager : MonoBehaviour
     public float jumpVelocity = 3f;
     private CinemachineVirtualCamera virtualCamera;
     private Vector3 moveVelocity; // 平滑速度向量
-
+    private GetSceneItems getSceneItems;
     private GameObject aimTarget;
     private AimingController aimingController;
     
@@ -71,22 +72,7 @@ public class PlayerManager : MonoBehaviour
     public AudioClip LandingAudioClip;
     public AudioClip[] FootstepAudioClips;
 
-    // 场景可获取物品功能参数
-    private List<GameObject> _gameObjectList;
-    public List<GameObject> gameObjectList
-    {
-        get 
-        {   
-            return _gameObjectList;
-        }
-        set
-        {
-            _gameObjectList = value;
-        }
-    }
-    [HideInInspector]
-    public string SelectingID = "";
-    private float searchRadius;
+
     #region 玩家姿态及相关动画参数阈值
     public enum PlayerPostureState
     {
@@ -122,28 +108,26 @@ public class PlayerManager : MonoBehaviour
         rig =                   GetComponent<Rigidbody>();
         shootController =       GetComponent<ShootController>();
         characterController =   GetComponent<CharacterController>();
+        animator =              GetComponent<Animator>();
+        getSceneItems =         FindAnyObjectByType<GetSceneItems>();
+        aimingController =      FindAnyObjectByType<AimingController>();
+        animator.SetFloat("ScaleFactor", 1 / animator.humanScale);
 
         mainCamera = Camera.main;
 
 
-        RegisterPlayer();
     }
 
 
     void Start()
     {   
-        
-        InitDicts();
         InitGameObjects();
         InitDelegate();
 
         UpdatePackageLocalData();
-        animator =              GetComponent<Animator>();
-        animator.SetFloat("ScaleFactor", 1 / animator.humanScale);
 
         playerMoveState = PlayerMoveState.Run;
         playerPosture = PlayerPostureState.Stand;
-        searchRadius = 2.0f;
 
         isWalk = false;
         isArmRifle = false;
@@ -152,17 +136,16 @@ public class PlayerManager : MonoBehaviour
 
         UIManager.Instance.OpenPanel(UIConst.PlayerMainUI);
         UIManager.Instance.OpenPanel(UIConst.GunInfo);
-        InvokeRepeating("SearchForGameObjectWithTag", 0.25f, 0.25f);
-        if (aimingController == null)
-        {
-            aimingController = FindAnyObjectByType<AimingController>();
-        }
-        InitInputSystem();
+        // InvokeRepeating("SearchForGameObjectWithTag", 0.25f, 0.25f);
     }
 
     private void OnEnable()
     {
-        
+        // GameManager.Instance.InitPlayerManager();
+        RegisterPlayer();
+        UpdatePackageLocalData();
+        InitInputSystem();
+
     }
 
     public void RegisterPlayer()
@@ -179,8 +162,6 @@ public class PlayerManager : MonoBehaviour
     private void OnDisable()
     {
         LogoutInputSystem();
-        animator = null;
-        gameObjectList.Clear();
     }
     void Update()
     {
@@ -198,10 +179,6 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
     #region Main Methods
-    private void InitDicts()
-    {
-        _gameObjectList = new List<GameObject>();
-    }
 
     private void InitGameObjects()
     {
@@ -254,7 +231,6 @@ public class PlayerManager : MonoBehaviour
         GameManager.Instance.inputActions.Player.SelectItem.performed += GetSelectItemInput;
         GameManager.Instance.inputActions.Player.WalkToggle.performed += GetWalkToggleInput;
 
-        GameManager.Instance.inputActions.Player.Aiming.performed += aimingController.SwitchCameraParameter;
         GameManager.Instance.inputActions.Player.Fire.started += shootController.OnFireStarte;
         GameManager.Instance.inputActions.Player.Fire.canceled += shootController.OnFireCancel;
     }
@@ -272,7 +248,6 @@ public class PlayerManager : MonoBehaviour
         GameManager.Instance.inputActions.Player.SelectItem.performed -= GetSelectItemInput;
         GameManager.Instance.inputActions.Player.WalkToggle.performed -= GetWalkToggleInput;
 
-        GameManager.Instance.inputActions.Player.Aiming.performed -= aimingController.SwitchCameraParameter;
         GameManager.Instance.inputActions.Player.Fire.started -= shootController.OnFireStarte;
         GameManager.Instance.inputActions.Player.Fire.canceled -= shootController.OnFireCancel;
     }
@@ -334,7 +309,7 @@ public class PlayerManager : MonoBehaviour
         {
             Vector3 tep = targetRotationDirection * movementSpeed - currentPlayerHorizontalVelocity;
             Vector3 targetMoveDirection = new Vector3(tep.x, moveDirection.y, tep.z);
-            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.1f * Time.deltaTime);
+            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, Time.deltaTime);
         }
         else
         {
@@ -342,18 +317,21 @@ public class PlayerManager : MonoBehaviour
             Vector3 tep = AimingmovementDirection * Mathf.Abs(movementSpeed) - currentPlayerHorizontalVelocity;
             Vector3 targetMoveDirection = new Vector3(tep.x, moveDirection.y, tep.z);
             
-            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, 0.1f * Time.deltaTime);
+            moveDirection = Vector3.SmoothDamp(moveDirection, targetMoveDirection, ref moveVelocity, Time.deltaTime);
         }
     }
     private void Move()
     {
-        HorizontalVelocityCalculate();
-        RotateTowardsTargetRotation();
-        moveDirection.y += gravity * Time.deltaTime;
+    
         if (isAiming)
         {
             ChangePlayerRotation();
         }
+
+        HorizontalVelocityCalculate();
+        RotateTowardsTargetRotation();
+        moveDirection.y = Mathf.Clamp(moveDirection.y + gravity * Time.deltaTime, gravity, -gravity);
+        
         if (characterController.isGrounded)
         {   
             if (isJumping)
@@ -362,6 +340,7 @@ public class PlayerManager : MonoBehaviour
                 moveDirection.y = jumpVelocity;
                 animator.SetFloat("VerticalSpeed", jumpVelocity);
             }
+            
         }
         else if (!characterController.isGrounded && !Grounded)
         {
@@ -374,13 +353,15 @@ public class PlayerManager : MonoBehaviour
             {
                 animator.Play("Jump Tree");
                 playerPosture = PlayerPostureState.Jumping;
-                isJumping = true;
+                // isJumping = true;
+                isFalling = true;
             }
+            
         }
-        
         characterController.Move(moveDirection * Time.deltaTime);
-        if (characterController.isGrounded && isJumping)
+        if (characterController.isGrounded && (isJumping || isFalling))
         {
+            isFalling = false;
             isJumping = false;
             animator.Play("Base Tree");
         }
@@ -389,15 +370,18 @@ public class PlayerManager : MonoBehaviour
 
     public void PutGrabRifle(int isOnback)
     {
-        if (isOnback == 1)
+        if (HandleOnBack != null && HandleOnHand != null)
         {
-            HandleOnHand.SetActive(false);
-            HandleOnBack.SetActive(true);
-        }
-        else if (isOnback == 0)
-        {
-            HandleOnHand.SetActive(true);
-            HandleOnBack.SetActive(false);
+            if (isOnback == 1)
+            {
+                HandleOnHand.SetActive(false);
+                HandleOnBack.SetActive(true);
+            }
+            else if (isOnback == 0)
+            {
+                HandleOnHand.SetActive(true);
+                HandleOnBack.SetActive(false);
+            }
         }
     }
 
@@ -641,10 +625,10 @@ public class PlayerManager : MonoBehaviour
                 animator.SetBool("isCrouch", true);
                 break;
             case PlayerPostureState.Jumping:
-                animator.SetFloat("VerticalSpeed", moveDirection.y, 0.9f, Time.deltaTime);
+                animator.SetFloat("VerticalSpeed", moveDirection.y, 0.1f, Time.deltaTime);
                 break;
             case PlayerPostureState.Falling:
-                animator.SetFloat("VerticalSpeed", moveDirection.y, 0.9f, Time.deltaTime);
+                animator.SetFloat("VerticalSpeed", moveDirection.y, 0.1f, Time.deltaTime);
                 break;
         }
     }
@@ -670,66 +654,7 @@ public class PlayerManager : MonoBehaviour
     }
     #endregion
 
-    #region 检索周围可拾取物品
-    private void SearchForGameObjectWithTag()
-    {   
-        var foundObjects = Physics.OverlapSphere(transform.position, searchRadius);
-        List<GameObject> foundItems = new();
-        List<GameObject> ToBeDeleted = new();
-        ItemsInfo itemsInfo = UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>();
-        foreach (var foundObject in foundObjects)
-        {
-            if (foundObject.CompareTag("Item") || foundObject.CompareTag("NPC"))
-            {
-                if (foundObject.GetComponent<ItemCell>() == null)
-                {
-                    return;
-                }
-                foundItems.Add(foundObject.gameObject);
-                string NowUid = foundObject.GetComponent<ItemCell>().uid;
-                if (!gameObjectList.Any(gameObject => gameObject.GetComponent<ItemCell>().uid == NowUid))
-                {
-                    gameObjectList.Add(foundObject.gameObject);
-                    itemsInfo.GetScrollContent(foundObject.gameObject);
-                }
-            }
-        }
-        foreach (GameObject foundObject in gameObjectList)
-        {
-            string uid = foundObject.GetComponent<ItemCell>().uid;
-            if (!foundItems.Any(gameObject => gameObject.GetComponent<ItemCell>().uid == uid))
-            {
-                ToBeDeleted.Add(foundObject.gameObject);
-            }
-        }
-        foreach (GameObject obj in ToBeDeleted)
-        {
-            gameObjectList.Remove(obj);
-            itemsInfo.DelScrollContent(obj);
-        }
-
-        // 刷新选中的物品
-        if (gameObjectList.Count == 0)
-        {
-            SelectingID = "";
-            return;
-        }
-        if (SelectingID != "")
-        {
-            for (int i = 0; i < itemsInfo.scrollContent.childCount; i++)
-            {
-                ItemDetail temp = itemsInfo.scrollContent.GetChild(i).GetComponent<ItemDetail>();
-                if (temp.UISelecting.gameObject.activeSelf == true)
-                {
-                    return;
-                }
-            }
-        }
-        SelectingID = itemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().uid;
-        itemsInfo.scrollContent.GetChild(0).GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
-
-    }
-    #endregion
+    
     
     #region InputSystem Methods
     private void GetWalkToggleInput(InputAction.CallbackContext context)
@@ -784,7 +709,7 @@ public class PlayerManager : MonoBehaviour
 
     private void GetSelectItemInput(InputAction.CallbackContext context)
     {
-        if (SelectingID == "" || gameObjectList.Count == 0)
+        if (getSceneItems.SelectingID == "" || getSceneItems.gameObjectList.Count == 0)
         {
             return;
         }
@@ -812,14 +737,14 @@ public class PlayerManager : MonoBehaviour
 
     private void GetPickUpInput(InputAction.CallbackContext context)
     {
-        if (SelectingID != "" && gameObjectList.Count != 0)
+        if (getSceneItems.SelectingID != "" && getSceneItems.gameObjectList.Count != 0)
         {
-            foreach (GameObject Item in gameObjectList)
+            foreach (GameObject Item in getSceneItems.gameObjectList)
             {
                 ItemCell ItemInfo = Item.GetComponent<ItemCell>();
-                if (ItemInfo.uid == SelectingID && ItemInfo.type == 1) // 1为可拾取的场景物体
+                if (ItemInfo.uid == getSceneItems.SelectingID && ItemInfo.type == 1) // 1为可拾取的场景物体
                 {
-                    int ItemNum = UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().GetItemNumByUID(SelectingID);
+                    int ItemNum = UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().GetItemNumByUID(getSceneItems.SelectingID);
                     if (ItemNum == UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().scrollContent.childCount - 1)
                     {
 
@@ -838,13 +763,13 @@ public class PlayerManager : MonoBehaviour
                         return;
                     }
                 }
-                else if (ItemInfo.uid == SelectingID && ItemInfo.type == 101)
+                else if (ItemInfo.uid == getSceneItems.SelectingID && ItemInfo.type == 101)
                 {
                     NPCController nPC = Item.GetComponent<NPCController>();
                     nPC.ShowDialog();
                 }
 
-                else if (ItemInfo.uid == SelectingID && ItemInfo.type == 102)
+                else if (ItemInfo.uid == getSceneItems.SelectingID && ItemInfo.type == 102)
                 {
                     TransitionPoint transitionPoint = ItemInfo.transform.gameObject.GetComponent<TransitionPoint>();
                     SceneController.Instance.TransitionToDestination(transitionPoint);
@@ -880,7 +805,6 @@ public class PlayerManager : MonoBehaviour
             int ReloadAmmo = shootController.ShootConfig.Capacity - shootController.MagazineAmmo; // 装填弹药量
             GameManager.Instance.DiscountPackageLocalItemsNumById(2, ReloadAmmo);
             shootController.MagazineAmmo = shootController.ShootConfig.Capacity;
-            print(3 +" "+ TotalAmmo);
         }
         int leftAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2);
         shootController.TotalAmmo = leftAmmo;

@@ -43,7 +43,7 @@ public class NPCController : MonoBehaviour
 
     void Start()
     {
-        playerManager = FindAnyObjectByType<PlayerManager>();
+        
         // InvokeRepeating("FoundPlyer", 0.25f, 0.25f);
     }
 
@@ -137,7 +137,7 @@ public class NPCController : MonoBehaviour
         {
             if (collider.CompareTag("Player"))
             {
-                
+                playerManager = FindAnyObjectByType<PlayerManager>();
                 LookAtPoint.position = playerManager.LookPoint.transform.position;
                 LookAtPoint.rotation = playerManager.LookPoint.transform.rotation;
                 postureStates = PostureStates.Talk;

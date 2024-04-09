@@ -90,8 +90,12 @@ public class BaseShoot : MonoBehaviour
 
     protected VisualEffect CreateImpactFlash(GameObject FlashPoint)
     {
-        VisualEffect Flash = FlashPoint.AddComponent<VisualEffect>();
-        Flash.visualEffectAsset = VFX_Flash;
-        return Flash;
+        if (FlashPoint.GetComponent<VisualEffect>() == null)
+        {
+            VisualEffect Flash = FlashPoint.AddComponent<VisualEffect>();
+            Flash.visualEffectAsset = VFX_Flash;
+            return Flash;
+        }
+        return FlashPoint.GetComponent<VisualEffect>();
     }
 }

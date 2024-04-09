@@ -13,10 +13,10 @@ public class GameManager : MonoBehaviour
     private PackageTable_SO packageTable;
     public CurrentTask_SO currentTask;
     public TaskData_SO taskData;
-    public UIManager uIManager;
-    private PlayerManager playerManager;
-    public GameObject playerPrefab;
+    public PlayerManager playerManager;
+    public GetSceneItems getSceneItems;
     public GameObject AudioManagerPrefab;
+    public GameObject Characater;
 
     public static bool applicationIsQuitting = false;
     private static GameManager _instance;
@@ -56,11 +56,7 @@ public class GameManager : MonoBehaviour
         // 可以在这里进行其他的初始化操作
 
         print(this.name + "  Awake");
-        AudioManager audioManager = FindAnyObjectByType<AudioManager>();
-        if (audioManager == null) Instantiate(AudioManagerPrefab);
-        if (inputActions == null)  inputActions = new PlayerMoveControls();
-        playerManager = FindAnyObjectByType<PlayerManager>();
-        
+        InitBaseGameObject();
     }
     
 
@@ -81,8 +77,24 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         print(this.name + "  Start");
+        
+        getSceneItems = FindAnyObjectByType<GetSceneItems>();
     }
     # region 场景初始化
+    public void InitPlayerManager()
+    {
+        playerManager = FindAnyObjectByType<PlayerManager>();
+    }
+
+    public void InitBaseGameObject()
+    {
+        AudioManager audioManager = FindAnyObjectByType<AudioManager>();
+        if (audioManager == null) Instantiate(AudioManagerPrefab);
+        if (inputActions == null)  inputActions = new PlayerMoveControls();
+        PlayerInput _PlayerInput = FindAnyObjectByType<PlayerInput>();
+        if (_PlayerInput == null) Instantiate(Characater);
+        playerManager = FindAnyObjectByType<PlayerManager>();
+    }
 
     # endregion
 

@@ -16,6 +16,7 @@ public class ShootController : BaseShoot
     Camera mainCamera;
     Animator animator;
     public GameObject FireHole;
+    private Vector3 TrailStartPoint;
     private Ray FireRay;
     private CinemachinePOV virtualCamera;
     private VisualEffect flash;
@@ -26,6 +27,8 @@ public class ShootController : BaseShoot
     {
         TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2); // 2: 步枪子弹Id
         flash = CreateImpactFlash(FireHole.gameObject);
+        
+        MagazineAmmo = ShootConfig.Capacity;
 
     }
 
@@ -36,7 +39,6 @@ public class ShootController : BaseShoot
     private void Start()
     {
         LastShootTime = 0f;
-        MagazineAmmo = ShootConfig.Capacity;
         Inpulse = GetComponent<Cinemachine.CinemachineCollisionImpulseSource>();
         mainCamera = FindObjectOfType<Camera>();
         virtualCamera = FindAnyObjectByType<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachinePOV>();
@@ -55,11 +57,11 @@ public class ShootController : BaseShoot
         if (isShooting && animator.GetBool("Aiming") && MagazineAmmo > 0 && animator.GetCurrentAnimatorStateInfo(1).IsName("Rifle Aiming Idle"))
         {
             
-            Inpulse.GenerateImpulse();
             flash.gameObject.SetActive(true);
             
-            StartCoroutine(AccumulatedOffset());
             Shoot();
+            StartCoroutine(AccumulatedOffset());
+            Inpulse.GenerateImpulse();
         }
         else
         {
@@ -82,6 +84,7 @@ public class ShootController : BaseShoot
         if (Time.time > ShootConfig.FireRate + LastShootTime)
         {
             MagazineAmmo -= 1;
+            TrailStartPoint = FireHole.transform.position;
             UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(MagazineAmmo, TotalAmmo);
             flash.Play();
             AudioManager.Instance.soundFXManager.PlaySoundFXClip(shootSoundClip, transform, 1f);
@@ -99,7 +102,7 @@ public class ShootController : BaseShoot
                 {
                     StartCoroutine(
                         PlayTrail(
-                            FireHole.transform.position,
+                            TrailStartPoint,
                             hit.point,
                             hit
                         )
@@ -122,6 +125,7 @@ public class ShootController : BaseShoot
                         else if (Enemy.GetComponent<CharacterStats>().CurrentHealth <= 0 && enemyController.agent.isStopped == false)
                         {
                             enemyController.agent.isStopped = true;
+                            enemyController.gameObject.GetComponent<Collider>().enabled = false;
                             Instantiate(enemyController.dropItemPrefab, Enemy.position, Quaternion.identity);
                         }
                     }
@@ -130,7 +134,7 @@ public class ShootController : BaseShoot
                 {
                     StartCoroutine(
                         PlayTrail(
-                            FireHole.transform.position,
+                            TrailStartPoint,
                             mainCamera.transform.position + (shootDirection * TrailConfig.MissDistance),
                             new RaycastHit()
                         )

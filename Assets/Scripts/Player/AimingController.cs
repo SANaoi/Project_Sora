@@ -10,7 +10,6 @@ public class AimingController : MonoBehaviour
 {
     PlayerManager playerMoveController;
     float default_m_ScreenX = 0.45f;
-    public PlayerMoveControls inputActions;
     public CinemachineVirtualCamera normalCamera;
     private CinemachineFramingTransposer VisualnormalCamera;
     public Vector3 LookPointPosition;
@@ -35,6 +34,7 @@ public class AimingController : MonoBehaviour
     void OnDisable()
     {
         // inputActions.Player.Aiming.performed -= SwitchCameraParameter;
+        GameManager.Instance.inputActions.Player.Aiming.performed -= SwitchCameraParameter;
     }
 
     void Start()
@@ -44,13 +44,13 @@ public class AimingController : MonoBehaviour
         {
             normalCamera = FindAnyObjectByType<CinemachineVirtualCamera>();
         }
-        isStartSetCamera = false;
         VisualnormalCamera = normalCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
         VisualnormalCamera.m_ScreenX = default_m_ScreenX;
-        inputActions = GameManager.Instance.inputActions;
+        isStartSetCamera = false;
         zoom = FindAnyObjectByType<Zoom>();
-        playerMoveController = FindAnyObjectByType<PlayerManager>();
+        playerMoveController = GameManager.Instance.playerManager;
         StartCoroutine(SmoothFOVSwitch());
+        GameManager.Instance.inputActions.Player.Aiming.performed += SwitchCameraParameter;
     }
 
     void Update()
@@ -84,6 +84,7 @@ public class AimingController : MonoBehaviour
 
     IEnumerator SmoothFOVSwitch()
     {
+        playerMoveController = FindAnyObjectByType<PlayerManager>();
         isStartSetCamera = false;
         float targetFOV;
         float target_m_ScreenX;
@@ -99,7 +100,7 @@ public class AimingController : MonoBehaviour
         {
             targetFOV = 40f;
             target_m_ScreenX = 0.2f;
-            targetZoomDistance = 1.2f;
+            targetZoomDistance = 1.0f;
         }
         else if (!playerMoveController.isAiming)
         {
@@ -125,8 +126,8 @@ public class AimingController : MonoBehaviour
     }
     private void OnGUI()
     {
-        playerMoveController = FindAnyObjectByType<PlayerManager>();
-        if (playerMoveController.isAiming)
+        playerMoveController =  FindAnyObjectByType<PlayerManager>();
+        if (playerMoveController && playerMoveController.isAiming)
         {
             // 设置十字的颜色
             GUI.color = Color.white;
