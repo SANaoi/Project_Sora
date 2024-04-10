@@ -26,7 +26,6 @@ public class ItemsInfo : BasePanel
     {
         InitUIName();
         
-        getSceneItems = FindAnyObjectByType<GetSceneItems>();
     }
     private void InitUIName()
     {
@@ -70,11 +69,11 @@ public class ItemsInfo : BasePanel
     {
         for (int i = 0; i < scrollContent.childCount; i++)
         {
-            if (getSceneItems.SelectingID == scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().uid)
+            if (GameManager.Instance.getSceneItems.SelectingID == scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().uid)
             {
                 if (i > 0)
                 {
-                    getSceneItems.SelectingID = scrollContent.GetChild(i - 1).gameObject.GetComponent<ItemDetail>().uid;
+                    GameManager.Instance.getSceneItems.SelectingID = scrollContent.GetChild(i - 1).gameObject.GetComponent<ItemDetail>().uid;
                     scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(false);
                     scrollContent.GetChild(i - 1).gameObject.GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
                     break;
@@ -87,11 +86,11 @@ public class ItemsInfo : BasePanel
     {
         for (int i = 0; i < scrollContent.childCount; i++)
         {
-            if (getSceneItems.SelectingID == scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().uid)
+            if (GameManager.Instance.getSceneItems.SelectingID == scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().uid)
             {
                 if (i < scrollContent.childCount - 1)
                 {
-                    getSceneItems.SelectingID = scrollContent.GetChild(i + 1).gameObject.GetComponent<ItemDetail>().uid;
+                    GameManager.Instance.getSceneItems.SelectingID = scrollContent.GetChild(i + 1).gameObject.GetComponent<ItemDetail>().uid;
                     scrollContent.GetChild(i).gameObject.GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(false);
                     scrollContent.GetChild(i + 1).gameObject.GetComponent<ItemDetail>().UISelecting.gameObject.SetActive(true);
                     break;

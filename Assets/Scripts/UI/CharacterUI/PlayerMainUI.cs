@@ -15,7 +15,7 @@ public class PlayerMainUI : BasePanel
 
     void Start()
     {
-        playerManager = FindAnyObjectByType<PlayerManager>();
+        playerManager = GameManager.Instance.playerManager;
         InitInfo();
         UpdatePlayerHealthInfo(currentStats.CurrentHealth, currentStats.MaxHealth);
     }

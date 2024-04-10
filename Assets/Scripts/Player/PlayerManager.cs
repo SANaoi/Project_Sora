@@ -141,7 +141,7 @@ public class PlayerManager : MonoBehaviour
 
     private void OnEnable()
     {
-        // GameManager.Instance.InitPlayerManager();
+        GameManager.Instance.InitPlayerManager();
         RegisterPlayer();
         UpdatePackageLocalData();
         InitInputSystem();
@@ -150,7 +150,10 @@ public class PlayerManager : MonoBehaviour
 
     public void RegisterPlayer()
     {
-        virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+        if (virtualCamera == null)
+        {
+            virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+        }
 
         if (virtualCamera != null)
         {

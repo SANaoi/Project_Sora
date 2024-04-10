@@ -9,7 +9,6 @@ public class CharacterStats : MonoBehaviour
     // 通用人物状态
     public CharacterData_SO characterData;
     public CharacterData_SO templateData;
-    public int currentHealth;
     int Damage = 15;
 
     void Awake()

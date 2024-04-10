@@ -32,6 +32,7 @@ public class SceneController : Singleton<SceneController>
         {   
             yield return SceneManager.LoadSceneAsync(sceneName);
             UIManager.Instance.RefreshManager();
+            GameManager.Instance.InitBaseGameObject();
             yield break;
         }
         yield return null;

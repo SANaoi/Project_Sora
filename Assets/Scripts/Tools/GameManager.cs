@@ -78,7 +78,6 @@ public class GameManager : MonoBehaviour
     {
         print(this.name + "  Start");
         
-        getSceneItems = FindAnyObjectByType<GetSceneItems>();
     }
     # region 场景初始化
     public void InitPlayerManager()
@@ -94,6 +93,8 @@ public class GameManager : MonoBehaviour
         PlayerInput _PlayerInput = FindAnyObjectByType<PlayerInput>();
         if (_PlayerInput == null) Instantiate(Characater);
         playerManager = FindAnyObjectByType<PlayerManager>();
+        
+        getSceneItems = FindAnyObjectByType<GetSceneItems>();
     }
 
     # endregion
@@ -333,6 +334,7 @@ public class GameManager : MonoBehaviour
 	}
 }
 
+
 public class PackageItemComparer : IComparer<PackageLocalItem>
 {
     public int Compare(PackageLocalItem a, PackageLocalItem b)
@@ -345,5 +347,22 @@ public class PackageItemComparer : IComparer<PackageLocalItem>
             return b.num.CompareTo(a.num);
         }
         return idComparison;
+    }
+}
+
+public class AudioVolumeProcessor
+{
+    public static float AudioVolumeCalculate(Vector3 thisPosition, Vector3 targetPosition, float max_value, float min_value, float max_distance)
+    {
+        // 计算距离
+        float distance = Vector3.Distance(thisPosition, targetPosition);
+        // 超过最大值返回最小音量
+        if (distance > max_distance)
+        {
+            return min_value;
+        }
+        // 计算音量
+        float volume = max_value * (1 - distance / max_distance);
+        return Mathf.Max(volume, min_value);
     }
 }

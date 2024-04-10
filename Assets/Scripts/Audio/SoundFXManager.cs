@@ -26,7 +26,6 @@ public class SoundFXManager : MonoBehaviour
         int rand = Random.Range(0, audioClip.Length);
 
         AudioSource audioSource = Instantiate(soundFXObject, spawnTransform.position, Quaternion.identity);
-        
         audioSource.clip = audioClip[rand];
 
         audioSource.volume = volume;

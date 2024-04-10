@@ -194,6 +194,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Aoi
       objectReference: {fileID: 0}
+    - target: {fileID: 2365829029223961201, guid: af8a9e5803020d448bd49d3bd01fa341,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2760826201354538173, guid: af8a9e5803020d448bd49d3bd01fa341,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -85,6 +85,10 @@ public class AimingController : MonoBehaviour
     IEnumerator SmoothFOVSwitch()
     {
         playerMoveController = FindAnyObjectByType<PlayerManager>();
+        if (playerMoveController == null)
+        {
+            yield break;
+        }
         isStartSetCamera = false;
         float targetFOV;
         float target_m_ScreenX;

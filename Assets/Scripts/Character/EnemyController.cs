@@ -54,11 +54,12 @@ public class EnemyController : MonoBehaviour
     public float guardStoppingDistance;
     public float ChaseStoppingDistance;
 
-    public float continueTime;
-    public float ExitTime;
+    public float continueTime; // 发现目标的持续时间
+    public float ExitTime; // 脱战的持续时间
     public float tiggerTime;
-    // public float LastFoundTime;
-    // public float lastExitTime;
+
+    // 音频效果
+    public AudioClip[] FootstepAudioClips;
     public GameObject dropItemPrefab;
     private PlayerManager playerManager;
 
@@ -72,7 +73,6 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
-
         guardPos = transform.position;
         guardRotation = transform.rotation;
 
@@ -155,7 +155,14 @@ public class EnemyController : MonoBehaviour
             case EnemyStates.CHASE:
             agent.speed = chase;
             Speed = chase;
-            if (!FoundPlayer(signtRadius) && ExitTime < tiggerTime) ExitTime = Mathf.Clamp(ExitTime + Time.deltaTime, 0f, tiggerTime);
+
+            // 不在目标区域内且 脱战时间小于触发时间
+            if (!FoundPlayer(signtRadius) && ExitTime < tiggerTime)
+            {
+                ExitTime = Mathf.Clamp(ExitTime + Time.deltaTime, 0f, tiggerTime);
+                agent.destination = GameManager.Instance.playerManager.transform.position;
+            }
+            // 不在目标区域内且 脱战时间等于触发时间 
             if (!FoundPlayer(signtRadius) && ExitTime == tiggerTime)
             {
 
@@ -210,6 +217,7 @@ public class EnemyController : MonoBehaviour
                     agent.speed = Idle;
                     Speed = Idle;
                     agent.destination = transform.position;
+                    // TODO 设置随机移动
                     Rotate(attackTarget);
                     if (FoundBunker())
                     {
@@ -257,14 +265,14 @@ public class EnemyController : MonoBehaviour
                 LookAt.rotation = playerManager.LookPoint.transform.rotation;
                 attackTarget = collider.gameObject;
                 isTurn = false;
-                multiAim.weight = 1f;
+                multiAim.weight = Mathf.Lerp(multiAim.weight, 1f, Time.deltaTime);
                 continueTime = Mathf.Clamp(continueTime + Time.deltaTime, 0f, tiggerTime);
                 ExitTime = 0f;
                 return true;
             }
         }
         continueTime = 0f;
-        multiAim.weight = 0f;
+        multiAim.weight =  Mathf.Lerp(multiAim.weight, 0f, Time.deltaTime);
         attackTarget = null;
         return false;
     }
@@ -317,7 +325,14 @@ public class EnemyController : MonoBehaviour
     }
     private void OnFootstep(AnimationEvent animationEvent)
     {
-        
+        Vector3 PlayerPosition = GameManager.Instance.playerManager.transform.position;
+        Vector3 thisPosition = transform.position;
+        float volume = AudioVolumeProcessor.AudioVolumeCalculate(
+                thisPosition, 
+                PlayerPosition,
+                1f, 0f, 10f
+                );
+        AudioManager.Instance.soundFXManager.PlayRandomSoundFXClip(FootstepAudioClips, transform, volume);
     }
 
     void PutGrabRifle()
