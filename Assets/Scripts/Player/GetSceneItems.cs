@@ -22,7 +22,11 @@ public class GetSceneItems : MonoBehaviour
 
         InvokeRepeating("SearchForGameObjectWithTag", 0.25f, 0.25f);
     }
-
+    
+    private void OnDestroy()
+    {
+        gameObjectList.Clear();
+    }
     #region 检索周围可拾取物品
     private void SearchForGameObjectWithTag()
     {   

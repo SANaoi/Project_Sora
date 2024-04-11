@@ -32,7 +32,7 @@ public class PlayerManager : MonoBehaviour
     Vector3 timeToReachTargetRotation;
     Vector3 dampedTargetRotationCurrentVelocity;
     Vector3 dampedTargetRotationPassedTime;
-    Vector2 playerMoveContext;
+    public Vector2 playerMoveContext;
 
     [HideInInspector]
     public PlayerPostureState playerPosture;
@@ -165,6 +165,7 @@ public class PlayerManager : MonoBehaviour
     private void OnDisable()
     {
         LogoutInputSystem();
+        playerMoveContext = Vector2.zero;
     }
     void Update()
     {
@@ -367,6 +368,7 @@ public class PlayerManager : MonoBehaviour
             isFalling = false;
             isJumping = false;
             animator.Play("Base Tree");
+            AudioManager.Instance.soundFXManager.PlaySoundFXClip(LandingAudioClip, transform, 0.5f);
         }
     }
 

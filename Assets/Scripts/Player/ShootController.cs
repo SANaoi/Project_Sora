@@ -107,9 +107,18 @@ public class ShootController : BaseShoot
                             hit
                         )
                     );
+                    if (hit.transform.GetComponent<Rigidbody>() != null)
+                    {
+                        Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
+                        HitEffect.OnHit(rb, hit.transform.forward);
+                    }
+
                     Transform hitInfo = FindRootTransform(hit.transform);
                     if (hitInfo.CompareTag("Enemy"))
                     {
+                        
+
+
                         Transform Enemy = hitInfo.transform;
                         //CharacterStats characterStats = Enemy.GetComponent<CharacterStats>();
                         EnemyController enemyController = Enemy.GetComponent<EnemyController>();

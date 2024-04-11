@@ -8,11 +8,12 @@ public class TeamController : MonoBehaviour
     public GameObject character_2;
     public CharacterStats currentStats;
     private GameObject currentCharacter;
+    private Vector2 currentMoveContext;
     private void Awake()
     {
         character_2.SetActive(false);
         character_1.SetActive(true);
-        InvokeRepeating("changeActivateCharacter", 0.25f, 1f);
+        InvokeRepeating("changeActivateCharacter", 0.1f, 1f);
     }
 
     private void Start()
@@ -38,6 +39,8 @@ public class TeamController : MonoBehaviour
         {   
             if (character_1.activeSelf && !character_2.activeSelf)
             {
+                
+                currentMoveContext = character_1.GetComponent<PlayerManager>().playerMoveContext;
                 character_2.SetActive(true);
                 character_1.SetActive(false);
                 currentCharacter = character_2;
@@ -46,6 +49,7 @@ public class TeamController : MonoBehaviour
             }
             else if (!character_1.activeSelf && character_2.activeSelf)
             {
+                currentMoveContext = character_2.GetComponent<PlayerManager>().playerMoveContext;
                 character_1.SetActive(true);
                 character_2.SetActive(false);
                 currentCharacter = character_1;
@@ -57,8 +61,9 @@ public class TeamController : MonoBehaviour
     {
         currentStats = currentCharacter.GetComponent<CharacterStats>();
         Vector3 offsetVector3 = gameObject.transform.forward.normalized;
-        currentCharacter.transform.position = gameObject.transform.position + new Vector3(offsetVector3.x, 0f, offsetVector3.z);
+        currentCharacter.transform.position = gameObject.transform.position;
         UIManager.Instance.OpenPanel(UIConst.PlayerMainUI).GetComponent<PlayerMainUI>().UpdatePlayerHealthInfo(currentStats.CurrentHealth, currentStats.MaxHealth);
+        currentCharacter.GetComponent<PlayerManager>().playerMoveContext = currentMoveContext;
     }
 
     void InitPlayerMainUI()

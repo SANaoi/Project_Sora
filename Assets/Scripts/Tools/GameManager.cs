@@ -89,12 +89,24 @@ public class GameManager : MonoBehaviour
     {
         AudioManager audioManager = FindAnyObjectByType<AudioManager>();
         if (audioManager == null) Instantiate(AudioManagerPrefab);
-        if (inputActions == null)  inputActions = new PlayerMoveControls();
-        PlayerInput _PlayerInput = FindAnyObjectByType<PlayerInput>();
-        if (_PlayerInput == null) Instantiate(Characater);
-        playerManager = FindAnyObjectByType<PlayerManager>();
         
+        AudioManager.Instance.musicManager.SetMusicGameObject();
+
+        if (inputActions == null)  inputActions = new PlayerMoveControls();
+
+        PlayerInput _PlayerInput = FindAnyObjectByType<PlayerInput>();
+        if (_PlayerInput == null)
+        {
+            TransitionPoint transitionPoint = FindAnyObjectByType<TransitionPoint>();
+            Vector3 position = transitionPoint.transform.position;
+            Instantiate(Characater,  position, Quaternion.identity);
+        }
+
+        playerManager = FindAnyObjectByType<PlayerManager>();
+
         getSceneItems = FindAnyObjectByType<GetSceneItems>();
+
+        
     }
 
     # endregion
