@@ -261,8 +261,8 @@ public class EnemyController : MonoBehaviour
             if (collider.CompareTag("Player"))
             {
                 
-                LookAt.position = playerManager.LookPoint.transform.position;
-                LookAt.rotation = playerManager.LookPoint.transform.rotation;
+                LookAt.position = GameManager.Instance.playerManager.LookPoint.transform.position;
+                LookAt.rotation = GameManager.Instance.playerManager.LookPoint.transform.rotation;
                 attackTarget = collider.gameObject;
                 isTurn = false;
                 multiAim.weight = Mathf.Lerp(multiAim.weight, 1f, Time.deltaTime);

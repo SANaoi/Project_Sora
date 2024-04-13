@@ -97,6 +97,7 @@ public class UIManager : MonoBehaviour
             {UIConst.DialogBox, "MainUI/DialogBox"},
             {UIConst.ItemDetail, "MainUI/ItemDetail"},
             {UIConst.SelectBox, "MainUI/DialogSelectBox"},
+            {UIConst.LoadingScene, "MainUI/LoadingScene"},
             
             {UIConst.HealthBarUI, "CharacterUI/Bar Holder"},
             {UIConst.PlayerMainUI, "CharacterUI/PlayerMainUI"},
@@ -244,4 +245,6 @@ public class UIConst
     public const string AimImage = "AimImage";
 
     public const string AudioUIManager = "AudioUIManager"; 
+
+    public const string LoadingScene = "LoadingScene";
 }

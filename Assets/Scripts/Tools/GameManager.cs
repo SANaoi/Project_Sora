@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using aoi;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -85,28 +86,36 @@ public class GameManager : MonoBehaviour
         playerManager = FindAnyObjectByType<PlayerManager>();
     }
 
+    public void InitBaseInput()
+    {
+        BasePanel a = UIManager.Instance.OpenPanel(UIConst.PlayerMainUI);
+        BasePanel b = UIManager.Instance.OpenPanel(UIConst.GunInfo);
+        if (a) a.gameObject.SetActive(false);
+        if (b) b.gameObject.SetActive(false);
+        inputActions.Disable();
+    }
+
     public void InitBaseGameObject()
     {
+        if (inputActions == null)  inputActions = new PlayerMoveControls();
+
+        TransitionPoint transitionPoint = FindAnyObjectByType<TransitionPoint>();
+        if (transitionPoint != null)
+        {
+            Vector3 position = transitionPoint.transform.position;
+            Instantiate(Characater,  position, Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(Characater);
+        }
         AudioManager audioManager = FindAnyObjectByType<AudioManager>();
         if (audioManager == null) Instantiate(AudioManagerPrefab);
         
         AudioManager.Instance.musicManager.SetMusicGameObject();
-
-        if (inputActions == null)  inputActions = new PlayerMoveControls();
-
-        PlayerInput _PlayerInput = FindAnyObjectByType<PlayerInput>();
-        if (_PlayerInput == null)
-        {
-            TransitionPoint transitionPoint = FindAnyObjectByType<TransitionPoint>();
-            Vector3 position = transitionPoint.transform.position;
-            Instantiate(Characater,  position, Quaternion.identity);
-        }
-
         playerManager = FindAnyObjectByType<PlayerManager>();
 
         getSceneItems = FindAnyObjectByType<GetSceneItems>();
-
-        
     }
 
     # endregion

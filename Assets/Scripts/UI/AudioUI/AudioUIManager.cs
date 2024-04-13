@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class AudioUIManager : BasePanel
 {
@@ -14,6 +14,7 @@ public class AudioUIManager : BasePanel
     private Transform masterSlider;
     private Transform soundSlider;
     private Transform musicSlider;
+    private LoadingScene loadingPanel;
     private void Awake()
     {   
         InitUI();
@@ -62,6 +63,7 @@ public class AudioUIManager : BasePanel
     private void OnClickMenu()
     {
         print("back to menu");
+        SceneController.Instance.EnterFirstScene("Scenes/MenuScene");
     }
 
     private void Refresh()

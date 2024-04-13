@@ -107,7 +107,6 @@ public class NPCController : MonoBehaviour
         DialogUI DialogBox = UIManager.Instance.OpenPanel(UIConst.DialogBox) as DialogUI;
         foreach (TaskList taskList in  characterTaskList.textAssets)
         {
-            
             DialogBox.reloadData(taskList);
             if (!taskList.IsAccepted)
             {

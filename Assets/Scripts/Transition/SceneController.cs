@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : Singleton<SceneController>
 {
-    public GameObject playerPrefab;
-    public Animator animator;
+    private LoadingScene loadingPanel;
+
     protected override void Awake()
     {
         base.Awake();
@@ -14,6 +14,7 @@ public class SceneController : Singleton<SceneController>
     }
     public void TransitionToDestination(TransitionPoint transitionPoint)
     {
+        loadingPanel = UIManager.Instance.OpenPanel(UIConst.LoadingScene) as LoadingScene;
         switch (transitionPoint.transitionType)
         {
             case TransitionPoint.TransitionType.SameScene:
@@ -27,15 +28,27 @@ public class SceneController : Singleton<SceneController>
 
     IEnumerator Transition(string sceneName, TransitionDestination.DestinationTag destinationTag)
     {   
-
+        yield return null;
         if (SceneManager.GetActiveScene().name != sceneName)
         {   
-            yield return SceneManager.LoadSceneAsync(sceneName);
+            AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
+
+            operation.allowSceneActivation = false;
+            while (!operation.isDone)
+            {
+                float progress = operation.progress;
+                loadingPanel.Refresh(progress);
+                if (operation.progress >= 0.9f)
+                {
+                    loadingPanel.Refresh(1f);
+                    operation.allowSceneActivation = true;
+                }
+                yield return null;
+            }
+            
             UIManager.Instance.RefreshManager();
             GameManager.Instance.InitBaseGameObject();
-            yield break;
         }
-        yield return null;
     }
 
     private TransitionDestination GetDestination(TransitionDestination.DestinationTag destinationTag)
@@ -47,5 +60,38 @@ public class SceneController : Singleton<SceneController>
                 return entrances[i];
         }
         return null;
+    }
+
+    public void EnterFirstScene(string sceneName)
+    {
+        StartCoroutine(Transition(sceneName));
+    }
+
+    IEnumerator Transition(string sceneName)
+    {
+        loadingPanel = UIManager.Instance.OpenPanel(UIConst.LoadingScene) as LoadingScene;
+        yield return null;
+        if (SceneManager.GetActiveScene().name != sceneName)
+        {   
+            AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
+
+            operation.allowSceneActivation = false;
+            while (!operation.isDone)
+            {
+                float progress = operation.progress;
+                loadingPanel.Refresh(progress);
+                if (operation.progress >= 0.9f)
+                {
+                    loadingPanel.Refresh(1f);
+                    operation.allowSceneActivation = true;
+                }
+                yield return null;
+            }
+            
+            UIManager.Instance.RefreshManager();
+            GameManager.Instance.InitBaseGameObject();
+            GameManager.Instance.inputActions.Enable();
+        }
+
     }
 }
