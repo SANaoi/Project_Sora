@@ -10,12 +10,13 @@ public enum EnemyStates { GUARD, PATROL, CHASE,BATTLE, DEAD }
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(CharacterStats))]
+[RequireComponent(typeof(ExpressionControl))]
 public class EnemyController : MonoBehaviour
 {
 
     public NavMeshAgent agent;
     public EnemyStates enemyStates;
-    private Animator animator;
+    public Animator animator;
     private Vector3 guardPos;
     private Quaternion currentRotation;
 
@@ -62,6 +63,8 @@ public class EnemyController : MonoBehaviour
     public AudioClip[] FootstepAudioClips;
     public GameObject dropItemPrefab;
     private PlayerManager playerManager;
+    // Emoji
+    private ExpressionControl expressionUI;
 
     void Awake()
     {
@@ -86,6 +89,7 @@ public class EnemyController : MonoBehaviour
             enemyStates = EnemyStates.PATROL;
         }
         playerManager = FindAnyObjectByType<PlayerManager>();
+        GetComponent<ExpressionControl>().ExpressionPrefab.GetComponent<ExpressionUI>().Refresh(new List<string>{UIImage.中指, UIImage.苦笑, UIImage.中指});
     }
 
     // Update is called once per frame
@@ -377,6 +381,7 @@ public class EnemyController : MonoBehaviour
     private IEnumerator DestroyAfter()
     {
         yield return new WaitForSeconds(5f);
+        Destroy(GetComponent<ExpressionControl>().ExpressionPrefab);
         Destroy(gameObject);
     }
     // void OnDestroy()

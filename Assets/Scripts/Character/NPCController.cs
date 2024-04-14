@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
+// [RequireComponent(typeof(ExpressionUI))]
 public class NPCController : MonoBehaviour
 {
     private bool isPutHand;

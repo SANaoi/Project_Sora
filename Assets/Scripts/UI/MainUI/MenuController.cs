@@ -16,6 +16,7 @@ public class MenuController : MonoBehaviour
         InitUI();    
         InitClick();
         GameManager.Instance.InitBaseInput();
+        print(this.name + "Start--------------------");
     }
 
     private void InitUI()

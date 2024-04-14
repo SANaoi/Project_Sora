@@ -334,7 +334,7 @@ public class PlayerManager : MonoBehaviour
 
         HorizontalVelocityCalculate();
         RotateTowardsTargetRotation();
-        moveDirection.y = Mathf.Clamp(moveDirection.y + gravity * Time.deltaTime, gravity, -gravity);
+        moveDirection.y = Mathf.Clamp(moveDirection.y + gravity * 1.2f * Time.deltaTime, gravity, -gravity);
         
         if (characterController.isGrounded)
         {   

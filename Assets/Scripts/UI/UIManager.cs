@@ -101,6 +101,7 @@ public class UIManager : MonoBehaviour
             
             {UIConst.HealthBarUI, "CharacterUI/Bar Holder"},
             {UIConst.PlayerMainUI, "CharacterUI/PlayerMainUI"},
+            {UIConst.Expression, "CharacterUI/Expression"},
 
             {UIConst.TasksPanel, "TasksPanel/TasksPanel"},
 
@@ -214,6 +215,7 @@ public class UIManager : MonoBehaviour
         GameObject panelObject = GameObject.Instantiate(panelPrefab, UIRoot, false);
         return panelObject;
     }
+
     private void OnDestroy()
     {
         // 当 GameManager 实例被销毁时，清理静态实例引用
@@ -247,4 +249,14 @@ public class UIConst
     public const string AudioUIManager = "AudioUIManager"; 
 
     public const string LoadingScene = "LoadingScene";
+
+    public const string Expression = "Expression";
+}
+
+public class UIImage
+{
+    public const string 中指 = "中指";
+    public const string 怒 = "怒";
+    public const string 爱心 = "爱心";
+    public const string 苦笑 = "苦笑"; // 😅
 }

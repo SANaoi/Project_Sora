@@ -64,10 +64,16 @@ public class SceneController : Singleton<SceneController>
 
     public void EnterFirstScene(string sceneName)
     {
+        GameManager.Instance.inputActions.Enable();
         StartCoroutine(Transition(sceneName));
     }
 
-    IEnumerator Transition(string sceneName)
+    public void EnterMenuScene()
+    { 
+        StartCoroutine(Transition("Scenes/MenuScene", true));
+    }
+
+    IEnumerator Transition(string sceneName, bool IsMenuScene = false)
     {
         loadingPanel = UIManager.Instance.OpenPanel(UIConst.LoadingScene) as LoadingScene;
         yield return null;
@@ -90,7 +96,8 @@ public class SceneController : Singleton<SceneController>
             
             UIManager.Instance.RefreshManager();
             GameManager.Instance.InitBaseGameObject();
-            GameManager.Instance.inputActions.Enable();
+            if (IsMenuScene) GameManager.Instance.InitBaseInput();   
+
         }
 
     }

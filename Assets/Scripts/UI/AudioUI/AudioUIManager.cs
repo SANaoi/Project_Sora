@@ -62,8 +62,8 @@ public class AudioUIManager : BasePanel
 
     private void OnClickMenu()
     {
-        print("back to menu");
-        SceneController.Instance.EnterFirstScene("Scenes/MenuScene");
+    
+        SceneController.Instance.EnterMenuScene();
     }
 
     private void Refresh()

@@ -184,6 +184,23 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2528992529752392750}
     m_Modifications:
+    - target: {fileID: 612498730423961058, guid: af8a9e5803020d448bd49d3bd01fa341,
+        type: 3}
+      propertyPath: ShootConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: eed540375f7d5a34c8823ad2ec5d7a7a,
+        type: 2}
+    - target: {fileID: 612498730423961058, guid: af8a9e5803020d448bd49d3bd01fa341,
+        type: 3}
+      propertyPath: TrailConfig
+      value: 
+      objectReference: {fileID: 11400000, guid: 758cb38f9e7ab10409d5a9b91e8b9a50,
+        type: 2}
+    - target: {fileID: 612498730423961058, guid: af8a9e5803020d448bd49d3bd01fa341,
+        type: 3}
+      propertyPath: shootSoundClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 94dcc2e88a696f54e80db99c6e55a041, type: 3}
     - target: {fileID: 705950649992670891, guid: af8a9e5803020d448bd49d3bd01fa341,
         type: 3}
       propertyPath: m_Name

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 23ccb5ece70e8ab48a300f873ed557e9, type: 3}
-  m_Name: AK47 Shoot Config
+  m_Name: HandGun Shoot Config
   m_EditorClassIdentifier: 
   HitMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  Spread: {x: 0.2, y: 0.2, z: 0.01}
-  FireRate: 0.15
-  Damage: 5
+  Spread: {x: 0.1, y: 0.1, z: 0.01}
+  FireRate: 0.5
+  Damage: 12
   Capacity: 999

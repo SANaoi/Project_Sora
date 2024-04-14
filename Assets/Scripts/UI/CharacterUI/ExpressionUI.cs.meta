@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 4949bc2dbbed145439ba79669d124af7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - barPoint: {instanceID: 0}
+  - EmojiPrefab: {instanceID: 0}
+  - ExpressionPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

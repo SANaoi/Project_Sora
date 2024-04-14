@@ -188,6 +188,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Armature Shooter (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 9027015605457974489, guid: 7ea2be811d23bf041adc4215cc8da3c8,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -887,12 +892,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 8faca1f7f18246d4b822f21dbf7ec304,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.704
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8faca1f7f18246d4b822f21dbf7ec304,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.059
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8faca1f7f18246d4b822f21dbf7ec304,
         type: 3}
@@ -62350,11 +62355,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5902701253565866936, guid: 7ea2be811d23bf041adc4215cc8da3c8,
-        type: 3}
-      propertyPath: tiggerTime
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 5925059644497658297, guid: 7ea2be811d23bf041adc4215cc8da3c8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -62907,71 +62907,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Armature
       objectReference: {fileID: 0}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: signtRadius
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: battleRadius
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: FootstepAudioClips.Array.size
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: FootstepAudioClips.Array.data[0]
-      value: 
-      objectReference: {fileID: 8300000, guid: 8559c157328c35c4093018ff47395b53, type: 3}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: FootstepAudioClips.Array.data[1]
-      value: 
-      objectReference: {fileID: 8300000, guid: ae335fc8cdc68ef47a9653ce9f074e6c, type: 3}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: FootstepAudioClips.Array.data[2]
-      value: 
-      objectReference: {fileID: 8300000, guid: 1048b1a247c28d442b429d871a55e47d, type: 3}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: FootstepAudioClips.Array.data[3]
-      value: 
-      objectReference: {fileID: 8300000, guid: dfb15afc114cf4d43b74bd54c37ac31b, type: 3}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: FootstepAudioClips.Array.data[4]
-      value: 
-      objectReference: {fileID: 8300000, guid: 82ed1a26786b6814d9a989d448e64782, type: 3}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: FootstepAudioClips.Array.data[5]
-      value: 
-      objectReference: {fileID: 8300000, guid: e0f29a2f3db8a7547b40978e3931a589, type: 3}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: FootstepAudioClips.Array.data[6]
-      value: 
-      objectReference: {fileID: 8300000, guid: dfe8f9f53f35ccb40806ab777300c4c7, type: 3}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: FootstepAudioClips.Array.data[7]
-      value: 
-      objectReference: {fileID: 8300000, guid: bb4380e02c150b440b604ed86ac379d2, type: 3}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: FootstepAudioClips.Array.data[8]
-      value: 
-      objectReference: {fileID: 8300000, guid: 4030ebe1966fec048b15a2b958379b13, type: 3}
-    - target: {fileID: 5810893506160852525, guid: ba9e2bcf4082d47498e5bfbd182f9ee7,
-        type: 3}
-      propertyPath: FootstepAudioClips.Array.data[9]
-      value: 
-      objectReference: {fileID: 8300000, guid: b82cc93443b04414c9f2710954b055cf, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
