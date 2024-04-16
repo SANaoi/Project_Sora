@@ -40,8 +40,8 @@ public class HealthBarUI : MonoBehaviour
         
         if (currentHealth <= 0)
         {
-            if (this.enabled) UIbar.GetComponent<HealthBarCell>().RefreshUI(currentHealth,maxHralth); 
-            enemy.DestroyObject();
+            if (this.enabled) UIbar.GetComponent<HealthBarCell>().RefreshUI(currentHealth, maxHralth); 
+            enemy.isDead = true;
             this.enabled = false;
             return;
         }

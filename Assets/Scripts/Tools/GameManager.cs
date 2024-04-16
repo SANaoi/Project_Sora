@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour
         AudioManager audioManager = FindAnyObjectByType<AudioManager>();
         if (audioManager == null) Instantiate(AudioManagerPrefab);
         
-        AudioManager.Instance.musicManager.SetMusicGameObject();
+        // AudioManager.Instance.musicManager.SetMusicGameObject();
         playerManager = FindAnyObjectByType<PlayerManager>();
 
         getSceneItems = FindAnyObjectByType<GetSceneItems>();

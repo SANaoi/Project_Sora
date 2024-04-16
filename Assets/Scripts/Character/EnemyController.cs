@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Animations.Rigging;
 
-public enum EnemyStates { GUARD, PATROL, CHASE,BATTLE, DEAD }
+public enum EnemyStates { GUARD, PATROL, CHASE, BATTLE, DEAD }
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(CharacterStats))]
@@ -43,12 +44,13 @@ public class EnemyController : MonoBehaviour
     // 动画相关参数
     float Speed;
     bool isAiming;
-    bool isDead; 
+    public bool isDead; 
     public bool isTurn;
     bool isLeftTurn;
     float Idle = 0;
     float walk = 2;
     float chase = 3;
+    public int getHit = 0;
     private bool isPatrol;
     // 运动停止相关参数
     public float BunkerStoppingDistance;
@@ -58,13 +60,14 @@ public class EnemyController : MonoBehaviour
     public float continueTime; // 发现目标的持续时间
     public float ExitTime; // 脱战的持续时间
     public float tiggerTime;
-
+    
     // 音频效果
     public AudioClip[] FootstepAudioClips;
     public GameObject dropItemPrefab;
-    private PlayerManager playerManager;
     // Emoji
-    private ExpressionControl expressionUI;
+    private ExpressionUI expressionUI;
+    private Dictionary<string, List<string>> emojiActions;
+    private List<string> currentEmoji;
 
     void Awake()
     {
@@ -79,6 +82,15 @@ public class EnemyController : MonoBehaviour
         guardPos = transform.position;
         guardRotation = transform.rotation;
 
+        emojiActions = new Dictionary<string, List<string>>()
+        {
+            {"无", new List<string>{}},
+            {"发现", new List<string>{UIImage.感叹号, UIImage.感叹号}},
+            {"追击", new List<string>{UIImage.怒}},
+            {"死亡", new List<string>{UIImage.哭}},
+            {"难绷", new List<string>{UIImage.中指, UIImage.苦笑, UIImage.中指}}
+        };
+        currentEmoji = emojiActions["无"];
 
         if (isGuard)
         {
@@ -88,15 +100,15 @@ public class EnemyController : MonoBehaviour
         {
             enemyStates = EnemyStates.PATROL;
         }
-        playerManager = FindAnyObjectByType<PlayerManager>();
-        GetComponent<ExpressionControl>().ExpressionPrefab.GetComponent<ExpressionUI>().Refresh(new List<string>{UIImage.中指, UIImage.苦笑, UIImage.中指});
+        
+        expressionUI = GetComponent<ExpressionControl>().ExpressionPrefab.GetComponent<ExpressionUI>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         SwitchStates();
         SwitchAnimation();
+
     }
 
     void SwitchAnimation()
@@ -106,6 +118,16 @@ public class EnemyController : MonoBehaviour
         animator.SetBool("LeftTurn",isLeftTurn);
         animator.SetBool("Turn", isTurn);
         animator.SetFloat("Speed", Speed);
+    }
+
+    void SwitchEmoji(List<string> stateActions)
+    {
+        if (currentEmoji == stateActions)
+        {
+            return ;
+        }
+        currentEmoji = stateActions;
+        expressionUI.Refresh(stateActions);
     }
 
     private void InitGameObjects()
@@ -124,15 +146,34 @@ public class EnemyController : MonoBehaviour
         if (isDead)
         {
             enemyStates = EnemyStates.DEAD;
+            print(getHit);
+            if (getHit >= 4)
+            {
+                SwitchEmoji(emojiActions["难绷"]);
+            }
+            else
+            {
+                SwitchEmoji(emojiActions["死亡"]);
+            }
+            DestroyObject();
         }
         else if (FoundPlayer(signtRadius) && enemyStates != EnemyStates.BATTLE  && continueTime >= tiggerTime)
         {
             enemyStates = EnemyStates.CHASE;
+            
         }
 
         switch(enemyStates)
         {
             case EnemyStates.GUARD:
+            if (continueTime != 0)
+            {
+                SwitchEmoji(emojiActions["发现"]);
+            }
+            else
+            {
+                SwitchEmoji(emojiActions["无"]);
+            }
             if (transform.position != guardPos)
             {
                 agent.destination = guardPos;
@@ -140,13 +181,13 @@ public class EnemyController : MonoBehaviour
                 {
                     guardPos = transform.position;
                     Turn(guardRotation);
-                    
                 }
             }
             else
             {
                 Speed = Idle;
                 agent.speed = Idle;
+                
             }
             break;
 
@@ -157,6 +198,7 @@ public class EnemyController : MonoBehaviour
             break;
 
             case EnemyStates.CHASE:
+            SwitchEmoji(emojiActions["追击"]);
             agent.speed = chase;
             Speed = chase;
 
@@ -205,6 +247,7 @@ public class EnemyController : MonoBehaviour
                 if (Vector3.Magnitude(transform.position - attackTarget.transform.position) <= ChaseStoppingDistance)
                 {
                     enemyStates = EnemyStates.BATTLE;
+                    
                 }
 
             }
@@ -264,7 +307,6 @@ public class EnemyController : MonoBehaviour
         {
             if (collider.CompareTag("Player"))
             {
-                
                 LookAt.position = GameManager.Instance.playerManager.LookPoint.transform.position;
                 LookAt.rotation = GameManager.Instance.playerManager.LookPoint.transform.rotation;
                 attackTarget = collider.gameObject;
@@ -372,7 +414,6 @@ public class EnemyController : MonoBehaviour
 
     public void DestroyObject()
     {
-        isDead = true;
         animator.enabled = false;
         SetRigidBodiesNonKinematic();
         StartCoroutine(DestroyAfter());
@@ -380,6 +421,7 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator DestroyAfter()
     {
+        
         yield return new WaitForSeconds(5f);
         Destroy(GetComponent<ExpressionControl>().ExpressionPrefab);
         Destroy(gameObject);

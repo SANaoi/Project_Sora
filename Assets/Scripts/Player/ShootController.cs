@@ -115,18 +115,19 @@ public class ShootController : BaseShoot
                     if (hit.transform.GetComponent<Rigidbody>() != null)
                     {
                         Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
-                        HitEffect.OnHit(rb, hit.transform.forward);
+                        if (rb.isKinematic == false)
+                        {
+                            HitEffect.OnHit(rb, hit.transform.forward);
+                        }
                     }
 
                     Transform hitInfo = FindRootTransform(hit.transform);
                     if (hitInfo.CompareTag("Enemy"))
                     {
-                        
-                        
                         Transform Enemy = hitInfo.transform;
                         EnemyController enemyController = Enemy.GetComponent<EnemyController>();
                         Enemy.GetComponent<CharacterStats>().TakeDamage(Enemy.GetComponent<CharacterStats>());
-                        if (Enemy.GetComponent<CharacterStats>().CurrentHealth > 0)
+                        if (Enemy.GetComponent<CharacterStats>().CurrentHealth > 0 && enemyController.enemyStates != EnemyStates.BATTLE && enemyController.enemyStates != EnemyStates.CHASE)
                         {
                             enemyController.enemyStates = EnemyStates.CHASE;
                             enemyController.Rotate(transform.gameObject);
@@ -136,9 +137,14 @@ public class ShootController : BaseShoot
                         }
                         else if (Enemy.GetComponent<CharacterStats>().CurrentHealth <= 0 && enemyController.agent.isStopped == false)
                         {
+                            
                             enemyController.agent.isStopped = true;
                             enemyController.gameObject.GetComponent<Collider>().enabled = false;
                             Instantiate(enemyController.dropItemPrefab, Enemy.position, Quaternion.identity);
+                        }
+                        else if (Enemy.GetComponent<CharacterStats>().CurrentHealth <= 0)
+                        {
+                            enemyController.getHit += 1;
                         }
                         
                     }

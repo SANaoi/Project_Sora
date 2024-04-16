@@ -41,7 +41,13 @@ public class ItemDetail : MonoBehaviour
         Texture2D t = (Texture2D)Resources.Load(ItemcellInfo.imagePath);
         Sprite temp = Sprite.Create(t, new Rect(0, 0, t.width, t.height), new Vector2(0, 0));
         UIImage.GetComponent<Image>().sprite = temp;
-
-        UINum.GetComponent<Text>().text = ItemcellInfo.num.ToString();
+        if (ItemcellInfo.isShowNum)
+        {
+            UINum.GetComponent<Text>().text = ItemcellInfo.num.ToString();
+        }
+        else
+        {
+            UINum.GetComponent<Text>().text = "";
+        }
     }
 }

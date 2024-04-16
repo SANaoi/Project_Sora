@@ -27,6 +27,6 @@ public class LoadingScene : BasePanel
     public void Refresh(float progress)
     {
         UILoadingSlider.GetComponent<Slider>().value = progress;
-        UIPercentage.GetComponent<Text>().text = $"{UILoadingSlider.GetComponent<Slider>().value * 100} %";
+        // UIPercentage.GetComponent<Text>().text = $"{UILoadingSlider.GetComponent<Slider>().value * 100} %";
     }
 }

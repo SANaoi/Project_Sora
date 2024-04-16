@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundFXManager: {fileID: 0}
   soundMixerManager: {fileID: 0}
+  musicManager: {fileID: 0}
 --- !u!114 &1141181395499667258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,3 +91,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicManager: {fileID: 2652586709390282327, guid: e6251d88935ec7640847e42bcd1bb1e4,
     type: 3}
+  musicClips:
+  - {fileID: 8300000, guid: 374b673e3b4082c478b6498451565eed, type: 3}
+  - {fileID: 8300000, guid: 0106fb777b6bf4146944b780710c122c, type: 3}
+  - {fileID: 8300000, guid: ab9d70a8266f65245940082a07b850e4, type: 3}
+  - {fileID: 8300000, guid: fb3acc7088010fa4295a0efc3e81720b, type: 3}

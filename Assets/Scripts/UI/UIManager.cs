@@ -259,4 +259,6 @@ public class UIImage
     public const string 怒 = "怒";
     public const string 爱心 = "爱心";
     public const string 苦笑 = "苦笑"; // 😅
+    public const string 感叹号 = "感叹号";
+    public const string 哭 = "哭";
 }

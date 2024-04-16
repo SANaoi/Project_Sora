@@ -33,6 +33,14 @@ public class ExpressionUI : MonoBehaviour
 
     public void Refresh(List<string> ImagePaths)
     {
+        if (ImagePaths == null) return;
+        if (UIEmoji.childCount != 0)
+        {
+            for (int i = 0; i < UIEmoji.childCount; i++)
+            {
+                Destroy(UIEmoji.GetChild(i).gameObject);
+            }
+        }
         for (int i = 0; i < ImagePaths.Count; i++)
         {
             Transform EmojiImage = Instantiate(EmojiPrefab, UIEmoji.transform).transform;

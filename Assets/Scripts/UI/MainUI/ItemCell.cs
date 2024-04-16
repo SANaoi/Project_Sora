@@ -9,7 +9,10 @@ public class ItemCell : MonoBehaviour
     public string uid;
     public int id; // 101为不可拾取的其他特殊图标
     public int type;
+    public string m_name;
+    [HideInInspector]
     public string itemName;
+    public bool isShowNum;
     public int num;
     public string imagePath;
 
@@ -17,7 +20,15 @@ public class ItemCell : MonoBehaviour
     {
         this.uid = Guid.NewGuid().ToString();
         this.id = itemInfo.id;
-        this.itemName = itemInfo.itemName;
+        
+        if (m_name == "")
+        {
+            this.itemName = itemInfo.itemName;
+        }
+        else
+        {
+            this.itemName = m_name;
+        }
         this.num = itemInfo.num;
         this.imagePath = GameManager.Instance.GetPackageTableItemById(id).imagePath;
         this.type = GameManager.Instance.GetPackageTableItemById(id).type;
