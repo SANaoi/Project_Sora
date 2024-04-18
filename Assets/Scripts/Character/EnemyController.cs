@@ -69,10 +69,13 @@ public class EnemyController : MonoBehaviour
     private Dictionary<string, List<string>> emojiActions;
     private List<string> currentEmoji;
 
+    public BuffManager buffManager;
+
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        buffManager = GetComponent<BuffManager>(); 
 
         InitGameObjects();
     }
@@ -146,7 +149,6 @@ public class EnemyController : MonoBehaviour
         if (isDead)
         {
             enemyStates = EnemyStates.DEAD;
-            print(getHit);
             if (getHit >= 4)
             {
                 SwitchEmoji(emojiActions["难绷"]);
@@ -390,7 +392,7 @@ public class EnemyController : MonoBehaviour
     {
 
     }
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, signtRadius);
@@ -426,9 +428,5 @@ public class EnemyController : MonoBehaviour
         Destroy(GetComponent<ExpressionControl>().ExpressionPrefab);
         Destroy(gameObject);
     }
-    // void OnDestroy()
-    // {
-    //     yield return new WaitForSeconds(5f);
-    //     Destroy(gameObject);
-    // }
+
 }

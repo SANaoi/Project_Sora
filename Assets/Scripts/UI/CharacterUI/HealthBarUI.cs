@@ -24,7 +24,7 @@ public class HealthBarUI : MonoBehaviour
         cam = Camera.main.transform;
         foreach (Canvas canvas in FindObjectsOfType<Canvas>())
         {
-            if (canvas.renderMode == RenderMode.WorldSpace)
+            if (canvas.renderMode == RenderMode.WorldSpace && canvas.transform.name == "World UI")
             {
                 UIbar = UIManager.Instance.OpenGameObject("HealthBarUI", canvas.transform);
             }

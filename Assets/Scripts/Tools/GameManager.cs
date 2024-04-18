@@ -112,7 +112,6 @@ public class GameManager : MonoBehaviour
         AudioManager audioManager = FindAnyObjectByType<AudioManager>();
         if (audioManager == null) Instantiate(AudioManagerPrefab);
         
-        // AudioManager.Instance.musicManager.SetMusicGameObject();
         playerManager = FindAnyObjectByType<PlayerManager>();
 
         getSceneItems = FindAnyObjectByType<GetSceneItems>();
@@ -208,16 +207,22 @@ public class GameManager : MonoBehaviour
         }
         return res;
     }
-    public void RemovePackageTableItemByList(List<PackageLocalItem> Removeitems)
+    public void RemovePackageTableItemByList(List<PackageLocalItem> Removeitems, int numberOfRemove)
     {
         List<PackageLocalItem> items = PackageLocalData.Instance.LoadPackage();
         if (Removeitems == null) return;
+        
         foreach (PackageLocalItem item in Removeitems)
         {
             items.Remove(item);
+            numberOfRemove -= 1;
+            if (numberOfRemove == 0) break;
+            
         }
         PackageLocalData.Instance.SavePackage();
     }
+
+    // DiscountNum 同id道具所减少的总量
     public void DiscountPackageLocalItemsNumById(int id ,int DiscountNum)
     {
         List<PackageLocalItem> items = PackageLocalData.Instance.LoadPackage();
@@ -226,21 +231,20 @@ public class GameManager : MonoBehaviour
         {
             if (item.id == id)
             {
-                if (item.num > DiscountNum)
+                if (item.num > DiscountNum) // 判断当前道具的数量是否大于需要减少的量
                 {
                     item.num -= DiscountNum;
-                    RemovePackageTableItemByList(Removeitems);
+                    RemovePackageTableItemByList(Removeitems, Removeitems.Count);
                     return;
                 }
                 else
                 {
                     DiscountNum -= item.num;
                     Removeitems.Add(item);
-                    print(2);
                 }
             }
         }
-        RemovePackageTableItemByList(Removeitems);
+        RemovePackageTableItemByList(Removeitems, Removeitems.Count);
         PackageLocalData.Instance.SavePackage();
     }
     #endregion
@@ -294,7 +298,7 @@ public class GameManager : MonoBehaviour
                 if (CollectList.CurrentNumber != CollectList.CollectTarget) { return false; }
 
                 List<PackageLocalItem> Removeitems = PackageLocalData.Instance.GetListWithHaveSameID(CollectList.ItemInfo.id);
-                if (Removeitems.Count >= CollectList.CollectTarget) RemovePackageTableItemByList(Removeitems);
+                if (Removeitems.Count >= CollectList.CollectTarget) RemovePackageTableItemByList(Removeitems, CollectList.CollectTarget);
                 else return false;
             }
             
@@ -329,7 +333,7 @@ public class GameManager : MonoBehaviour
 
     public void PostTask(int ID)
     {
-        aoi.TaskDetails taskDetail = GameManager.Instance.currentTask.TaskDetailsList.Find(i => i.taskID == ID);
+        aoi.TaskDetails taskDetail = currentTask.TaskDetailsList.Find(i => i.taskID == ID);
         if (taskDetail != null)
         {
             IsCompleteTask(taskDetail);

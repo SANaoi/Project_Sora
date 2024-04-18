@@ -277,6 +277,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Emoji
       objectReference: {fileID: 0}
+    - target: {fileID: 3126710027753054206, guid: 1a9fe60ca26b1fe4f9d2b38cd6e76723,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4596068973431219966, guid: 1a9fe60ca26b1fe4f9d2b38cd6e76723,
         type: 3}
       propertyPath: m_Pivot.x

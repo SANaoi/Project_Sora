@@ -15,7 +15,7 @@ public class ExpressionControl : MonoBehaviour
         cam = Camera.main.transform;
         foreach (Canvas canvas in FindObjectsOfType<Canvas>())
         {
-            if (canvas.renderMode == RenderMode.WorldSpace)
+            if (canvas.renderMode == RenderMode.WorldSpace && canvas.transform.name == "World UI")
             {
                 ExpressionPrefab = UIManager.Instance.OpenGameObject(UIConst.Expression, canvas.transform);
             }

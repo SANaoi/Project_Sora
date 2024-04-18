@@ -11,10 +11,13 @@ public class CharacterStats : MonoBehaviour
     public CharacterData_SO templateData;
     int Damage = 15;
 
+    public BuffManager buffManager;
+
     void Awake()
     {
         if (templateData != null)
             characterData = Instantiate(templateData);
+        buffManager = GetComponent<BuffManager>();
 
     }
 
@@ -48,6 +51,25 @@ public class CharacterStats : MonoBehaviour
             GameManager.Instance.IncreaseTestTaskProgress(templateData.Id);
         }
         UpdateHealthBarOnAttack?.Invoke(CurrentHealth, MaxHealth);
+        if (GetComponent<BuffManager>() != null)
+        {
+            GetComponent<BuffManager>().OnBuffTriggerBuildup(BuffType.Fire, 1f);
+        }
+    }
+
+    [Serializable]
+    public class DamageData
+    {
+        public int damage;
+        public BuffType buffType;
+        public float buildAmount;
+
+        public DamageData(int damage, BuffType buffType, float buildAmount)
+        {
+            this.damage = damage;
+            this.buffType = buffType;  
+            this.buildAmount = buildAmount;
+        }
     }
     
 }

@@ -13,6 +13,7 @@ public class AimingController : MonoBehaviour
     public CinemachineVirtualCamera normalCamera;
     private CinemachineFramingTransposer VisualnormalCamera;
     public Vector3 LookPointPosition;
+    public Camera childCamera;
 
     // public Sprite Aim;
     // public Sprite Reload;
@@ -122,11 +123,13 @@ public class AimingController : MonoBehaviour
             normalCamera.m_Lens.FieldOfView = Mathf.Lerp(initialCameraFOV, targetFOV, elapsedTime / duration);
             VisualnormalCamera.m_ScreenX = Mathf.Lerp(initialCamera_m_ScreenX, target_m_ScreenX, elapsedTime / duration);
             zoom.CameraZoom(targetZoomDistance);
+            SetChildCamera(normalCamera.m_Lens.FieldOfView);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         normalCamera.m_Lens.FieldOfView = targetFOV;
         VisualnormalCamera.m_ScreenX = target_m_ScreenX;
+        SetChildCamera(normalCamera.m_Lens.FieldOfView);
     }
     private void OnGUI()
     {
@@ -145,5 +148,10 @@ public class AimingController : MonoBehaviour
             // 绘制水平线
             GUI.DrawTexture(new Rect(screenPosition.x - crosshairSize / 2, screenPosition.y - 1, crosshairSize, 2), Texture2D.whiteTexture);
         }
+    }
+
+    private void SetChildCamera(float targetFOV)
+    {
+        childCamera.fieldOfView = targetFOV;
     }
 }
