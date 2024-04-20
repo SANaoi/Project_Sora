@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public enum BuffType { Fire, Ice}
+public enum BuffType { Fire, Ice, Normal}
 
 public abstract class Buff_SO : ScriptableObject
 {
@@ -47,6 +47,7 @@ public abstract class Buff_SO : ScriptableObject
             vfxPlaying = Instantiate(visualEffectPrefab, target.transform.position, Quaternion.identity, target.transform);
         }
 
+        
     }
 
     public void UpdateCall(GameObject target, float tickAmount)
@@ -78,7 +79,6 @@ public abstract class Buff_SO : ScriptableObject
             tickIntervalCD = 0;
         }
     }
-
     public virtual void UpdateBuff(GameObject target)
     {
 

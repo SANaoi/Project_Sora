@@ -42,7 +42,7 @@ public class CharacterStats : MonoBehaviour
         
     }
     // 函数重载
-    public void TakeDamage(CharacterStats defender)
+    public void TakeDamage(CharacterStats defender, BuffType buffType = BuffType.Normal , float buildAmount = 0)
     {
         int currentDamage = Math.Max(Damage - defender.BaseDefence, 0);
         CurrentHealth = Math.Max(CurrentHealth - currentDamage, 0);
@@ -51,9 +51,9 @@ public class CharacterStats : MonoBehaviour
             GameManager.Instance.IncreaseTestTaskProgress(templateData.Id);
         }
         UpdateHealthBarOnAttack?.Invoke(CurrentHealth, MaxHealth);
-        if (GetComponent<BuffManager>() != null)
+        if (GetComponent<BuffManager>() != null && buffType != BuffType.Normal )
         {
-            GetComponent<BuffManager>().OnBuffTriggerBuildup(BuffType.Fire, 1f);
+            GetComponent<BuffManager>().OnBuffTriggerBuildup(buffType, buildAmount);
         }
     }
 

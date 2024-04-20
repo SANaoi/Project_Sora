@@ -37,7 +37,6 @@ public class BuffCell : MonoBehaviour
 
     public void InitParameters(Sprite BuffSpriteIcon)
     {
-        print(this.name + "------------");
         isMaskUI.gameObject.SetActive(true);
         BuffIcon.sprite = BuffSpriteIcon;
         BuffProgress.fillAmount = 0;

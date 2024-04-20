@@ -126,7 +126,7 @@ public class ShootController : BaseShoot
                     {
                         Transform Enemy = hitInfo.transform;
                         EnemyController enemyController = Enemy.GetComponent<EnemyController>();
-                        Enemy.GetComponent<CharacterStats>().TakeDamage(Enemy.GetComponent<CharacterStats>());
+                        Enemy.GetComponent<CharacterStats>().TakeDamage(Enemy.GetComponent<CharacterStats>(), ShootConfig.GunBuffType, ShootConfig.buildAmount);
                         if (Enemy.GetComponent<CharacterStats>().CurrentHealth > 0 && enemyController.enemyStates != EnemyStates.BATTLE && enemyController.enemyStates != EnemyStates.CHASE)
                         {
                             enemyController.enemyStates = EnemyStates.CHASE;

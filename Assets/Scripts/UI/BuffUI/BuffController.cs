@@ -32,15 +32,23 @@ public class BuffController : MonoBehaviour
     {
         BuffCell BuffCellCache = CreateBuffCell(buff_); 
         BuffCellDict[buff_] = BuffCellCache;
+        
+        BuffCellDict[buff_].isMaskUI.gameObject.SetActive(true);
+
         OnUpdateBuff(buff_, buildAmount, 0);
 
     }
     private void OnUpdateBuff(Buff_SO buff_, float buildAmount, float duration)
     {
-        print(this.name + "----" + BuffCellDict[buff_].BuffProgress.fillAmount);
-        BuffCellDict[buff_].isMaskUI.gameObject.SetActive(false);
         BuffCellDict[buff_].BuffProgress.fillAmount = buildAmount;
         BuffCellDict[buff_].BuffDuration.fillAmount = duration;
+        if (buffManagerRef.enabledBuffs.ContainsKey(buff_.buffType))
+        {
+            if (buffManagerRef.enabledBuffs[buff_.buffType].isBuffActive)
+            {
+                BuffCellDict[buff_].isMaskUI.gameObject.SetActive(false);
+            }
+        }
     }
 
     private void OnDeactivateBuff(Buff_SO buff_)

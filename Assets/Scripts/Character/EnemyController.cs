@@ -42,15 +42,18 @@ public class EnemyController : MonoBehaviour
     public Transform LookAt;
     private MultiAimConstraint multiAim;
     // 动画相关参数
-    float Speed;
+    public float Speed;
     bool isAiming;
     public bool isDead; 
     public bool isTurn;
     bool isLeftTurn;
     float Idle = 0;
-    float walk = 2;
-    float chase = 3;
+    float baseWalk = 2;
+    float baseChase = 3;
+    float walk;
+    float chase;
     public int getHit = 0;
+    public float speedOffset;
     private bool isPatrol;
     // 运动停止相关参数
     public float BunkerStoppingDistance;
@@ -76,6 +79,9 @@ public class EnemyController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         buffManager = GetComponent<BuffManager>(); 
+        speedOffset = 1f;
+        walk = baseWalk * speedOffset;
+        chase = baseChase * speedOffset;
 
         InitGameObjects();
     }
@@ -111,6 +117,8 @@ public class EnemyController : MonoBehaviour
     {
         SwitchStates();
         SwitchAnimation();
+        
+        agent.speed = animator.GetFloat("Speed");
 
     }
 
@@ -120,7 +128,7 @@ public class EnemyController : MonoBehaviour
         animator.SetBool("Rifle", isGunToting);
         animator.SetBool("LeftTurn",isLeftTurn);
         animator.SetBool("Turn", isTurn);
-        animator.SetFloat("Speed", Speed);
+        animator.SetFloat("Speed", Speed * speedOffset);
     }
 
     void SwitchEmoji(List<string> stateActions)
@@ -188,20 +196,17 @@ public class EnemyController : MonoBehaviour
             else
             {
                 Speed = Idle;
-                agent.speed = Idle;
                 
             }
             break;
 
             case EnemyStates.PATROL:
             Speed = walk;
-            agent.speed = walk;
 
             break;
 
             case EnemyStates.CHASE:
             SwitchEmoji(emojiActions["追击"]);
-            agent.speed = chase;
             Speed = chase;
 
             // 不在目标区域内且 脱战时间小于触发时间
@@ -230,7 +235,6 @@ public class EnemyController : MonoBehaviour
                 {
                     continueTime = 0f;
                     Speed = walk;
-                    agent.speed = walk;
                     enemyStates = EnemyStates.GUARD;
                 }
                 else if (isPatrol && !isTurn)
@@ -263,7 +267,6 @@ public class EnemyController : MonoBehaviour
                     {
                         isAiming = true;
                     }
-                    agent.speed = Idle;
                     Speed = Idle;
                     agent.destination = transform.position;
                     // TODO 设置随机移动
@@ -285,7 +288,6 @@ public class EnemyController : MonoBehaviour
                         if (Vector3.SqrMagnitude(targetPoint - transform.position) <= BunkerStoppingDistance)
                         {
                             Speed = Idle;
-                            agent.speed = Idle;
                             Quaternion rotationToAttacker = Quaternion.LookRotation(attackTarget.transform.position - transform.position);
                             transform.rotation = Quaternion.Slerp(transform.rotation, rotationToAttacker, 5f * Time.deltaTime);
                         }
@@ -343,10 +345,9 @@ public class EnemyController : MonoBehaviour
 
     private void Turn(Quaternion targetRotation)
     {
+        Speed = Idle;
         if (agent.speed != Idle)
         { 
-            Speed = Idle;
-            agent.speed = Idle;
             if (!isTurn)
             {
                 currentRotation = transform.rotation;

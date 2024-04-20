@@ -6,6 +6,8 @@ using UnityEngine;
 public class BurnBuff_SO : Buff_SO
 {
     public int tickDamage;
+    private CharacterStats characterStats;
+
 
     public override void UpdateBuff(GameObject target)
     {
@@ -13,7 +15,9 @@ public class BurnBuff_SO : Buff_SO
 
         if (isBuffActive)
         {
-            Debug.Log("燃烧");
+            characterStats = target.GetComponent<CharacterStats>();
+            characterStats.CurrentHealth -= 2;
+            characterStats.UpdateHealthBarOnAttack?.Invoke(characterStats.CurrentHealth, characterStats.MaxHealth);
         }
     }
 }

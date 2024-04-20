@@ -9,7 +9,7 @@ public class BuffManager : MonoBehaviour
 {
     [SerializeField] private SerializableDictionary<BuffType, Buff_SO> BuffToApplyDict = new();
 
-    private SerializableDictionary<BuffType, Buff_SO> enabledBuffs = new();
+    public SerializableDictionary<BuffType, Buff_SO> enabledBuffs = new();
     private Dictionary<BuffType, Buff_SO> BuffCacheDict = new Dictionary<BuffType, Buff_SO>();
     
     [SerializeField, Tooltip("Run the updateCall in Buff_SO every what interval")] private float interval = 0.1f;

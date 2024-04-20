@@ -5,12 +5,6 @@ using UnityEngine.UI;
 
 public class EmojiImageUI : MonoBehaviour
 {
-    private Image image;
-
-    private void Start()
-    {
-    }
-
     public void Refresh(string ImagePath)
     {
         Texture2D t = (Texture2D)Resources.Load("Image/Emoji/" + ImagePath);
