@@ -23,7 +23,7 @@ public class TaskDetails
     [TextArea]
     public string taskDescription;//任务简介
     public TaskType taskType;// 任务类型
-    [Header("击杀")] public List<Default> DefaultLsit;
+    [Header("击杀")] public List<Default> DefaultList;
     [Header("歼灭")] public List<Exterminate> ExterminateList;
     [Header("收集")] public List<Collect> CollectList;
     [Header("存活")] public List<Survival> SurvivalList;

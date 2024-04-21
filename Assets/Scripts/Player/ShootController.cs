@@ -32,8 +32,8 @@ public class ShootController : BaseShoot
         TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2); // 2: 步枪子弹Id
         flash = CreateImpactFlash(FireHole.gameObject);
         
-        MagazineAmmo = ShootConfig.Capacity;
-
+        
+        // MagazineAmmo = ShootConfig.Capacity;
     }
 
     private void OnEnable() 
@@ -47,6 +47,7 @@ public class ShootController : BaseShoot
         mainCamera = FindObjectOfType<Camera>();
         virtualCamera = FindAnyObjectByType<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachinePOV>();
         flash.gameObject.SetActive(true);
+        
     }
     
     private void OnDisable()
@@ -127,7 +128,7 @@ public class ShootController : BaseShoot
                         Transform Enemy = hitInfo.transform;
                         EnemyController enemyController = Enemy.GetComponent<EnemyController>();
                         Enemy.GetComponent<CharacterStats>().TakeDamage(Enemy.GetComponent<CharacterStats>(), ShootConfig.GunBuffType, ShootConfig.buildAmount);
-                        if (Enemy.GetComponent<CharacterStats>().CurrentHealth > 0 && enemyController.enemyStates != EnemyStates.BATTLE && enemyController.enemyStates != EnemyStates.CHASE)
+                        if (Enemy.GetComponent<CharacterStats>().CurrentHealth > 0 && enemyController.enemyStates != EnemyStates.BATTLE)
                         {
                             enemyController.enemyStates = EnemyStates.CHASE;
                             enemyController.Rotate(transform.gameObject);
@@ -142,7 +143,7 @@ public class ShootController : BaseShoot
                             enemyController.gameObject.GetComponent<Collider>().enabled = false;
                             Instantiate(enemyController.dropItemPrefab, Enemy.position, Quaternion.identity);
                         }
-                        else if (Enemy.GetComponent<CharacterStats>().CurrentHealth <= 0)
+                        else if (enemyController.enemyStates == EnemyStates.DEAD)
                         {
                             enemyController.getHit += 1;
                         }

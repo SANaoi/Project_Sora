@@ -40,11 +40,12 @@ public class NPCController : MonoBehaviour
         animator = GetComponent<Animator>();
         InitTransform();
         LookAtPlayer();
+        
     }
 
     void Start()
     {
-        
+        InitTaskLocalData();
         // InvokeRepeating("FoundPlyer", 0.25f, 0.25f);
     }
 
@@ -121,6 +122,8 @@ public class NPCController : MonoBehaviour
                 {
                     taskList.IsCompleted = true;
                     DialogBox.ShowDialogRows(true,true);
+
+                    GameManager.Instance.CompleteTasksID.Add(taskDetail.taskID);
                     return;
                 }
                 DialogBox.ShowDialogRows(true);
@@ -168,6 +171,34 @@ public class NPCController : MonoBehaviour
     private void LookAtPlayer()
     {
         multiAim.data.sourceObjects = weightedTransforms;
+    }
+
+    private void InitTaskLocalData()
+    {
+        UserData userData = GameManager.Instance.GetUserData();
+        foreach (TaskList taskList in  characterTaskList.textAssets)
+        {
+            
+            if (userData.completedTasks.Contains(taskList.taskID))
+            {
+                taskList.IsAccepted = true;
+                taskList.IsCompleted = true;
+                continue;
+            }
+            else
+            {
+                taskList.IsCompleted = false;
+            }
+
+            if (userData.currentTasks.Contains(taskList.taskID))
+            {
+                taskList.IsAccepted = true;
+            }
+            else
+            {
+                taskList.IsAccepted = false;
+            }
+        }
     }
     # endregion
 }

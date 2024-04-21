@@ -96,6 +96,7 @@ MonoBehaviour:
   character_1: {fileID: 2221786082695630933}
   character_2: {fileID: 2575460396114869654}
   currentStats: {fileID: 0}
+  charactersList: []
 --- !u!1001 &723975698456393819
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -271,6 +272,12 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.64
       objectReference: {fileID: 0}
+    - target: {fileID: 8396539256867573308, guid: af8a9e5803020d448bd49d3bd01fa341,
+        type: 3}
+      propertyPath: templateData
+      value: 
+      objectReference: {fileID: 11400000, guid: 63b9fed0d85f8744f86cc2ed665ce659,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

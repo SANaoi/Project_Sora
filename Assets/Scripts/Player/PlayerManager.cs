@@ -63,7 +63,7 @@ public class PlayerManager : MonoBehaviour
     public float jumpVelocity = 3f;
     private CinemachineVirtualCamera virtualCamera;
     private Vector3 moveVelocity; // 平滑速度向量
-    private GetSceneItems getSceneItems;
+    // private GetSceneItems getSceneItems;
     private GameObject aimTarget;
     private AimingController aimingController;
     
@@ -109,7 +109,7 @@ public class PlayerManager : MonoBehaviour
         shootController =       GetComponent<ShootController>();
         characterController =   GetComponent<CharacterController>();
         animator =              GetComponent<Animator>();
-        getSceneItems =         FindAnyObjectByType<GetSceneItems>();
+        // getSceneItems =         FindAnyObjectByType<GetSceneItems>();
         aimingController =      FindAnyObjectByType<AimingController>();
         animator.SetFloat("ScaleFactor", 1 / animator.humanScale);
 
@@ -141,7 +141,7 @@ public class PlayerManager : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.Instance.InitPlayerManager();
+        GameManager.Instance.playerManager = this;
         RegisterPlayer();
         UpdatePackageLocalData();
         InitInputSystem();
@@ -175,6 +175,11 @@ public class PlayerManager : MonoBehaviour
         Move();
         animator.SetBool("Rifle", isArmRifle);
         animator.SetBool("Aiming", isAiming);
+        if (isReload)
+        {
+            animator.SetTrigger("Reload");
+            isReload = false;
+        }
     }
     void LateUpdate()
     {
@@ -227,12 +232,12 @@ public class PlayerManager : MonoBehaviour
         GameManager.Instance.inputActions.Player.Move.performed += GetplayerMoveInput;
         GameManager.Instance.inputActions.Player.Move.canceled += CancelPlayerMoveInput;
         GameManager.Instance.inputActions.Player.Jump.performed += GetJumpInput;
-        GameManager.Instance.inputActions.Player.PickUp.canceled += GetPickUpInput;
+        // GameManager.Instance.inputActions.Player.PickUp.canceled += GetPickUpInput;
         GameManager.Instance.inputActions.Player.Aiming.performed += GetAimingInput;
         GameManager.Instance.inputActions.Player.Reload.performed += GetReloadInput;
         GameManager.Instance.inputActions.Player.Rifle.performed += GetArmRifleInput;
         GameManager.Instance.inputActions.Player.Crouch.performed += GetPostureStateInput;
-        GameManager.Instance.inputActions.Player.SelectItem.performed += GetSelectItemInput;
+        // GameManager.Instance.inputActions.Player.SelectItem.performed += GetSelectItemInput;
         GameManager.Instance.inputActions.Player.WalkToggle.performed += GetWalkToggleInput;
 
         GameManager.Instance.inputActions.Player.Fire.started += shootController.OnFireStarte;
@@ -244,12 +249,12 @@ public class PlayerManager : MonoBehaviour
         GameManager.Instance.inputActions.Player.Move.performed -= GetplayerMoveInput;
         GameManager.Instance.inputActions.Player.Move.canceled -= CancelPlayerMoveInput;
         GameManager.Instance.inputActions.Player.Jump.performed -= GetJumpInput;
-        GameManager.Instance.inputActions.Player.PickUp.canceled -= GetPickUpInput;
+        // GameManager.Instance.inputActions.Player.PickUp.canceled -= GetPickUpInput;
         GameManager.Instance.inputActions.Player.Aiming.performed -= GetAimingInput;
         GameManager.Instance.inputActions.Player.Reload.performed -= GetReloadInput;
         GameManager.Instance.inputActions.Player.Rifle.performed -= GetArmRifleInput;
         GameManager.Instance.inputActions.Player.Crouch.performed -= GetPostureStateInput;
-        GameManager.Instance.inputActions.Player.SelectItem.performed -= GetSelectItemInput;
+        // GameManager.Instance.inputActions.Player.SelectItem.performed -= GetSelectItemInput;
         GameManager.Instance.inputActions.Player.WalkToggle.performed -= GetWalkToggleInput;
 
         GameManager.Instance.inputActions.Player.Fire.started -= shootController.OnFireStarte;
@@ -712,23 +717,23 @@ public class PlayerManager : MonoBehaviour
         isJumping = context.ReadValueAsButton();
     }
 
-    private void GetSelectItemInput(InputAction.CallbackContext context)
-    {
-        if (getSceneItems.SelectingID == "" || getSceneItems.gameObjectList.Count == 0)
-        {
-            return;
-        }
-        if (context.ReadValueAsButton())
-        {
-            // 上移
-            UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().UpSelectID();
-        }
-        else
-        {
-            // 下移
-            UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().DownSelectID();
-        }
-    }
+    // private void GetSelectItemInput(InputAction.CallbackContext context)
+    // {
+    //     if (getSceneItems.SelectingID == "" || getSceneItems.gameObjectList.Count == 0)
+    //     {
+    //         return;
+    //     }
+    //     if (context.ReadValueAsButton())
+    //     {
+    //         // 上移
+    //         UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().UpSelectID();
+    //     }
+    //     else
+    //     {
+    //         // 下移
+    //         UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().DownSelectID();
+    //     }
+    // }
 
     private void GetplayerMoveInput(InputAction.CallbackContext context)
     {
@@ -740,57 +745,56 @@ public class PlayerManager : MonoBehaviour
         playerMoveContext = Vector2.zero;
     }
 
-    private void GetPickUpInput(InputAction.CallbackContext context)
-    {
-        if (getSceneItems.SelectingID != "" && getSceneItems.gameObjectList.Count != 0)
-        {
-            foreach (GameObject Item in getSceneItems.gameObjectList)
-            {
-                ItemCell ItemInfo = Item.GetComponent<ItemCell>();
-                if (ItemInfo.uid == getSceneItems.SelectingID && ItemInfo.type == 1) // 1为可拾取的场景物体
-                {
-                    int ItemNum = UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().GetItemNumByUID(getSceneItems.SelectingID);
-                    if (ItemNum == UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().scrollContent.childCount - 1)
-                    {
+    // private void GetPickUpInput(InputAction.CallbackContext context)
+    // {
+    //     if (getSceneItems.SelectingID != "" && getSceneItems.gameObjectList.Count != 0)
+    //     {
+    //         foreach (GameObject Item in getSceneItems.gameObjectList)
+    //         {
+    //             ItemCell ItemInfo = Item.GetComponent<ItemCell>();
+    //             if (ItemInfo.uid == getSceneItems.SelectingID && ItemInfo.type == 1) // 1为可拾取的场景物体
+    //             {
+    //                 int ItemNum = UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().GetItemNumByUID(getSceneItems.SelectingID);
+    //                 if (ItemNum == UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().scrollContent.childCount - 1)
+    //                 {
 
-                        UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().UpSelectID();
-                        PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
-                        UpdatePackageLocalData();
-                        ItemInfo.Destroy();
-                        return;
-                    }
-                    else
-                    {
-                        UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().DownSelectID();
-                        PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
-                        UpdatePackageLocalData();
-                        ItemInfo.Destroy();
-                        return;
-                    }
-                }
-                else if (ItemInfo.uid == getSceneItems.SelectingID && ItemInfo.type == 101)
-                {
-                    NPCController nPC = Item.GetComponent<NPCController>();
-                    nPC.ShowDialog();
-                }
+    //                     UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().UpSelectID();
+    //                     PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
+    //                     UpdatePackageLocalData();
+    //                     ItemInfo.Destroy();
+    //                     return;
+    //                 }
+    //                 else
+    //                 {
+    //                     UIManager.Instance.OpenPanel(UIConst.ItemsInfo).GetComponent<ItemsInfo>().DownSelectID();
+    //                     PackageLocalData.Instance.AddPackageLocalItem(ItemInfo);
+    //                     UpdatePackageLocalData();
+    //                     ItemInfo.Destroy();
+    //                     return;
+    //                 }
+    //             }
+    //             else if (ItemInfo.uid == getSceneItems.SelectingID && ItemInfo.type == 101)
+    //             {
+    //                 NPCController nPC = Item.GetComponent<NPCController>();
+    //                 nPC.ShowDialog();
+    //             }
 
-                else if (ItemInfo.uid == getSceneItems.SelectingID && ItemInfo.type == 102)
-                {
-                    TransitionPoint transitionPoint = ItemInfo.transform.gameObject.GetComponent<TransitionPoint>();
-                    SceneController.Instance.TransitionToDestination(transitionPoint);
-                }
-            }
-        }
-    }
+    //             else if (ItemInfo.uid == getSceneItems.SelectingID && ItemInfo.type == 102)
+    //             {
+    //                 TransitionPoint transitionPoint = ItemInfo.transform.gameObject.GetComponent<TransitionPoint>();
+    //                 SceneController.Instance.TransitionToDestination(transitionPoint);
+    //             }
+    //         }
+    //     }
+    // }
 
     private void GetReloadInput(InputAction.CallbackContext context)
     {
         if (shootController.MagazineAmmo < shootController.ShootConfig.Capacity && shootController.TotalAmmo != 0)
         {
             RefreshGunInfo();
-            animator.SetTrigger("Reload");
+            isReload = true;
             AudioManager.Instance.soundFXManager.PlaySoundFXClip(ReloadSound, transform, 1f);
-            // UpdatePackageLocalData();
         }
     }
 
@@ -845,6 +849,8 @@ public class PlayerManager : MonoBehaviour
     public float RightWeight;
     [Range(0, 1)]
     public float LeftWeight;
+    private bool isReload;
+
     // public Vector3 LeftPosition;
     // public Vector3 RightPosition;
     private void OnAnimatorIK(int layerIndex)

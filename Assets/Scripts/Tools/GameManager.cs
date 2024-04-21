@@ -13,12 +13,12 @@ public class GameManager : MonoBehaviour
     public PlayerMoveControls inputActions;
     private PackageTable_SO packageTable;
     public CurrentTask_SO currentTask;
+    public List<int> CompleteTasksID;
     public TaskData_SO taskData;
     public PlayerManager playerManager;
     public GetSceneItems getSceneItems;
     public GameObject AudioManagerPrefab;
-    public GameObject Characater;
-
+    public GameObject Team;
     public static bool applicationIsQuitting = false;
     private static GameManager _instance;
     public static GameManager Instance
@@ -58,6 +58,8 @@ public class GameManager : MonoBehaviour
 
         print(this.name + "  Awake");
         InitBaseGameObject();
+
+        
     }
     
 
@@ -77,13 +79,34 @@ public class GameManager : MonoBehaviour
     
     private void Start()
     {
+        UserData userData = GetUserData();
+        CompleteTasksID = userData.completedTasks;
+        currentTask.TaskDetailsList.Clear();
+        foreach (TaskDetails taskDetails in currentTask.TaskDetailsList)
+        {
+            if (userData.currentTasks.Contains(taskDetails.taskID))
+            {
+                currentTask.TaskDetailsList.Add(taskDetails);
+            }
+        }
         print(this.name + "  Start");
         
     }
     # region 场景初始化
+    public UserData GetUserData()
+    {
+        UserData data = LocalConfig.LoadUserData("test_aoi");
+        if (data == null)
+        {
+            CreateNewLocalConfig();
+            return LocalConfig.LoadUserData("test_aoi");
+        }
+        return data;
+    }
     public void InitPlayerManager()
     {
         playerManager = FindAnyObjectByType<PlayerManager>();
+        playerManager.UpdatePackageLocalData();
     }
 
     public void InitBaseInput()
@@ -103,11 +126,11 @@ public class GameManager : MonoBehaviour
         if (transitionPoint != null)
         {
             Vector3 position = transitionPoint.transform.position;
-            Instantiate(Characater,  position, Quaternion.identity);
+            Instantiate(Team,  position, Quaternion.identity);
         }
         else
         {
-            Instantiate(Characater);
+            Instantiate(Team);
         }
         AudioManager audioManager = FindAnyObjectByType<AudioManager>();
         if (audioManager == null) Instantiate(AudioManagerPrefab);
@@ -271,6 +294,31 @@ public class GameManager : MonoBehaviour
     public void AddTaskToCurrentTask(int ID)
     {
         TaskDetails taskDetails = taskData.TaskDetailsList.Find(i => i.taskID == ID);
+        if (taskDetails.taskType == TaskType.击杀)
+        {
+            for (int i = 0; i < taskDetails.DefaultList.Count; i++)
+            {
+                Default DefaultList = taskDetails.DefaultList[i];
+                DefaultList.CurrentKill = 0;
+            }
+        }
+        else if (taskDetails.taskType == TaskType.收集)
+        {   
+            for (int i = 0; i < taskDetails.CollectList.Count; i++)
+            {
+                Collect CollectList = taskDetails.CollectList[i];
+                CollectList.CurrentNumber = 0;
+            }
+        }
+        else if (taskDetails.taskType == TaskType.歼灭)
+        {
+
+        }
+        else if (taskDetails.taskType == TaskType.存活)
+        {
+
+        }
+        print("AddTaskToCurrentTask");
         currentTask.TaskDetailsList.Add(taskDetails);
     }
     public void RemoveTaskToCurrentTask(int ID)
@@ -282,9 +330,9 @@ public class GameManager : MonoBehaviour
     {
         if (taskDetail.taskType == TaskType.击杀)
         {
-            for (int i = 0; i < taskDetail.DefaultLsit.Count; i++)
+            for (int i = 0; i < taskDetail.DefaultList.Count; i++)
             {
-                Default defaultList = taskDetail.DefaultLsit[i];
+                Default defaultList = taskDetail.DefaultList[i];
                 if (defaultList.CurrentKill != defaultList.killTarget) { return false; }
             }
         }
@@ -354,9 +402,96 @@ public class GameManager : MonoBehaviour
     // }
 
     # endregion
-    protected virtual void OnDestroy() {
+
+    # region 本地存储相关
+
+    public void SaveCurrentLocalConfig()
+    { 
+        // 保存玩家数据
+        TeamController team = FindObjectOfType<TeamController>();
+        UserData userData= new UserData();
+        userData.name = "test_aoi";
+        if (team)
+        {
+            PlayerManager[] players = team.charactersList;
+            List<string> teamCharacterNames = new();
+            List<int> health = new();
+            List<int> magazineAmmo = new();
+            foreach (PlayerManager p in players)
+            {
+                teamCharacterNames.Add(p.gameObject.name);
+                health.Add(p.GetComponent<CharacterStats>().CurrentHealth);
+                magazineAmmo.Add(p.GetComponent<ShootController>().MagazineAmmo);
+            }
+            userData.teamCharacterNames = teamCharacterNames;
+            userData.health = health;
+            userData.magazineAmmo = magazineAmmo;
+        }
+        else
+        {
+            Debug.LogError("未保存玩家数据");
+            return;
+        }
+        userData.currentScene = SceneManager.GetActiveScene().name;
+        foreach (TaskDetails taskDetail in currentTask.TaskDetailsList)
+        {  
+            if (!userData.currentTasks.Contains(taskDetail.taskID))
+                userData.currentTasks.Add(taskDetail.taskID);
+        }
+        foreach (int i in CompleteTasksID)
+        {
+            if (!userData.completedTasks.Contains(i))
+            {
+                userData.completedTasks.Add(i);
+            }
+        }
+        LocalConfig.SaveUserData(userData);
+    }
+    public void CreateNewLocalConfig()
+    {
+        TeamController team = FindObjectOfType<TeamController>();
+        UserData userData= new UserData();
+        userData.name = "test_aoi";
+        if (team)
+        {
+            PlayerManager[] players = team.charactersList;
+            List<string> teamCharacterNames = new();
+            List<int> health = new();
+            List<int> magazineAmmo = new();
+            foreach (PlayerManager p in players)
+            {
+                teamCharacterNames.Add(p.gameObject.name);
+                health.Add(p.GetComponent<CharacterStats>().characterData.maxHealth);
+                magazineAmmo.Add(p.GetComponent<ShootController>().ShootConfig.Capacity);
+            }
+            userData.teamCharacterNames = teamCharacterNames;
+            userData.health = health;
+            userData.magazineAmmo = magazineAmmo;
+        }
+        else
+        {
+            Debug.LogError("未保存玩家数据");
+            return;
+        }
+        userData.currentScene = null;
+        userData.currentTasks = new();
+        userData.completedTasks = new();
+        LocalConfig.SaveUserData(userData);
+    }
+    // 获取本地文件里指定角色的列表下标
+    public int GerPlayerIndex(string name)
+    {
+        return GetUserData().teamCharacterNames.IndexOf(name);
+    }
+    # endregion
+
+    protected virtual void OnDestroy() 
+    {
+        // SaveCurrentLocalConfig();
 		applicationIsQuitting = true;
 	}
+
+
 }
 
 

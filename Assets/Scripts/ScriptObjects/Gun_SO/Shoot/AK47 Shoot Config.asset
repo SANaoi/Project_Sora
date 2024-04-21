@@ -19,3 +19,5 @@ MonoBehaviour:
   FireRate: 0.15
   Damage: 5
   Capacity: 999
+  GunBuffType: 0
+  buildAmount: 1

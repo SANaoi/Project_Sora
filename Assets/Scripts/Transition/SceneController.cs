@@ -14,7 +14,6 @@ public class SceneController : Singleton<SceneController>
     }
     public void TransitionToDestination(TransitionPoint transitionPoint)
     {
-        loadingPanel = UIManager.Instance.OpenPanel(UIConst.LoadingScene) as LoadingScene;
         switch (transitionPoint.transitionType)
         {
             case TransitionPoint.TransitionType.SameScene:
@@ -28,6 +27,9 @@ public class SceneController : Singleton<SceneController>
 
     IEnumerator Transition(string sceneName, TransitionDestination.DestinationTag destinationTag)
     {   
+        
+        GameManager.Instance.SaveCurrentLocalConfig();
+        loadingPanel = UIManager.Instance.OpenPanel(UIConst.LoadingScene) as LoadingScene;
         yield return null;
         if (SceneManager.GetActiveScene().name != sceneName)
         {   

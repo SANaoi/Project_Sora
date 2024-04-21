@@ -190,9 +190,9 @@ public class TaskPanel : BasePanel
     {
         if (taskDetail.taskType == TaskType.击杀)
         {
-            for (int i = 0; i < taskDetail.DefaultLsit.Count; i++)
+            for (int i = 0; i < taskDetail.DefaultList.Count; i++)
             {
-                Default defaultList = taskDetail.DefaultLsit[i];
+                Default defaultList = taskDetail.DefaultList[i];
                 textContent += $"{defaultList.targetData.CharacterName}: {defaultList.CurrentKill} / {defaultList.killTarget} \n";
             }
         }
@@ -216,9 +216,9 @@ public class TaskPanel : BasePanel
     {
         if (taskDetail.taskType == TaskType.击杀)
         {
-            for (int i = 0; i < taskDetail.DefaultLsit.Count; i++)
+            for (int i = 0; i < taskDetail.DefaultList.Count; i++)
             {
-                Default defaultList = taskDetail.DefaultLsit[i];
+                Default defaultList = taskDetail.DefaultList[i];
                 if (targetId == defaultList.targetData.Id && defaultList.CurrentKill < defaultList.killTarget)
                 {
                     defaultList.CurrentKill += 1;
