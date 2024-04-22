@@ -57,6 +57,7 @@ public class PackageLocalData
             uid = Guid.NewGuid().ToString(),
             id = itemInfo.id,
             num = itemInfo.num,
+            effect = itemInfo.effect,
         };
         items.Add(packageLocalItem);
         SavePackage();
@@ -70,6 +71,7 @@ public class PackageLocalData
             uid = Guid.NewGuid().ToString(),
             id = itemInfo.id,
             num = itemInfo.num,
+            effect = itemInfo.itemInfo.effect,
         };
         items.Add(packageLocalItem);
         SavePackage();
@@ -106,6 +108,7 @@ public class PackageLocalItem
     public string uid;
     public int id;
     public int num;
+    public List<Effect> effect;
     public override string ToString()
     {
         return $"uid: {uid}, id: {id}, num: {num}";

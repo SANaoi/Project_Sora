@@ -287,7 +287,7 @@ public class PlayerManager : MonoBehaviour
     public void UpdatePackageLocalData()
     {
         // 用于及时更新与界面UI有关的数据
-        shootController.TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2);
+        shootController.TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(shootController.ShootConfig.bulletTypeID);
         UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(shootController.MagazineAmmo,shootController.TotalAmmo);
     }
 
@@ -801,21 +801,21 @@ public class PlayerManager : MonoBehaviour
     public void RefreshGunInfo()
     {
         // TODO 数据同步到背包数据
-        int TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2); // 弹药总数
+        int TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(shootController.ShootConfig.bulletTypeID); // 弹药总数
 
         if (shootController.MagazineAmmo + TotalAmmo < shootController.ShootConfig.Capacity)
         {
             shootController.MagazineAmmo += TotalAmmo;
-            GameManager.Instance.DiscountPackageLocalItemsNumById(2, TotalAmmo);
+            GameManager.Instance.DiscountPackageLocalItemsNumById(shootController.ShootConfig.bulletTypeID, TotalAmmo);
             shootController.TotalAmmo = 0;
         }
         else
         {
             int ReloadAmmo = shootController.ShootConfig.Capacity - shootController.MagazineAmmo; // 装填弹药量
-            GameManager.Instance.DiscountPackageLocalItemsNumById(2, ReloadAmmo);
+            GameManager.Instance.DiscountPackageLocalItemsNumById(shootController.ShootConfig.bulletTypeID, ReloadAmmo);
             shootController.MagazineAmmo = shootController.ShootConfig.Capacity;
         }
-        int leftAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2);
+        int leftAmmo = GameManager.Instance.GetPackageLocalItemsNumById(shootController.ShootConfig.bulletTypeID);
         shootController.TotalAmmo = leftAmmo;
         UIManager.Instance.OpenPanel("GunInfo").GetComponent<UIGunInfo>().Refresh(shootController.MagazineAmmo, shootController.TotalAmmo);
     }

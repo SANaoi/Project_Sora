@@ -63,6 +63,7 @@ public class AudioUIManager : BasePanel
     private void OnClickMenu()
     {
         GameManager.Instance.SaveCurrentLocalConfig();
+        
         SceneController.Instance.EnterMenuScene();
     }
 

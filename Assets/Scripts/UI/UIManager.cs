@@ -261,4 +261,5 @@ public class UIImage
     public const string 苦笑 = "苦笑"; // 😅
     public const string 感叹号 = "感叹号";
     public const string 哭 = "哭";
+    public const string 问号 = "问号";
 }

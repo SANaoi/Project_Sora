@@ -43,7 +43,7 @@ public class PackageCell : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
        Sprite temp = Sprite.Create(t, new Rect(0, 0, t.width, t.height), new Vector2(0, 0));
        UIIcon.GetComponent<Image>().sprite = temp;
 
-       UIName.GetComponent<Text>().text = packageTableItem.name;
+       UIName.GetComponent<Text>().text = packageLocalItem.num.ToString();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -64,6 +64,6 @@ public class PackageCell : MonoBehaviour, IPointerEnterHandler, IPointerClickHan
     public void OnPointerExit(PointerEventData eventData)
     {
         UIMouseOverAni.SetTrigger("Out");
-
+        
     }
 }

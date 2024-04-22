@@ -15,9 +15,10 @@ MonoBehaviour:
   HitMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  Spread: {x: 0.1, y: 0.1, z: 0.01}
+  Spread: {x: 0.5, y: 0.5, z: 0.01}
   FireRate: 0.5
   Damage: 12
   Capacity: 999
+  bulletTypeID: 1
   GunBuffType: 1
   buildAmount: 3

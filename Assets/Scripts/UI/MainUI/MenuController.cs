@@ -41,6 +41,7 @@ public class MenuController : MonoBehaviour
 
     private void OnClickStart()
     {
+        
         GameManager.Instance.CreateNewLocalConfig();
         SceneController.Instance.EnterFirstScene("Scenes/SampleScene");
     }

@@ -71,7 +71,7 @@ public class EnemyController : MonoBehaviour
     private ExpressionUI expressionUI;
     private Dictionary<string, List<string>> emojiActions;
     private List<string> currentEmoji;
-
+    // Buff
     public BuffManager buffManager;
 
     void Awake()

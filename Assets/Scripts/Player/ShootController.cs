@@ -29,7 +29,7 @@ public class ShootController : BaseShoot
     [SerializeField] private AudioClip shootSoundClip;
     private void Awake()
     {
-        TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(2); // 2: 步枪子弹Id
+        TotalAmmo = GameManager.Instance.GetPackageLocalItemsNumById(this.ShootConfig.bulletTypeID); // 2: 步枪子弹Id
         flash = CreateImpactFlash(FireHole.gameObject);
         
         

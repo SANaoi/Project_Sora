@@ -24,6 +24,7 @@ public class PackagePanel : BasePanel
     private Transform UIBottomMenus;
     private Transform UIDeleteBtn;
     private Transform UIDetailBtn;
+    private Transform UIUseBtn;
 
     public GameObject PackageUIItemPrefab;
 
@@ -112,6 +113,7 @@ public class PackagePanel : BasePanel
         UIRightBtn = transform.Find("Right/Button");
         // UIDeletePanel = transform.Find("Bottom/");
         UIDeleteBackBtn = transform.Find("Bottom/DeletePanelBtn");
+        UIUseBtn = transform.Find("Bottom/UseButton");
         // UIDeleteInfoText = transform.Find();
         // UIDeleteConfirmBtn = transform.Find();
         // UIBottomMenus = transform.Find();
@@ -127,7 +129,9 @@ public class PackagePanel : BasePanel
         UILeftBtn.GetComponent<Button>().onClick.AddListener(OnClickLeft);
         UIRightBtn.GetComponent<Button>().onClick.AddListener(OnClickRight);
         UIDeleteBackBtn.GetComponent<Button>().onClick.AddListener(OnClickDelete);
+        UIUseBtn.GetComponent<Button>().onClick.AddListener(OnClickUse);
     }
+
 
     private void RemoveListener()
     {
@@ -137,6 +141,7 @@ public class PackagePanel : BasePanel
         UILeftBtn.GetComponent<Button>().onClick.RemoveListener(OnClickLeft);
         UIRightBtn.GetComponent<Button>().onClick.RemoveListener(OnClickRight);
         UIDeleteBackBtn.GetComponent<Button>().onClick.RemoveListener(OnClickDelete);
+        UIUseBtn.GetComponent<Button>().onClick.AddListener(OnClickUse);
     }
 
     private void OnClickAll()
@@ -170,4 +175,34 @@ public class PackagePanel : BasePanel
     {
         print("----- OnClickDelete");
     }
+    private void OnClickUse()
+    {
+        PackageLocalItem localItem = GameManager.Instance.GetPackageTableItemByUId(chooseUID);
+        if(localItem.effect == null) return;
+        foreach (Effect effect in localItem.effect)
+        {
+            switch (effect.effectType)
+            {
+                case EffectType.提速:
+                print("提速");
+                
+                break;
+
+                case EffectType.恢复:
+                print("恢复");
+                CharacterStats characterStats = GameManager.Instance.playerManager.GetComponent<CharacterStats>();
+                if(characterStats.CurrentHealth < characterStats.MaxHealth)
+                {
+                    characterStats.CurrentHealth = Mathf.Clamp(characterStats.CurrentHealth + effect.effectAmount, 0, characterStats.MaxHealth);
+                    (UIManager.Instance.OpenPanel(UIConst.PlayerMainUI) as PlayerMainUI).UpdatePlayerHealthInfo(characterStats.CurrentHealth, characterStats.MaxHealth);
+                    
+                    GameManager.Instance.UsePackageItemByUid(chooseUID);
+                    RefreshScroll();
+                }
+                break;
+            }
+        }
+
+    }
+
 }

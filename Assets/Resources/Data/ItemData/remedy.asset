@@ -15,3 +15,7 @@ MonoBehaviour:
   id: 3
   itemName: "\u836F\u54C1"
   num: 1
+  effect:
+  - effectId: 0
+    effectType: 1
+    effectAmount: 20

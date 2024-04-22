@@ -8,13 +8,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: face
-  m_Shader: {fileID: 4800000, guid: 7bcb5979ffccee44c9256865cf9543c9, type: 3}
+  m_Shader: {fileID: 4800000, guid: 12f7d4feedd0f5347987c5e2e2f8a538, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - _MODEL_GAME
   - _OUTLINENORMAL_TANGENT
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0

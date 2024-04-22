@@ -79,20 +79,24 @@ public class GameManager : MonoBehaviour
     
     private void Start()
     {
+        InitTaskData();
+        print(this.name + "  Start");
+        
+    }
+    # region 场景初始化
+    public void InitTaskData()
+    {
         UserData userData = GetUserData();
         CompleteTasksID = userData.completedTasks;
         currentTask.TaskDetailsList.Clear();
-        foreach (TaskDetails taskDetails in currentTask.TaskDetailsList)
+        foreach (TaskDetails taskDetails in taskData.TaskDetailsList)
         {
             if (userData.currentTasks.Contains(taskDetails.taskID))
             {
                 currentTask.TaskDetailsList.Add(taskDetails);
             }
         }
-        print(this.name + "  Start");
-        
     }
-    # region 场景初始化
     public UserData GetUserData()
     {
         UserData data = LocalConfig.LoadUserData("test_aoi");
@@ -170,7 +174,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    public PackageLocalItem GetPackageTableItemByUId(string uid)
+    public PackageLocalItem GetPackageTableItemByUId(string uid) // 获取指定背包道具
     {
         List<PackageLocalItem> packageDataList = GetPackageLocalData();
         foreach(PackageLocalItem item in packageDataList)
@@ -181,6 +185,36 @@ public class GameManager : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void UsePackageItemByUid(string uid)
+    {
+        List<PackageLocalItem> packageDataList = GetPackageLocalData();
+        // foreach(PackageLocalItem item in packageDataList)
+        // {
+        //     if(item.uid == uid)
+        //     {
+        //         item.num -= 1;
+        //     }
+        //     if (item.num <= 0)
+        //     {
+        //         packageDataList.Remove(item);
+        //     }
+        // }
+        for (int i = 0; i < packageDataList.Count; i++)
+        {
+            if (packageDataList[i].uid == uid)
+            {
+                packageDataList[i].num -= 1;
+                if (packageDataList[i].num <= 0)
+                {
+                    packageDataList.Remove(packageDataList[i]);
+                }
+                PackageLocalData.Instance.SavePackage();
+                return;
+            }
+        }
+        return;
     }
 
 
@@ -318,7 +352,6 @@ public class GameManager : MonoBehaviour
         {
 
         }
-        print("AddTaskToCurrentTask");
         currentTask.TaskDetailsList.Add(taskDetails);
     }
     public void RemoveTaskToCurrentTask(int ID)
@@ -343,7 +376,6 @@ public class GameManager : MonoBehaviour
             for (int i = 0; i < taskDetail.CollectList.Count; i++)
             {
                 Collect CollectList = taskDetail.CollectList[i];
-                if (CollectList.CurrentNumber != CollectList.CollectTarget) { return false; }
 
                 List<PackageLocalItem> Removeitems = PackageLocalData.Instance.GetListWithHaveSameID(CollectList.ItemInfo.id);
                 if (Removeitems.Count >= CollectList.CollectTarget) RemovePackageTableItemByList(Removeitems, CollectList.CollectTarget);
@@ -396,10 +428,6 @@ public class GameManager : MonoBehaviour
     #endregion
 
     # region UI相关
-    // public void RefreshUI()
-    // {
-    //     PlayerManager.Instance.RefreshGunInfo();
-    // }
 
     # endregion
 
@@ -473,6 +501,8 @@ public class GameManager : MonoBehaviour
             Debug.LogError("未保存玩家数据");
             return;
         }
+        CompleteTasksID.Clear();
+        currentTask.TaskDetailsList.Clear();
         userData.currentScene = null;
         userData.currentTasks = new();
         userData.completedTasks = new();

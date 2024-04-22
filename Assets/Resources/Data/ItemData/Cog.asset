@@ -15,3 +15,10 @@ MonoBehaviour:
   id: 4
   itemName: "\u673A\u68B0\u96F6\u4EF6"
   num: 1
+  effect:
+  - effectId: 0
+    effectType: 1
+    effectAmount: 5
+  - effectId: 0
+    effectType: 2
+    effectAmount: 3

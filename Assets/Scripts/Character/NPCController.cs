@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
-// [RequireComponent(typeof(ExpressionUI))]
+[RequireComponent(typeof(ExpressionControl))]
 public class NPCController : MonoBehaviour
 {
     private bool isPutHand;
@@ -20,11 +20,25 @@ public class NPCController : MonoBehaviour
     public CharacterTaskList_SO characterTaskList;
     public float HeadRotateAngle;
     private PlayerManager playerManager;
+    // Emoji
+    private ExpressionUI expressionUI;
+    private Dictionary<string, List<string>> emojiActions;
+    private List<string> currentEmoji;
+    private EmojiStats emojiStats;
+
+    bool isNormal;
+    bool isPending;
+    bool islike;
 
     public enum PostureStates
     {
         Stand,
         Talk,
+    }
+
+    public enum EmojiStats
+    {
+        normal, Pending, InProgress, like
     }
 
     public enum TaskStates
@@ -40,13 +54,21 @@ public class NPCController : MonoBehaviour
         animator = GetComponent<Animator>();
         InitTransform();
         LookAtPlayer();
-        
     }
 
     void Start()
     {
         InitTaskLocalData();
-        // InvokeRepeating("FoundPlyer", 0.25f, 0.25f);
+        expressionUI =  GetComponent<ExpressionControl>().ExpressionPrefab.GetComponent<ExpressionUI>();
+        emojiActions = new Dictionary<string, List<string>>()
+        {
+            {"无", new List<string>{}},
+            {"任务中", new List<string>{UIImage.感叹号}},
+            {"接取中", new List<string>{UIImage.问号}},
+            {"爱心", new List<string>{UIImage.爱心}},
+        };
+        emojiStats = EmojiStats.normal;
+        isNormal = true;
     }
 
     void Update()
@@ -54,6 +76,44 @@ public class NPCController : MonoBehaviour
         SwitchStates();
         SwitchAnimation();
         FoundPlyer();
+    }
+
+    void SwitchEmojiStats()
+    {
+        if (isNormal && !isPending) 
+        {
+            emojiStats = EmojiStats.normal;
+        }
+        else if (isPending)
+        {
+            emojiStats = EmojiStats.Pending;
+        }
+        if (islike && !isPending)
+        {
+            emojiStats = EmojiStats.like;
+        }
+        switch (emojiStats)
+        {
+            case EmojiStats.normal:
+                SetCurrentEmoji(emojiActions["无"]);
+                break;
+            case EmojiStats.Pending:
+                SetCurrentEmoji(emojiActions["任务中"]);
+                break;
+            case EmojiStats.like:
+                SetCurrentEmoji(emojiActions["爱心"]);
+                break;
+        }
+    }
+
+    void SetCurrentEmoji(List<string> stateActions)
+    {
+        if (currentEmoji == stateActions)
+        {
+            return;
+        }
+        currentEmoji = stateActions;
+        expressionUI.Refresh(stateActions);
     }
     # endregion
 
@@ -81,6 +141,7 @@ public class NPCController : MonoBehaviour
     private void SwitchStates()
     {
         SwitchPostureStates();
+        SwitchEmojiStats();
     }
 
     private void SwitchPostureStates()
@@ -113,10 +174,11 @@ public class NPCController : MonoBehaviour
             if (!taskList.IsAccepted)
             {
                 DialogBox.ShowDialogRows();
-                return;
+                break;
             }
             else if (taskList.IsAccepted && !taskList.IsCompleted)
             {
+                isPending = true;
                 TaskDetails taskDetail = GameManager.Instance.GetTaskDetailByID(taskList.taskID);
                 if (GameManager.Instance.IsCompleteTask(taskDetail))
                 {
@@ -124,13 +186,14 @@ public class NPCController : MonoBehaviour
                     DialogBox.ShowDialogRows(true,true);
 
                     GameManager.Instance.CompleteTasksID.Add(taskDetail.taskID);
-                    return;
+                    isPending = false;
+                    break;
                 }
                 DialogBox.ShowDialogRows(true);
-                return;
+                break;
             }
         }
-        
+        RefreshEmoji();
     }
 
     private void FoundPlyer()
@@ -140,6 +203,8 @@ public class NPCController : MonoBehaviour
         {
             if (collider.CompareTag("Player"))
             {
+                islike = true;
+                
                 playerManager = FindAnyObjectByType<PlayerManager>();
                 LookAtPoint.position = playerManager.LookPoint.transform.position;
                 LookAtPoint.rotation = playerManager.LookPoint.transform.rotation;
@@ -160,10 +225,11 @@ public class NPCController : MonoBehaviour
                 {
                     multiAim.weight = Mathf.Clamp01(multiAim.weight + 5f * Time.deltaTime);
                 }
+
                 return;
             }
         }
-        
+        islike = false;
         multiAim.weight = Mathf.Clamp01(multiAim.weight - 5f * Time.deltaTime);
         postureStates = PostureStates.Stand;
     }
@@ -173,12 +239,31 @@ public class NPCController : MonoBehaviour
         multiAim.data.sourceObjects = weightedTransforms;
     }
 
+    public void RefreshEmoji()
+    {
+        isPending = false;
+        foreach (TaskList taskList in  characterTaskList.textAssets)
+        {
+            if (taskList.taskID == -1)
+            {
+                return;
+            }
+            if (!taskList.IsCompleted && taskList.taskID != -1)
+            {
+                isPending = true;
+            }
+        }
+    }
+    
     private void InitTaskLocalData()
     {
         UserData userData = GameManager.Instance.GetUserData();
         foreach (TaskList taskList in  characterTaskList.textAssets)
         {
-            
+            if (taskList.taskID == -1)
+            {
+                break;
+            }
             if (userData.completedTasks.Contains(taskList.taskID))
             {
                 taskList.IsAccepted = true;
@@ -199,6 +284,8 @@ public class NPCController : MonoBehaviour
                 taskList.IsAccepted = false;
             }
         }
+        RefreshEmoji();
+        
     }
     # endregion
 }

@@ -11,6 +11,7 @@ public class ShootConfigurationScriptableObject : ScriptableObject
     public float FireRate = 0.15f;
     public float Damage = 5;
     public int Capacity = 30;
+    public int bulletTypeID;
     public BuffType GunBuffType;
     public float buildAmount;
 }  

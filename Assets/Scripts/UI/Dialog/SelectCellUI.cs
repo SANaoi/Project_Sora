@@ -45,6 +45,7 @@ public class SelectCellUI : MonoBehaviour
                 int index = int.Parse(i[1]);
                 GameManager.Instance.AddTaskToCurrentTask(index);
                 DialogBox.GetComponent<DialogUI>().IsAccepted = true;
+
                 
             }
         }

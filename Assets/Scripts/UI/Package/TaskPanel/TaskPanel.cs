@@ -201,7 +201,7 @@ public class TaskPanel : BasePanel
             for (int i = 0; i < taskDetail.CollectList.Count; i++)
             {
                 Collect collect = taskDetail.CollectList[i];
-                textContent += $"{collect.ItemInfo.itemName}: {collect.CurrentNumber} / {collect.CollectTarget} \n";
+                textContent += $"{collect.ItemInfo.itemName}: {collect.CollectTarget} \n";
             }
         }
         else if (taskDetail.taskType == TaskType.歼灭)
