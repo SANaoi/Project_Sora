@@ -178,7 +178,7 @@ public class PackagePanel : BasePanel
     private void OnClickUse()
     {
         PackageLocalItem localItem = GameManager.Instance.GetPackageTableItemByUId(chooseUID);
-        if(localItem.effect == null) return;
+        if(localItem == null) return;
         foreach (Effect effect in localItem.effect)
         {
             switch (effect.effectType)

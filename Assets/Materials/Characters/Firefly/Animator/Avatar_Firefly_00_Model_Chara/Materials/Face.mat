@@ -54,7 +54,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FaceMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 4271591d683a46c4782ed8de42418df7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _LightMap:
@@ -109,7 +109,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaTest: 0
-    - _AlphaTestThreshold: 0.5
+    - _AlphaTestThreshold: 0
     - _AlphaToMask: 0
     - _BackFaceUV2: 0
     - _Blend: 0

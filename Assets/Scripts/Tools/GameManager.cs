@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using aoi;
+using Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -60,6 +61,11 @@ public class GameManager : MonoBehaviour
         InitBaseGameObject();
 
         
+    }
+
+    void Update()
+    {
+        CursorController();
     }
     
 
@@ -521,7 +527,25 @@ public class GameManager : MonoBehaviour
 		applicationIsQuitting = true;
 	}
 
-
+    // 指针控制
+    void CursorController()
+    {
+        // 检查Alt键是否被按下
+        if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
+        {
+            // 如果Alt键被按下，显示鼠标光标
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            FindAnyObjectByType<CinemachineInputProvider>().enabled = false;
+        }
+        else
+        {
+            // 如果Alt键没有被按下，隐藏鼠标光标
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            FindAnyObjectByType<CinemachineInputProvider>().enabled = true;
+        }
+    }
 }
 
 

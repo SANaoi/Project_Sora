@@ -47,13 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentTask: {fileID: 11400000, guid: b60b986bfc4b8ae489897dad9baac144, type: 2}
+  CompleteTasksID: 
   taskData: {fileID: 11400000, guid: 1529181c192f03c448b1867f261f77ca, type: 2}
   playerManager: {fileID: 0}
   getSceneItems: {fileID: 0}
   AudioManagerPrefab: {fileID: 3513629868623284230, guid: a3aa73da8b69ae7468ae85b4984e121c,
     type: 3}
-  Characater: {fileID: 9086484958611873723, guid: 0065fb04d776e9246aecc245097ec2d6,
-    type: 3}
+  Team: {fileID: 9086484958611873723, guid: 0065fb04d776e9246aecc245097ec2d6, type: 3}
 --- !u!114 &4450905499786317240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,6 +84,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27ecabcfc1c3ba14a9e6f1c03daeee02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 1502314020776503310, guid: 3bae36f8f571cce42b0b6a3583f5b5c2,
-    type: 3}
-  animator: {fileID: 0}

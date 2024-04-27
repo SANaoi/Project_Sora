@@ -18,7 +18,7 @@ MonoBehaviour:
   Spread: {x: 0.2, y: 0.2, z: 0.01}
   FireRate: 0.15
   Damage: 5
-  Capacity: 999
+  Capacity: 30
   bulletTypeID: 2
   GunBuffType: 0
   buildAmount: 1

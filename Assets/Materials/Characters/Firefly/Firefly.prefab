@@ -164,6 +164,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3240822096362290750}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4310470482765152115
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5954755610088940323}
+  m_Layer: 0
+  m_Name: ExpressionPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5954755610088940323
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4310470482765152115}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5270890564551247720}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3130863740276464085
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10748,6 +10779,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 389518462129540814}
+    - targetCorrespondingSourceObject: {fileID: -2137247258878583107, guid: c8084d221e745394497e04169d826861,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5954755610088940323}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c8084d221e745394497e04169d826861,
         type: 3}
@@ -10769,6 +10804,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3700247607356508938}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c8084d221e745394497e04169d826861,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5708266900869569987}
   m_SourcePrefab: {fileID: 100100000, guid: c8084d221e745394497e04169d826861, type: 3}
 --- !u!4 &14557239559919538 stripped
 Transform:
@@ -11406,7 +11445,9 @@ MonoBehaviour:
   uid: 
   id: 0
   type: 0
+  m_name: 
   itemName: 
+  isShowNum: 0
   num: 0
   imagePath: 
 --- !u!114 &5509865167584232533
@@ -11772,6 +11813,20 @@ MonoBehaviour:
   - {fileID: 1710762407572878884}
   - {fileID: 3332330906550858188}
   - {fileID: 4957635859382798169}
+--- !u!114 &5708266900869569987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2860461044769842308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08f21b9c753a80c47be64779d4152aba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barPoint: {fileID: 5954755610088940323}
+  ExpressionPrefab: {fileID: 0}
 --- !u!4 &2885001348805615872 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8972689385065498411, guid: c8084d221e745394497e04169d826861,

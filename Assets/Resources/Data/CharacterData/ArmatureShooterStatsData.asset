@@ -16,4 +16,4 @@ MonoBehaviour:
   CharacterName: "\u9632\u536B\u578B\u5175\u5668\u8FDC\u7A0B\u6B3EX\u578B"
   maxHealth: 140
   currentHealth: 140
-  baseDefence: 5
+  baseDefence: 7

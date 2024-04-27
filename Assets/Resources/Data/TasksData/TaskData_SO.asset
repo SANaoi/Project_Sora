@@ -21,7 +21,7 @@ MonoBehaviour:
     ExterminateList: []
     CollectList:
     - ItemInfo: {fileID: 11400000, guid: bdd8f3168968aeb4986a3b2ec2d33152, type: 2}
-      CurrentNumber: 2
+      CurrentNumber: 0
       CollectTarget: 2
     SurvivalList: []
     remuneration:
@@ -50,7 +50,7 @@ MonoBehaviour:
     isMandatoryTask: 0
   - taskID: 3
     taskName: "\u5C0F\u8BD5\u8EAB\u624B"
-    taskDescription: "\u83B7\u53D6\u673A\u68B0\u96F6\u4EF6\uFF0C\u5E2E\u52A9\u6D41\u83B9\u5C0F\u59D0"
+    taskDescription: "\u83B7\u53D6\u673A\u68B0\u96F6\u4EF6\uFF0C\u5E2E\u52A9\u6D41\u8424\u5C0F\u59D0"
     taskType: 2
     DefaultList: []
     ExterminateList: []

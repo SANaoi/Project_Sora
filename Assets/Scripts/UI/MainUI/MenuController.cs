@@ -41,7 +41,8 @@ public class MenuController : MonoBehaviour
 
     private void OnClickStart()
     {
-        
+        PackageLocalData.Instance.items.Clear();
+        PackageLocalData.Instance.SavePackage();
         GameManager.Instance.CreateNewLocalConfig();
         SceneController.Instance.EnterFirstScene("Scenes/SampleScene");
     }

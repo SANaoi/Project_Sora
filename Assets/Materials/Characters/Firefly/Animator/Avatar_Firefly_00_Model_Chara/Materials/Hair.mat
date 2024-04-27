@@ -107,7 +107,7 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BloomIntensity: 0
-    - _BloomIntensity0: 0.5
+    - _BloomIntensity0: 0
     - _BloomIntensity1: 0.5
     - _BloomIntensity2: 0.5
     - _BloomIntensity3: 0.5
@@ -118,7 +118,7 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Cull: 2
+    - _Cull: 0
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
@@ -139,7 +139,7 @@ Material:
     - _OcclusionStrength: 1
     - _OutlineColor: 0
     - _OutlineNormal: 0
-    - _OutlineWidth: 1
+    - _OutlineWidth: 1.19
     - _OutlineZOffset: 0
     - _Parallax: 0.005
     - _QueueOffset: 0
@@ -147,7 +147,7 @@ Material:
     - _ReceiveShadows: 1
     - _RimColor: 0
     - _RimDark: 0
-    - _RimDark0: 0.5
+    - _RimDark0: 0.65
     - _RimDark1: 0.5
     - _RimDark2: 0.5
     - _RimDark3: 0.5
@@ -161,7 +161,7 @@ Material:
     - _RimThresholdMax: 0.9
     - _RimThresholdMin: 0.6
     - _RimWidth: 0
-    - _RimWidth0: 0.3
+    - _RimWidth0: 0
     - _RimWidth1: 0.3
     - _RimWidth2: 0.3
     - _RimWidth3: 0.3
@@ -175,7 +175,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularColor: 0
     - _SpecularEdgeSoftness: 0
-    - _SpecularEdgeSoftness0: 0.1
+    - _SpecularEdgeSoftness0: 0.896
     - _SpecularEdgeSoftness1: 0.1
     - _SpecularEdgeSoftness2: 0.1
     - _SpecularEdgeSoftness3: 0.1
@@ -185,7 +185,7 @@ Material:
     - _SpecularEdgeSoftness7: 0.1
     - _SpecularHighlights: 1
     - _SpecularIntensity: 0
-    - _SpecularIntensity0: 1
+    - _SpecularIntensity0: 8
     - _SpecularIntensity1: 1
     - _SpecularIntensity2: 1
     - _SpecularIntensity3: 1
@@ -203,7 +203,7 @@ Material:
     - _SpecularMetallic6: 0
     - _SpecularMetallic7: 0
     - _SpecularShininess: 0
-    - _SpecularShininess0: 10
+    - _SpecularShininess0: 0.1
     - _SpecularShininess1: 10
     - _SpecularShininess2: 10
     - _SpecularShininess3: 10

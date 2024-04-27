@@ -178,6 +178,8 @@ public class PlayerManager : MonoBehaviour
         if (isReload)
         {
             animator.SetTrigger("Reload");
+            
+            AudioManager.Instance.soundFXManager.PlaySoundFXClip(ReloadSound, transform, 1f);
             isReload = false;
         }
     }
@@ -794,7 +796,6 @@ public class PlayerManager : MonoBehaviour
         {
             RefreshGunInfo();
             isReload = true;
-            AudioManager.Instance.soundFXManager.PlaySoundFXClip(ReloadSound, transform, 1f);
         }
     }
 

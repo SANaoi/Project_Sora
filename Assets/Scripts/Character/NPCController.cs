@@ -78,6 +78,12 @@ public class NPCController : MonoBehaviour
         FoundPlyer();
     }
 
+    private void LateUpdate() 
+    {
+        
+        SwitchEmojiStats();    
+    }
+
     void SwitchEmojiStats()
     {
         if (isNormal && !isPending) 
@@ -98,7 +104,10 @@ public class NPCController : MonoBehaviour
                 SetCurrentEmoji(emojiActions["无"]);
                 break;
             case EmojiStats.Pending:
-                SetCurrentEmoji(emojiActions["任务中"]);
+                float distance = Vector3.Distance(Camera.main.transform.position, transform.position);
+                float roundedDistance = Mathf.Round(distance);
+
+                SetCurrentEmoji(emojiActions["任务中"], roundedDistance);
                 break;
             case EmojiStats.like:
                 SetCurrentEmoji(emojiActions["爱心"]);
@@ -106,14 +115,14 @@ public class NPCController : MonoBehaviour
         }
     }
 
-    void SetCurrentEmoji(List<string> stateActions)
+    void SetCurrentEmoji(List<string> stateActions, float distance = 0)
     {
-        if (currentEmoji == stateActions)
+        if (currentEmoji == stateActions && distance == 0)
         {
             return;
         }
         currentEmoji = stateActions;
-        expressionUI.Refresh(stateActions);
+        expressionUI.Refresh(stateActions, distance);
     }
     # endregion
 
@@ -141,7 +150,6 @@ public class NPCController : MonoBehaviour
     private void SwitchStates()
     {
         SwitchPostureStates();
-        SwitchEmojiStats();
     }
 
     private void SwitchPostureStates()
